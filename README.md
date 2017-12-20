@@ -23,7 +23,7 @@ Google Big Query
 
 [mongodb](https://www.mongodb.org)
 
-    mongodb is used to store the widestage metadata, you have to install it even if you are not going to explore mondodb data.
+    mongodb is used to store the widestage metadata, you have to install it even if you are not going to explore mongodb data.
 
 [npm](https://www.npmjs.com)
 
