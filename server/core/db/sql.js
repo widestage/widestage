@@ -558,7 +558,6 @@ function processCollections(req,query,collections, dataSource, params, thereAreJ
     var from = [];
     var fields = [];
     var groupBy = [];
-    var joins = [];
     var processedCollections = [];
     var elements = [];
     var leadTable = {};
@@ -639,7 +638,6 @@ function processCollections(req,query,collections, dataSource, params, thereAreJ
 
 
                         if (field.aggregation) {
-                            found = true;
                             switch (field.aggregation) {
                                 case 'sum': fields.push('SUM('+table.collectionID+'.'+field.elementName+')'+ ' as '+theElementID+'sum');
                                     break;
@@ -680,13 +678,17 @@ function processCollections(req,query,collections, dataSource, params, thereAreJ
 
     var havings = [];
     getFilters(query, function(filtersResult,havingsResult){
-
         if (filtersResult.length > 0)
+        {
             SQLstring += ' WHERE ';
 
-        for (var fr in filtersResult)
-            SQLstring += filtersResult[fr];
-        havings = havingsResult;
+            for (var fr in filtersResult)
+            {
+                SQLstring += filtersResult[fr];
+            }
+
+            havings = havingsResult;
+        }
 
 
 
@@ -702,10 +704,14 @@ function processCollections(req,query,collections, dataSource, params, thereAreJ
         }
 
         if (havings.length > 0)
+        {
             SQLstring += ' HAVING ';
 
-        for (var h in havings)
-            SQLstring += havings[h];
+            for (var h in havings)
+            {
+                SQLstring += havings[h];
+            }
+        }
 
         if (query.order)
             if (query.order.length > 0)
@@ -721,7 +727,6 @@ function processCollections(req,query,collections, dataSource, params, thereAreJ
                     var theElementID = elementID.replace(/[^a-zA-Z ]/g,'');
 
                     if (theOrderField.aggregation) {
-                        found = true;
                         var AGG = theOrderField.aggregation.toUpperCase();
 
                         theSortOrderFieldName =     AGG+'('+theOrderField.collectionID+'.'+theOrderField.elementName+')';
@@ -747,7 +752,6 @@ function processCollections(req,query,collections, dataSource, params, thereAreJ
                     } else {
                         theSortOrderFieldName = theOrderField.collectionID+'.'+theOrderField.elementName;
                         theOrderFieldName = theSortOrderFieldName + ' as '+theElementID;
-
                     }
 
                     var sortType = query.order[f].sortType == 1 ? ' DESC' : '';
