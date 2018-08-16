@@ -646,30 +646,32 @@ app.controller('layerCtrl', function ($scope,$rootScope,connection,$routeParams,
             }
         }
 
-        if (found == false)
+        if (!found)
         {
                 var join = {};
                 join.joinID = uuid2.newguid();
 
-                for (var collection in $scope._Layer.params.schema)
+                for (var c in $scope._Layer.params.schema)
                 {
-                    for (var element in $scope._Layer.params.schema[collection].elements)
+                    var collection = $scope._Layer.params.schema[c];
+                    for (var e in collection.elements)
                     {
-                        if ($scope._Layer.params.schema[collection].elements[element].elementID == sourceID)
+                        var element = collection.elements[e];
+                        if (element.elementID == sourceID)
                         {
-                            join.sourceElementID = $scope._Layer.params.schema[collection].elements[element].elementID;
-                            join.sourceElementName = $scope._Layer.params.schema[collection].elements[element].elementName;
-                            join.sourceCollectionID = $scope._Layer.params.schema[collection].collectionID;
-                            join.sourceCollectionName = $scope._Layer.params.schema[collection].collectionName;
+                            join.sourceElementID = element.elementID;
+                            join.sourceElementName = element.elementName;
+                            join.sourceCollectionID = collection.collectionID;
+                            join.sourceCollectionName = collection.collectionName;
 
                         }
 
-                        if ($scope._Layer.params.schema[collection].elements[element].elementID == targetID)
+                        if (element.elementID == targetID)
                         {
-                            join.targetElementID = $scope._Layer.params.schema[collection].elements[element].elementID;
-                            join.targetElementName = $scope._Layer.params.schema[collection].elements[element].elementName;
-                            join.targetCollectionID = $scope._Layer.params.schema[collection].collectionID;
-                            join.targetCollectionName = $scope._Layer.params.schema[collection].collectionName;
+                            join.targetElementID = element.elementID;
+                            join.targetElementName = element.elementName;
+                            join.targetCollectionID = collection.collectionID;
+                            join.targetCollectionName = collection.collectionName;
 
                         }
                     }
