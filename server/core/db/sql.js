@@ -576,12 +576,12 @@ function processCollections(req,query,collections, dataSource, params, thereAreJ
             var join = table.joins[j];
             if (join.sourceCollectionID == table.collectionID)
             {
-                table.joinsCount = table.joinsCount + 1;
+                table.joinsCount++;
             }
 
             if (join.targetCollectionID == table.collectionID)
             {
-                table.joinsCount = table.joinsCount + 1;
+                table.joinsCount++;
             }
         }
 
@@ -612,10 +612,10 @@ function processCollections(req,query,collections, dataSource, params, thereAreJ
 
                 processedCollections.push(join.targetCollectionID);
 
-                strJoin = strJoin + join.targetCollectionName +' '+ join.targetCollectionID + ' ON (';
+                strJoin += join.targetCollectionName +' '+ join.targetCollectionID + ' ON (';
 
-                strJoin = strJoin + join.sourceCollectionID + '.' + join.sourceElementName + ' = ' + join.targetCollectionID + '.' + join.targetElementName;
-                strJoin = strJoin + ')';
+                strJoin += join.sourceCollectionID + '.' + join.sourceElementName + ' = ' + join.targetCollectionID + '.' + join.targetElementName;
+                strJoin += ')';
             }
 
         }
@@ -1178,36 +1178,36 @@ function getJoins(collectionID,collections,processedCollections)
                 if (join.sourceCollectionID == table.collectionID && (processedCollections.indexOf(join.targetCollectionID) == -1))
                 {
                     if (join.joinType == 'default')
-                        fromSQL = fromSQL + ' INNER JOIN ';
+                        fromSQL += ' INNER JOIN ';
                     if (join.joinType == 'left')
-                        fromSQL = fromSQL + ' LEFT JOIN ';
+                        fromSQL += ' LEFT JOIN ';
                     if (join.joinType == 'right')
-                        fromSQL = fromSQL + ' RIGHT JOIN ';
+                        fromSQL += ' RIGHT JOIN ';
 
 
 
-                    fromSQL = fromSQL + join.targetCollectionName + ' '+ join.targetCollectionID;
+                    fromSQL += join.targetCollectionName + ' '+ join.targetCollectionID;
 
-                    fromSQL = fromSQL + ' ON ('+join.sourceCollectionID+'.'+join.sourceElementName+' = '+join.targetCollectionID+'.'+join.targetElementName+')';
-                    fromSQL = fromSQL + getJoins(join.targetCollectionID,collections,processedCollections);
+                    fromSQL += ' ON ('+join.sourceCollectionID+'.'+join.sourceElementName+' = '+join.targetCollectionID+'.'+join.targetElementName+')';
+                    fromSQL += getJoins(join.targetCollectionID,collections,processedCollections);
 
                 }
 
                 if (join.targetCollectionID == table.collectionID && (processedCollections.indexOf(join.sourceCollectionID) == -1))
                 {
                     if (join.joinType == 'default')
-                        fromSQL = fromSQL + ' INNER JOIN ';
+                        fromSQL += ' INNER JOIN ';
                     if (join.joinType == 'left')
-                        fromSQL = fromSQL + ' LEFT JOIN ';
+                        fromSQL += ' LEFT JOIN ';
                     if (join.joinType == 'right')
-                        fromSQL = fromSQL + ' RIGHT JOIN ';
+                        fromSQL += ' RIGHT JOIN ';
 
 
-                    fromSQL = fromSQL + join.sourceCollectionName + ' '+ join.sourceCollectionID;
+                    fromSQL += join.sourceCollectionName + ' '+ join.sourceCollectionID;
 
-                    fromSQL = fromSQL + ' ON ('+join.targetCollectionID+'.'+join.targetElementName+' = '+join.sourceCollectionID+'.'+join.sourceElementName+')';
+                    fromSQL += ' ON ('+join.targetCollectionID+'.'+join.targetElementName+' = '+join.sourceCollectionID+'.'+join.sourceElementName+')';
 
-                    fromSQL = fromSQL + getJoins(join.sourceCollectionID,collections,processedCollections);
+                    fromSQL += getJoins(join.sourceCollectionID,collections,processedCollections);
                 }
 
             }
@@ -1598,9 +1598,9 @@ function dateFilter(filterElementName,filterValue, filter)
         {
             var theFilter = filterElementName ;
             if (filter.filterType == "in")
-                theFilter = theFilter +  ' IN (';
+                theFilter +=  ' IN (';
             if (filter.filterType == "notIn")
-                theFilter = theFilter +  ' NOT IN (';
+                theFilter +=  ' NOT IN (';
 
 
             var dates = String(filterValue).split(',');
@@ -1612,9 +1612,9 @@ function dateFilter(filterElementName,filterValue, filter)
                 var Inday = pad(theDate.getDate(),2);
                 var InquerySearchDate = Inyear+'/'+Inmonth+'/'+Inday;
 
-                theFilter = theFilter + "'" + InquerySearchDate  + "'";
+                theFilter += "'" + InquerySearchDate  + "'";
                 if (d < dates.length -1 )
-                    theFilter = theFilter + ', ';
+                    theFilter += ', ';
             }
 
             return theFilter + ")";
