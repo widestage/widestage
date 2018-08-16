@@ -927,7 +927,6 @@ function columnNamesToLowerCase(rows) {
 
 function getFilters(query,done)
 {
-    var theFilter = '';
     var filters = [];
     var havings = [];
 
@@ -1015,11 +1014,7 @@ function processFilterGroup(group,filters,havings,isRoot,done)
 
                     if (group.filters[f].group == true)
                     {
-
-
-                        var recursive =  processFilterGroup(group.filters[f],filters,havings,false,done);
-
-
+                        processFilterGroup(group.filters[f],filters,havings,false,done);
                     }
 
                 }
@@ -1045,16 +1040,11 @@ function getFilterSQL(filter,isHaving)
 
 
     if (((filter.filterText1 && filter.filterText1 != '') || filter.filterType == 'notNull' || filter.filterType == 'null') ) {
+        var filterValue = filter.filterText1;
+        var filterElementName = filter.collectionID+'.'+filter.elementName;
 
-        var thisFilter = {}, filterValue = filter.filterText1;
-        if (!filter.aggregation)
-            var filterElementName = filter.collectionID+'.'+filter.elementName;
-        else
-            var filterElementName = filter.aggregation+'('+filter.collectionID+'.'+filter.elementName+')';
-
-
-        var filterElementID = 'wst'+filter.elementID.toLowerCase();
-        var theFilterElementID = filterElementID.replace(/[^a-zA-Z ]/g,'');
+        if (filter.aggregation)
+            filterElementName = filter.aggregation + '(' + filterElementName + ')';
 
         if (filter.elementType == 'number') {
             if (filter.filterType != "in" && filter.filterType != "notIn")
@@ -1062,69 +1052,37 @@ function getFilterSQL(filter,isHaving)
                     filterValue = Number(filterValue);
                 }
         }
-        if (filter.elementType == 'date') {
 
-            if (filter.filterType == "in" || filter.filterType == "notIn")
-            {
-                result = dateFilter(filterElementName,filterValue,filter);
-            } else {
-                result = dateFilter(filterElementName,filterValue,filter);
-            }
+        if (filter.elementType == 'date') {
+            result = dateFilter(filterElementName,filterValue,filter);
         }
 
         if (filter.filterType == "equal" && filter.elementType != 'date') {
-            if (filter.elementType == 'number')
-                result = filterElementName +' = '+filterValue;
-            else
-                result = (filterElementName +' = '+'\''+filterValue+'\'');
+            result = filterElementName + ' = ' + escapeFilterValue(filterValue);
         }
         if (filter.filterType == "diferentThan" && filter.elementType != 'date') {
-            if (filter.elementType == 'number')
-                result = (filterElementName +' <> '+filterValue);
-            else
-                result = (filterElementName +' <> '+'\''+filterValue+'\'');
+            result = filterElementName + ' <> ' + escapeFilterValue(filterValue);
         }
         if (filter.filterType == "biggerThan" && filter.elementType != 'date' ) {
-            if (filter.elementType == 'number')
-                result = (filterElementName +' > '+filterValue);
-            else
-                result = (filterElementName +' > '+'\''+filterValue+'\'');
+            result = filterElementName + ' > ' + escapeFilterValue(filterValue);
         }
         if (filter.filterType == "notGreaterThan" && filter.elementType != 'date') {
-            if (filter.elementType == 'number')
-                result = (filterElementName +' <= '+filterValue);
-            else
-                result = (filterElementName +' <= '+'\''+filterValue+'\'');
+            result = filterElementName + ' <= ' + escapeFilterValue(filterValue);
         }
         if (filter.filterType == "biggerOrEqualThan" && filter.elementType != 'date') {
-            if (filter.elementType == 'number')
-                result = (filterElementName +' >= '+filterValue);
-            else
-                result = (filterElementName +' >= '+'\''+filterValue+'\'');
+            result = filterElementName + ' >= ' + escapeFilterValue(filterValue);
         }
         if (filter.filterType == "lessThan" && filter.elementType != 'date') {
-            if (filter.elementType == 'number')
-                result = (filterElementName +' < '+filterValue);
-            else
-                result = (filterElementName +' < '+'\''+filterValue+'\'');
+            result = filterElementName + ' < ' + escapeFilterValue(filterValue);
         }
         if (filter.filterType == "lessOrEqualThan" && filter.elementType != 'date') {
-            if (filter.elementType == 'number')
-                result = (filterElementName +' <= '+filterValue);
-            else
-                result = (filterElementName +' <= '+'\''+filterValue+'\'');
+            result = filterElementName + ' <= ' + escapeFilterValue(filterValue);
         }
         if (filter.filterType == "between" && filter.elementType != 'date') {
-            if (filter.elementType == 'number')
-                result = (filterElementName +' BETWEEN '+filterValue+' AND '+filter.filterText2);
-            else
-                result = (filterElementName +' BETWEEN '+'\''+filterValue+'\''+' AND '+'\''+filter.filterText2+'\'');
+            result = filterElementName + ' BETWEEN ' + escapeFilterValue(filterValue) + ' AND ' + escapeFilterValue(filter.filterText2);
         }
         if (filter.filterType == "notBetween" && filter.elementType != 'date') {
-            if (filter.elementType == 'number')
-                result = (filterElementName +' NOT BETWEEN '+filterValue+' AND '+filter.filterText2);
-            else
-                result = (filterElementName +' NOT BETWEEN '+'\''+filterValue+'\''+' AND '+'\''+filter.filterText2+'\'');
+            result = filterElementName + ' NOT BETWEEN ' + escapeFilterValue(filterValue) + ' AND ' + escapeFilterValue(filter.filterText2);
         }
         if (filter.filterType == "contains") {
             result = (filterElementName +' LIKE '+'\'%'+filterValue+'%\'');
@@ -1194,6 +1152,10 @@ function getFilterSQL(filter,isHaving)
     }
 
     return result;
+}
+
+function escapeFilterValue(filter) {
+    return filter.elementType == 'number' ? filterValue : '\''+filterValue+'\'';
 }
 
 
