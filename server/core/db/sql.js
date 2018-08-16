@@ -774,18 +774,19 @@ function processCollections(req,query,collections, dataSource, params, thereAreJ
 
             }
 
+        var dbController;
         switch (dataSource.type) {
-            case 'MySQL': var dbController = require('./mysql.js');
+            case 'MySQL': dbController = require('./mysql.js');
                 break;
-            case 'POSTGRE': var dbController = require('./postgresql.js');
+            case 'POSTGRE': dbController = require('./postgresql.js');
                 break;
-            case 'ORACLE': var dbController = require('./oracle.js');
+            case 'ORACLE': dbController = require('./oracle.js');
                 break;
-            case 'MSSQL': var dbController = require('./mssql.js');
+            case 'MSSQL': dbController = require('./mssql.js');
                 break;
-            case 'BIGQUERY': var dbController = require('./bigQuery.js');
+            case 'BIGQUERY': dbController = require('./bigQuery.js');
                 break;
-            case 'JDBC-ORACLE': var dbController = require('./jdbc-oracle.js');
+            case 'JDBC-ORACLE': dbController = require('./jdbc-oracle.js');
         }
 
         var db = new dbController.db();
@@ -820,7 +821,6 @@ function processCollections(req,query,collections, dataSource, params, thereAreJ
                 if (err) {
                     setresult({result: 0, msg: 'Generated SQL Error: '+SQLstring,sql:SQLstring});
                     saveToLog(req,'SQL Error: '+err+' ('+SQLstring+')', 300,'SQL-002','QUERY: ('+JSON.stringify(query)+')',undefined);
-                    db.end();
                 } else {
                     if (result)
                         getFormatedResult(elements,result.rows,function(finalResults){
@@ -830,9 +830,9 @@ function processCollections(req,query,collections, dataSource, params, thereAreJ
                     else {
                         setresult({result: 1, data:[],sql:SQLstring});
                     }
-
-                    db.end();
                 }
+
+                db.end();
             });
         });
 
