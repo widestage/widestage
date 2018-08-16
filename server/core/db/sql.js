@@ -731,7 +731,7 @@ function processCollections(req,query,collections, dataSource, params, thereAreJ
                 {
                     var theOrderField = query.order[f];
                     var theOrderFieldName = '';
-                    var theShortOrderFieldName = '';
+                    var theSortOrderFieldName = '';
                     var elementID = 'wst'+theOrderField.elementID.toLowerCase();
                     var theElementID = elementID.replace(/[^a-zA-Z ]/g,'');
 
@@ -750,7 +750,7 @@ function processCollections(req,query,collections, dataSource, params, thereAreJ
                                 }
                                 break;
                             case 'avg': {
-                                theShortOrderFieldName =
+                                theSortOrderFieldName =
                                 theOrderFieldName = ('AVG('+theOrderField.collectionID+'.'+theOrderField.elementName+')'+ ' as '+theElementID+'avg');
                                 } break;
                             case 'min': theOrderFieldName = ('MIN('+theOrderField.collectionID+'.'+theOrderField.elementName+')'+ ' as '+theElementID+'min');
