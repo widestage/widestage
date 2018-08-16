@@ -673,23 +673,10 @@ function processCollections(req,query,collections, dataSource, params, thereAreJ
             SQLstring = SQLstring + fields[f]+', ';
     }
 
+    var leadSchema = leadTable.schema || leadTable;
+    var fromSql = leadSchema.isSQL == true ? '('+ leadSchema.sqlQuery + ')' : leadSchema.collectionName;
 
-    if (leadTable.schema)
-        {
-        if (leadTable.schema.isSQL == true)
-            {
-                SQLstring = SQLstring + ' FROM ('+ leadTable.schema.sqlQuery + ') '+ leadTable.collectionID + getJoins(leadTable.collectionID,collections,[]);
-            } else {
-                SQLstring = SQLstring + ' FROM '+ leadTable.schema.collectionName + ' '+ leadTable.collectionID + getJoins(leadTable.collectionID,collections,[]);
-            }
-        } else {
-           if (leadTable.isSQL == true)
-            {
-                SQLstring = SQLstring + ' FROM ('+ leadTable.sqlQuery + ') '+ leadTable.collectionID + getJoins(leadTable.collectionID,collections,[]);
-            } else {
-                SQLstring = SQLstring + ' FROM '+ leadTable.collectionName + ' '+ leadTable.collectionID + getJoins(leadTable.collectionID,collections,[]);
-            }
-        }
+    SQLstring += ' FROM '+ fromSql + ' '+ leadTable.collectionID + getJoins(leadTable.collectionID,collections,[]);
 
 
     var havings = [];
