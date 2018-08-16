@@ -667,10 +667,9 @@ function processCollections(req,query,collections, dataSource, params, thereAreJ
 
     for (var f in fields)
     {
-        if (f == fields.length -1)
-            SQLstring = SQLstring + fields[f];
-        else
-            SQLstring = SQLstring + fields[f]+', ';
+        SQLstring += fields[f];
+        if (f < fields.length -1)
+            SQLstring += ', ';
     }
 
     var leadSchema = leadTable.schema || leadTable;
@@ -691,16 +690,15 @@ function processCollections(req,query,collections, dataSource, params, thereAreJ
 
 
 
-        if (groupBy.length > 0)
-            SQLstring = SQLstring + ' GROUP BY ';
+        if (groupBy.length > 0) {
+            SQLstring += ' GROUP BY ';
 
-
-        for (var f in groupBy)
-        {
-                if (f == groupBy.length -1)
-                    SQLstring = SQLstring + groupBy[f];
-                else
-                    SQLstring = SQLstring + groupBy[f]+', ';
+            for (var f in groupBy)
+            {
+                SQLstring += groupBy[f];
+                if (f < groupBy.length -1)
+                    SQLstring += ', ';
+            }
         }
 
         if (havings.length > 0)
