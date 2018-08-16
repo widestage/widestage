@@ -875,13 +875,13 @@ function getFormatedResult(elementSchema,results,done)
                     var newRecord = {};
                     var field = elementSchema[es];
 
-                    if (elementSchema[es].elementType == 'date' && elementSchema[es].format)
+                    if (field.elementType == 'date' && field.format)
                         {
-                            results[r][elementSchema[es].id+'_original'] = results[r][elementSchema[es].id];
-                            if (results[r][elementSchema[es].id])
+                            results[r][field.id+'_original'] = results[r][field.id];
+                            if (results[r][field.id])
                                 {
-                                   var date = new Date(results[r][elementSchema[es].id]);
-                                   results[r][elementSchema[es].id] = moment(date).format(elementSchema[es].format);
+                                   var date = new Date(results[r][field.id]);
+                                   results[r][field.id] = moment(date).format(field.format);
                                 }
                         }
 
