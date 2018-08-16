@@ -691,7 +691,12 @@ app.service('queryModel' , function ($http, $q, $filter, connection, $compile, $
                                               }
                                       }
                                 } else {
-                                    setSelectedLayer(data.items[0]);
+                                    if (data.items.length) {
+                                        setSelectedLayer(data.items[0]);
+                                    } else {
+                                        // TODO Add correct error notification for user
+                                        console.error('There is no active layer');
+                                    }
                                 }
 
                             calculateIdForAllElements(rootItem.elements);
