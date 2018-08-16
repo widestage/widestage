@@ -697,8 +697,7 @@ app.controller('layerCtrl', function ($scope,$rootScope,connection,$routeParams,
         //First verify that the join does not exists
         for (var j in $scope._Layer.params.joins)
         {
-            if (($scope._Layer.params.joins[j].sourceElementID == sourceID && $scope._Layer.params.joins[j].targetElementID == targetID) ||
-                ($scope._Layer.params.joins[j].sourceElementID == targetID && $scope._Layer.params.joins[j].targetElementID == sourceID))
+            if (isTargetJoin($scope._Layer.params.joins[j], sourceID, targetID))
             {
                 found = true;
 
@@ -720,8 +719,16 @@ app.controller('layerCtrl', function ($scope,$rootScope,connection,$routeParams,
 
                     }
 
-                $scope._Layer.params.joins.splice(j,1);
+                if (isTargetJoin($scope._Layer.params.joins[j], sourceID, targetID)) {
+                    $scope._Layer.params.joins.splice(j, 1);
+                }
+            }
+        }
 
+        function isTargetJoin(join, sourceID, targetID) {
+            if (join) {
+                return (join.sourceElementID == sourceID && join.targetElementID == targetID) ||
+                    (join.sourceElementID == targetID && join.targetElementID == sourceID)
             }
         }
     }
