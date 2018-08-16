@@ -752,28 +752,20 @@ function processCollections(req,query,collections, dataSource, params, thereAreJ
 
                     }
 
-
-                    var sortType = '';
-                    if (query.order[f].sortType == 1)
-                            sortType = ' DESC';
+                    var sortType = query.order[f].sortType == 1 ? ' DESC' : '';
 
                     var theIndex = fields.indexOf(theOrderFieldName);
 
                     if (theIndex >= 0)
                     {
                         //The order by field is in the result set
-                        if (theOrderByString == '')
-                            theOrderByString += (theIndex +1)+ sortType;
-                        else
-                            theOrderByString += ', '+(theIndex +1) + sortType;
-                    } else {
-                        //No index, the field is not in the result set
-                        if (theOrderByString == '')
-                            theOrderByString += theSortOrderFieldName+ sortType;
-                        else
-                            theOrderByString += ', '+theSortOrderFieldName + sortType;
-
+                        theSortOrderFieldName = theIndex + 1;
                     }
+
+                    if (theOrderByString !== '')
+                        theOrderByString += ', ';
+
+                    theOrderByString += theSortOrderFieldName + sortType;
                 }
 
                 console.log('order by string', theOrderByString);
