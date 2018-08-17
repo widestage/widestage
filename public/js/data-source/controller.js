@@ -174,19 +174,18 @@ app.controller('dataSourceCtrl', function ($scope, connection, $routeParams, dat
         var result = false;
 
 
-        if ($scope._DataSource.type != 'BIGQUERY' &&
-            ($scope._DataSource.params[0].connection.host && $scope._DataSource.params[0].connection.port && $scope._DataSource.params[0].connection.database)
-           )
-            result = true;
+        if ($scope._DataSource) {
+            var connection = $scope._DataSource.params[0].connection;
 
+            if ($scope._DataSource.type == 'BIGQUERY') {
+                result = connection.database && connection.file && $scope.fileUploadSuccess == true;
+            } else {
+                result = connection.host && connection.port && connection.database;
+            }
 
-        if ($scope._DataSource.type == 'BIGQUERY' &&
-            ($scope._DataSource.params[0].connection.database && $scope._DataSource.params[0].connection.file && $scope.fileUploadSuccess == true)
-           )
-            result = true;
-
-        if ($scope.testingConnection)
-            result = false;
+            if ($scope.testingConnection)
+                result = false;
+        }
 
             return result;
     }
