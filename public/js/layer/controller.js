@@ -153,20 +153,20 @@ app.controller('layerCtrl', function ($scope,$rootScope,connection,$routeParams,
 
     var instance;
 
-    function initJsPlumbInstance() {
-        instance = jsPlumb.getInstance({
-            // default drag options
-            Endpoint: ["Dot", {radius: 2}],
+    $scope.initJsPlumbIfNeed = function () {
+        if (typeof instance === "undefined") {
+            instance = jsPlumb.getInstance({
+                // default drag options
+                Endpoint: ["Dot", {radius: 2}],
 
-            DragOptions: { cursor: 'pointer', zIndex: 2000 },
-            // the overlays to decorate each connection with.  note that the label overlay uses a function to generate the label text; in this
-            // case it returns the 'labelText' member that we set on each connection in the 'init' method below.
-            ConnectionOverlays: [
+                DragOptions: {cursor: 'pointer', zIndex: 2000},
+                // the overlays to decorate each connection with.  note that the label overlay uses a function to generate the label text; in this
+                // case it returns the 'labelText' member that we set on each connection in the 'init' method below.
+                ConnectionOverlays: [],
 
-            ],
-
-            Container: "canvas"
-        });
+                Container: "canvas"
+            });
+        }
     }
 
     var connectorPaintStyle = {
@@ -224,17 +224,17 @@ app.controller('layerCtrl', function ($scope,$rootScope,connection,$routeParams,
                     ]
                 },
                  _addEndpoints = function (toId, sourceAnchors, targetAnchors) {
+
+                    $scope.initJsPlumbIfNeed();
+
                     for (var i = 0; i < sourceAnchors.length; i++) {
                         var sourceUUID = toId + sourceAnchors[i];
-
-                        if (typeof instance === "undefined") {
-                            initJsPlumbInstance();
-                        }
 
                         instance.addEndpoint( toId, sourceEndpoint, {
                             anchor: sourceAnchors[i], uuid: sourceUUID
                         });
                     }
+
                     for (var j = 0; j < targetAnchors.length; j++) {
                         var targetUUID = toId + targetAnchors[j];
 
@@ -754,7 +754,7 @@ app.controller('layerCtrl', function ($scope,$rootScope,connection,$routeParams,
 
         //this timeout is here to give time to angular to create the element's divs'
         setTimeout(function () {
-            initJsPlumbInstance();
+            $scope.initJsPlumbIfNeed();
 
             var rightJoinType = {
                 connector: "StateMachine",
