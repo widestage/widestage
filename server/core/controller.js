@@ -235,7 +235,9 @@ Controller.method('remove', function (req, done) {
     this.model.remove(find, function (err, result) {
         if(err) throw err;
 
-        var numAffected = (typeof result.n == 'undefined') ? result.nModified : result.n; //MongoDB 2.X return n, 3.X return nModified?
+        var numAffected = (typeof result.n == 'undefined') ?
+            (typeof result.nModified == 'undefined' ? result.result.n : result.nModified)//MongoDB 3.6 return n in result.result.n
+            : result.n; //MongoDB 2.X return n, 3.X return nModified?
 
         if (numAffected>0)
         {
