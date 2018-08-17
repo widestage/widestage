@@ -1603,7 +1603,7 @@ app.controller('layerCtrl', function ($scope,$rootScope,connection,$routeParams,
                 {
                    theEntity.fields = result.items[0].elements;
                 }
-            bsLoadingOverlayService.stop({referenceId: 'layerView'});
+            //bsLoadingOverlayService.stop({referenceId: 'layerView'});
             });
     }
 
