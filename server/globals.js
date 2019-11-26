@@ -1,22 +1,9 @@
 /* GLOBAL FUNCTIONS */
-var appRoot = __dirname+'/../';
+//var appRoot = __dirname+'/../';
+var appRoot = __dirname;
+var appRoot2 = __dirname; // used by ignite
+global.appRoot2 = appRoot2;
 global.appRoot = appRoot;
-
-function restrict(req, res, next) {
-
-    if (global.authentication)
-    {
-        if(req.isAuthenticated()){
-                next();
-        }else{
-              req.session.error = 'Access denied!';
-              return res.redirect(302,'/login');
-        }
-    } else {
-        next();
-    }
-}
-global.restrict = restrict;
 
 function passthrough(req, res, next) {
     if (config.crypto.enabled) {
@@ -56,33 +43,6 @@ function stripInvalidChars(obj) {
     return obj;
 }
 
-function restrictRole(roles) {
-    return function(req, res, next) {
-        if(req.isAuthenticated()){
-            for (var i in roles) {
-                if (req.user.roles.indexOf(roles[i]) > -1){
-                    next();
-                    return;
-                }
-            }
-        }
-        req.session.error = 'Access denied!';
-        //TODO: Log annotation security issue
-        console.log("Access denied!");
-        res.send(401, {result:0,msg:'You don´t have access to this function'});
-    };
-}
-global.restrictRole = restrictRole;
-
-function saveToLog(req, text, type, code, otherInfo,associatedID) {
-    var Logs = connection.model('Logs');
-
-    Logs.saveToLog(req, {text: text, type: type, code: code,associatedID:associatedID},otherInfo, function(){
-
-    });
-};
-global.saveToLog = saveToLog;
-
 function getNextSequence(name) {
     var Counters = connection.model('Counters');
     var ret = Counters.findAndModify(
@@ -97,73 +57,6 @@ function getNextSequence(name) {
 }
 global.getNextSequence = getNextSequence;
 
-function sendNotification(req, user_id, text, type, communication_id, accept_url) {
-
-    var Notifications = connection.model('Notifications');
-
-    var data = {user_id: user_id, sender_id: req.user.id, text: text, type: type, communication_id: communication_id, accept_url: accept_url};
-
-    Notifications.sendNotification(data);
-};
-global.sendNotification = sendNotification;
-
-function sendCommunication(data) {
-    var Communications = connection.model('Communications');
-
-    Communications.sendEmail(data, function(result){
-
-    });
-};
-global.sendCommunication = sendCommunication;
-
-function generateUserFilter(req, filters) {
-    if (typeof filters == 'string') filters = [filters];
-
-    var userFilters = {};
-
-    if (req.user.filters) {
-        for (var i in filters) {
-            for (var j in req.user.filters) {
-                if (String(req.user.filters[j].name).toLowerCase() == String(filters[i]).toLowerCase()) {
-                    if(!userFilters.hasOwnProperty(filters[i]))
-                        userFilters[filters[i]] = [];
-
-                    userFilters[filters[i]].push(req.user.filters[j].value);
-                }
-            }
-        }
-    }
-
-    return userFilters;
-};
-global.generateUserFilter = generateUserFilter;
-
-function generateUserFilterValue(req, filter) {
-    var userFilterValue = [];
-
-    if (req.user.filters) {
-        for (var i in req.user.filters) {
-            if (String(req.user.filters[i].name).toLowerCase() == String(filter).toLowerCase()) {
-                userFilterValue.push(req.user.filters[i].value);
-            }
-        }
-    }
-
-    return userFilterValue;
-};
-global.generateUserFilterValue = generateUserFilterValue;
-
-function isAllowed(req, area) {
-    if (!req.user)
-        return false;
-    if (!req.user.companyData)
-        return false;
-    if (!req.user.companyData[area])
-        return false;
-
-    return req.user.companyData[area];
-};
-global.isAllowed = isAllowed;
 
 function debug(obj) {
 
@@ -190,22 +83,83 @@ function serverResponse(req, res, status, obj) {
 global.serverResponse = serverResponse;
 
 
-function fileUpload(file,path,done)
+function isCoreModuleInstalled(moduleName)
 {
+    console.log('Checking core module',moduleName,'./core-modules/'+moduleName+'/'+moduleName+'.js')
     var fs = require('fs');
-
-    fs.readFile(file.path, function(err, data) {
-        if(err) throw err;
-
-        fs.writeFile(path, data, function (err) {
-            if(err) throw err;
-            done({result: 1, msg: "File uploaded", file: file.toObject()});
-
-        });
-    });
-
-
-
+    if (fs.existsSync(__dirname+'/core-modules/'+moduleName+'/'+moduleName+'.js')) {
+        return true;
+    } else {
+        return false;
+    }
 }
+global.isCoreModuleInstalled = isCoreModuleInstalled;
+
+global.listMods = new Array ;
+function addModulesUsedList(module){
+    listMods.push(module);
+}
+global.addModulesUsedList = addModulesUsedList;
+
+function restrict(req, res, next) {
+
+    if (config.authentication)
+    {
+        if(req.isAuthenticated()){
+                next();
+        }else{
+
+            if (req.session)
+                req.session.error = 'Access denied!';
+              saveToLog(req, 'Access denied not authenticated user ','SECURITY','WARNING','LOGIN', '003','AUTHENTICATION','ADMIN',{},'','');
+              return res.redirect(307,'/login');
+        }
+    } else {
+        next();
+    }
+}
+global.restrict = restrict;
+
+function restrictRole(roles) {
+    return function(req, res, next) {
+        if(req.isAuthenticated()){
+            for (var i in roles) {
+                if (req.user.roles.indexOf(roles[i]) > -1){
+                    next();
+                    return;
+                }
+            }
+        }
+        req.session.error = 'Access denied!';
+        //TODO: Log annotation security issue
+        saveToLog(req, 'Access denied for the user '+req.user.email,'SECURITY','WARNING','LOGIN', '004','AUTHENTICATION','ADMIN',{},'','');
+        res.send(401, {result:0,msg:'You don´t have access to this function'});
+    };
+}
+global.restrictRole = restrictRole;
 
 
+function isGranted(module,permission) {
+    return function(req, res, next) {
+        if(req.isAuthenticated()){
+
+          for (var p in req.session.permissions)
+          {
+              if (req.session.permissions[p].module == module && req.session.permissions[p].name == permission)
+                  {
+                  if (req.session.permissions[p].granted == true)
+                    {
+                      next();
+                      return
+                    }
+                  }
+          }
+
+        }
+        req.session.error = 'Access denied!';
+        //TODO: Log annotation security issue
+        saveToLog(req, 'Access denied for the user '+req.user.name+' ('+req.user.email+') trying to access '+module+' '+permission,'SECURITY','WARNING','LOGIN', '004','AUTHENTICATION','ADMIN',{},'','');
+        res.send(401, {result:0,msg:'You don´t have permissions'});
+    };
+}
+global.isGranted = isGranted;

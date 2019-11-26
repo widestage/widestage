@@ -1,0 +1,331 @@
+<div id="inspector"  bl-panels-accordion>
+
+  <div class="container-fluid">
+    <span> {{elementType}}</span>
+    <button ng-if="elementType != 'page' && wstMode != 'report-designer' && selectedElement" class="btn btn-danger pull-right" ng-click="deleteSelected()"><i class="fa fa-trash"></i></button>
+  </div>
+
+  <div class="container-fluid" style="background-color:transparent;margin-top: 10px;margin-bottom: 10px;" ng-if="elementType != 'page'">
+     <table style="width:100%;">
+         <tr >
+             <td style="width:50%; padding-right:5px;">
+               <button class="btn btn-info btn-small"  ng-click="moveElementUp()" style="width:100%;"><i class="fa fa-arrow-up"></i> Up</button>
+             </td>
+             <td  style="width:50%;">
+               <button class="btn btn-info btn-small"  ng-click="moveElementDown()" style="width:100%;"><i class="fa fa-arrow-down"></i> Down</button>
+             </td>
+         </tr>
+     </table>
+   </div>
+
+<div ng-show="canEdit('attributes')" class="inspector-panel accordion-item open" id="attributes-panel">
+                                   <h4 class="accordion-heading">{{ 'attributes' | translate }} <i class="fa fa-angle-down pull-right"></i></h4>
+                                   <div class="accordion-body">
+                                       <div class="panel-box">
+                                           <div id="custom-attributes">
+                                             <!--
+                                               <div id="visibility">
+                                                   <ul class="list-unstyled list-inline" bl-element-visibility-controls>
+                                                       <li data-size="xs" data-toggle="tooltip" data-placement="top" title="visible on mobile"><i class="fa fa-mobile"></i></li>
+                                                       <li data-size="sm" data-toggle="tooltip" data-placement="top" title="visible on tablet"><i class="fa fa-tablet"></i></li>
+                                                       <li data-size="md" data-toggle="tooltip" data-placement="top" title="visible on laptop"><i class="fa fa-laptop"></i></li>
+                                                       <li data-size="lg" data-toggle="tooltip" data-placement="top" title="visible on desktop"><i class="fa fa-desktop"></i></li>
+                                                   </ul>
+                                               </div>
+                                             -->
+                                               <div class="form-group" ng-repeat="(name, config) in customAttributes">
+                                                   <label for="el-{{ name }}">{{ name }}</label>
+
+                                                   <!-- Render custom text input option -->
+                                                   <input ng-class="name.length > 7 ? 'long-name' : ''" ng-if="config.text" type="text" id="el-{{ name }}" ng-model="config.value" ng-model-options="{ debounce: 300 }">
+                                                   <!-- Render custom select input option -->
+                                                   <select ng-if="config.list" id="el-{{ name }}" class="pretty-select" ng-model="config.value" ng-options="item.name for item in config.list"></select>
+                                                   <!-- /end custom options -->
+                                               </div>
+                                           </div>
+                                         <div class="form-group" ng-if="elementType != 'page'">
+                                             <label for="el-height">{{ 'height' | translate }}</label>
+                                             <input class="pull-right" type="text" id="el-height" ng-model="inspector.styles.height" ng-model-options="{ debounce: 300 }">
+                                         </div>
+
+                                         <div class="form-group" ng-if="elementType == 'image' || elementType == 'video'">
+                                             <label for="el-height">{{ 'source' | translate }}</label>
+                                             <input class="pull-right" type="text" id="el-source" ng-model="inspector.styles.source" ng-model-options="{ debounce: 300 }">
+                                         </div>
+
+                                         <div class="form-group" ng-if="elementType == 'heading'">
+                                             <label for="el-height">{{ 'heading' | translate }}</label>
+                                             <select id="heading-type" ng-model="inspector.styles.headingType">
+                                                 <option value="h1">h1</option>
+                                                 <option value="h2">h2</option>
+                                                 <option value="h3">h3</option>
+                                                 <option value="h4">h4</option>
+                                                 <option value="h5">h5</option>
+                                                 <option value="h6">h6</option>
+                                             </select>
+                                         </div>
+
+                                           <div >
+                                               <button ng-if="selected.isImage" ng-file-select="onFileSelect($files, 'src')" class="btn btn-primary btn-block">{{ 'uploadImage' | translate }}</button>
+                                           </div>
+                                       </div>
+                                   </div>
+                               </div>
+
+<!--  -->
+
+
+<!--background-->
+                              <section id="background-panel" class="inspector-panel accordion-item" ng-show="canEdit('background')">
+                                    <h4 class="accordion-heading">{{ 'backgroundColor' | translate }} <i class="fa fa-angle-down pull-right"></i></h4>
+
+                                    <div class="accordion-body">
+                                        <div class="panel-box">
+                                            <!--<div data-controls="properties.color" class="color-picker-trigger" id="fill-color"><div class="background-box"><i class="fa fa-color-adjust"></i></div><div class="background-name">{{ 'color' | translate }}</div></div>-->
+                                            <div colorpicker ng-model="properties.color" ng-change="backgroundColorChanged()"  class="color-picker-trigger" id="fill-color" style="width:100%;"><div class="background-box"><input type="text" class="form-control" ng-model="properties.color" style="background-color:transparent;"/></div></div>
+
+                                            <!--
+                                            <div bl-show-img-container id="image"><div class="background-box"><i class="fa fa-picture-outline"></i></div><div class="background-name">{{ 'image' | translate }}</div></div>
+                                            <div bl-show-img-container id="gradient"><div class="background-box"><i class="fa fa-pipette"></i></div><div class="background-name">{{ 'gradient' | translate }}</div></div>
+                                          -->
+                                        </div>
+
+
+
+
+
+                                    </div>
+<!--
+                                    <div id="background-flyout-panel" class="hidden">
+                                        <div class="bl-panel-header clearfix"><div class="name">{{ 'background' | translate }}</div><div class="bl-panel-btns" ng-click="closePanel"><i class="fa fa-times"></i></div></div>
+                                        <div >
+                                            <button type="button" ng-file-select="onFileSelect($files, 'bg')" class="btn btn-primary btn-block">{{ 'uploadImage' | translate }}</button>
+                                        </div>
+                                        <div id="texturePresets">
+                                            <h5>{{ 'textures' | translate }}</h5>
+                                            <ul class="img-presets-list" bl-pretty-scrollbar>
+                                                <li ng-repeat="texture in textures track by $index">
+                                                    <div ng-click="selectPreset($event)" class="preset" ng-style="{ 'background-image': 'url(images/textures/'+$index+'.png)' }"></div>
+                                                </li>
+                                            </ul>
+                                            <div id="image-properties">
+                                                <h5>{{ 'imageProperties' | translate }}</h5>
+                                                <div id="img-positioning" class="clearfix">
+                                                    <div class="pull-left">
+                                                        <h6>{{ 'repeat' | translate }}</h6>
+                                                        <ul class="list-unstyled">
+                                                            <li><div class="radio"><label><input value="no-repeat" ng-checked="properties.repeat == 'no-repeat'" ng-model="properties.repeat" type="radio">{{ 'none' | translate }}</label></div></li>
+                                                            <li><div class="radio"><label><input value="repeat-x" ng-checked="properties.repeat == 'repeat-x'" ng-model="properties.repeat" type="radio">{{ 'horizontal' | translate }}</label></div></li>
+                                                            <li><div class="radio"><label><input value="repeat-y" ng-checked="properties.repeat == 'repeat-y'" ng-model="properties.repeat" type="radio">{{ 'vertical' | translate }}</label></div></li>
+                                                            <li><div class="radio"><label><input value="repeat" ng-checked="properties.repeat == 'repeat'" ng-model="properties.repeat" type="radio">{{ 'all' | translate }}</label></div></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="pull-right">
+                                                        <h6>{{ 'alignment' | translate }}</h6>
+                                                        <div id="alignment" bl-img-alignment-grid></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="gradientPresets">
+                                            <h5>{{ 'gradients' | translate }}</h5>
+                                            <ul class="img-presets-list" bl-pretty-scrollbar>
+                                                <li ng-repeat="gradient in gradients track by $index">
+                                                    <div class="preset" ng-click="selectPreset($event)" ng-style="{ 'background-image': gradient }"></div>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+-->
+                                </section>
+
+<!-- -->
+
+
+<!--background image-->
+<section id="background-image" class="inspector-panel accordion-item" ng-show="canEdit('background')">
+                                    <h4 class="accordion-heading">{{ 'backgroundImage' | translate }} <i class="fa fa-angle-down pull-right"></i></h4>
+
+                                    <div class="accordion-body" >
+                                      <div >
+                                          <button type="button" ng-click="openImageGallery('companyLogo')" class="btn btn-primary btn-block">{{ 'uploadImage' | translate }}</button>
+                                      </div>
+                                      <div id="texturePresets">
+                                          <h5>{{ 'textures' | translate }}</h5>
+                                          <ul class="img-presets-list" bl-pretty-scrollbar>
+                                              <li ng-repeat="texture in textures track by $index">
+                                                  <div ng-click="selectPreset($event)" class="preset" ng-style="{ 'background-image': 'url(images/textures/'+$index+'.png)' }"></div>
+                                              </li>
+                                          </ul>
+                                          <div id="image-properties">
+                                              <h5>{{ 'imageProperties' | translate }}</h5>
+                                              <div id="img-positioning" class="clearfix">
+                                                  <div class="pull-left">
+                                                      <h6>{{ 'repeat' | translate }}</h6>
+                                                      <ul class="list-unstyled">
+                                                          <li><div class="radio"><label><input value="no-repeat" ng-checked="properties.repeat == 'no-repeat'" ng-model="properties.repeat" type="radio">{{ 'none' | translate }}</label></div></li>
+                                                          <li><div class="radio"><label><input value="repeat-x" ng-checked="properties.repeat == 'repeat-x'" ng-model="properties.repeat" type="radio">{{ 'horizontal' | translate }}</label></div></li>
+                                                          <li><div class="radio"><label><input value="repeat-y" ng-checked="properties.repeat == 'repeat-y'" ng-model="properties.repeat" type="radio">{{ 'vertical' | translate }}</label></div></li>
+                                                          <li><div class="radio"><label><input value="repeat" ng-checked="properties.repeat == 'repeat'" ng-model="properties.repeat" type="radio">{{ 'all' | translate }}</label></div></li>
+                                                      </ul>
+                                                  </div>
+                                                  <div class="pull-right">
+                                                      <h6>{{ 'alignment' | translate }}</h6>
+                                                      <div id="alignment" bl-img-alignment-grid></div>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <div id="gradientPresets">
+                                          <h5>{{ 'gradients' | translate }}</h5>
+                                          <ul class="img-presets-list" bl-pretty-scrollbar>
+                                              <li ng-repeat="gradient in gradients track by $index">
+                                                  <div class="preset" ng-click="selectPreset($event)" ng-style="{ 'background-image': gradient }"></div>
+                                              </li>
+                                          </ul>
+                                      </div>
+                                    </div>
+                                </section>
+
+<!-- -->
+<!-- text style box starts -->
+                                <section ng-show="canEdit('text')" class="inspector-panel accordion-item" id="text-panel" >
+                                    <h4 class="accordion-heading">{{ 'textStyle' | translate }} <i class="fa fa-angle-down pull-right"></i></h4>
+                                    <div class="accordion-body">
+                                        <div id="text-box" class="clearfix panel-box">
+                                            <div class="clearfix">
+                                              <div class="col-md-8" style=" padding: 0px;">
+                                                  <select id="el-font-family" class="pretty-select" ng-model="inspector.styles.text.fontFamily" data-width="170" class="pull-left" style="width:100%">
+                                                    <option value="">Font</option>
+                                                    <option ng-repeat="font in textStyles.baseFonts" data-font-family="{{ font.css }}" value="{{ font.css }}">{{ font.name }}</option>
+                                                  </select>
+                                              </div>
+                                              <div class="col-md-4" style="padding: 0px; padding-left:5px;">
+                                                <div colorpicker ng-model="inspector.styles.text.color"  class="color-picker-trigger" id="fill-color" style="width:100%;height:35px;" ng-style="{background: inspector.styles.text.color}"><div class="background-box" style="padding: 0px;"><input type="text" class="form-control" ng-model="inspector.styles.text.color" style="background-color:transparent;"/></div><div class="background-name">{{ 'color' | translate }}</div></div>
+                                              </div>
+<!--
+                                                <div id="more-fonts" class="pull-right" data-toggle="modal" data-target="#fonts-modal"><i class="fa fa-google"></i></div>
+-->
+                                            </div>
+
+                                            <div class="clearfix">
+                                                    <div class="col-md-8" style=" padding: 0px;">
+                                                      <div class="icon-box italic" bl-toggle-text-style="fontStyle|italic">I</div>
+                                                      <div class="icon-box underline" bl-toggle-text-decoration="underline" ng-class="inspector.styles.text.textDecoration.indexOf('underline') > -1 ? 'active' : ''">U</div>
+                                                      <div class="icon-box strike" bl-toggle-text-decoration="line-through" ng-class="inspector.styles.text.textDecoration.indexOf('line-through') > -1 ? 'active' : ''">S</div>
+                                                      <div class="icon-box overline" bl-toggle-text-decoration="overline" ng-class="inspector.styles.text.textDecoration.indexOf('overline') > -1 ? 'active' : ''">O</div>
+                                                    </div>
+                                                    <div class="col-md-4" style=" padding: 0px;">
+                                                      <select id="el-font-weight" class="form-control pretty-select" ng-model="inspector.styles.text.fontWeight" data-width="66" style="width:100%">
+                                                          <option ng-repeat="weight in textStyles.fontWeights" data-font-weight="{{ weight }}" value="{{ weight }}">{{ weight }}</option>
+                                                      </select>
+                                                  </div>
+                                            </div>
+                                            <div class="clearfix">
+                                                  <div id="el-font-style-box" class="col-md-6" style=" padding: 0px;">
+
+                                                          <input type="text" id="el-font-size" ng-model="inspector.styles.text.fontSize" ng-model-options="{ debounce: 300 }" class="form-control " style="width:100%">
+                                                  </div>
+                                                  <div class="col-md-6" style=" padding: 0px;">
+                                                          <div class="pull-right">
+                                                              <div class="icon-box" bl-toggle-text-style="textAlign|left"><i class="fa fa-align-left"></i> </div>
+                                                              <div class="icon-box" bl-toggle-text-style="textAlign|center"><i class="fa fa-align-center"></i> </div>
+                                                              <div class="icon-box" bl-toggle-text-style="textAlign|right"><i class="fa fa-align-right"></i> </div>
+                                                          </div>
+
+                                                  </div>
+                                            </div>
+
+                                            <div class="clearfix">
+                                              <!--
+                                                <div data-controls="inspector.styles.text.color" class="color-picker-trigger" style="background: {{ inspector.styles.text.color }}" bl-tooltip="textColor"></div>
+-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                                <!-- text style box ends -->
+
+    <!-- margin and padding -->
+
+
+                                    <section >
+                                        <div id="padding-panel" class="inspector-panel accordion-item" ng-show="canEdit('padding')">
+                                            <h4 class="accordion-heading">{{ 'padding' | translate }} <i class="fa fa-angle-down pull-right"></i></h4>
+                                            <div class="accordion-body">
+                                                <div class="clearfix panel-box">
+                                                    <div bl-input-boxes="padding" class="clearfix input-boxes"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div id="margin-panel" class="inspector-panel accordion-item" ng-show="canEdit('margin')">
+                                            <h4 class="accordion-heading">{{ 'margin' | translate }} <i class="fa fa-angle-down pull-right"></i></h4>
+                                            <div class="accordion-body clearfix">
+                                                <div class="panel-box">
+                                                    <!--<section class="checkboxes clearfix" bl-checkboxes="margin"></section>
+                                                    <div bl-range-slider="margin"></div>-->
+                                                    <div bl-input-boxes="margin" class="clearfix input-boxes"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+
+
+    <!-- -->
+
+    <!-- border box starts -->
+                                <section id="border-box" ng-show="canEdit('box')">
+
+                                    <div id="border-panel" class="inspector-panel accordion-item">
+                                        <h4 class="accordion-heading">{{ 'border' | translate }} <i class="fa fa-angle-down pull-right"></i></h4>
+                                        <div class="accordion-body">
+                                            <div class="panel-box">
+                                                <div class="clearfix" style="margin-bottom:5px">
+<!--
+                                                    <div id="border-color" data-controls="inspector.styles.border.color" class="color-picker-trigger" bl-border-color-preview bl-tooltip="borderColor"></div>
+    -->                                                <div colorpicker ng-model="inspector.styles.border.color"  class="color-picker-trigger" id="fill-color" style="width:58%;height:35px;border-width:5px;" ng-style="{borderColor: inspector.styles.border.color}"><div class="background-box" style="padding: 0px;"><input type="text" class="form-control" ng-model="inspector.styles.border.color" style="background-color:transparent;    height: 25px;"/></div><div class="background-name">{{ 'borderColor' | translate }}</div></div>
+
+                                                    <select id="border-style" ng-model="inspector.styles.border.style">
+                                                        <option value="none">{{ 'none' | translate }}</option>
+                                                        <option value="solid">{{ 'solid' | translate }}</option>
+                                                        <option value="dashed">{{ 'dashed' | translate }}</option>
+                                                        <option value="dotted">{{ 'dotted' | translate }}</option>
+                                                        <option value="double">{{ 'double' | translate }}</option>
+                                                        <option value="groove">{{ 'groove' | translate }}</option>
+                                                        <option value="ridge">{{ 'ridge' | translate }}</option>
+                                                        <option value="inset">{{ 'inset' | translate }}</option>
+                                                        <option value="outset">{{ 'outset' | translate }}</option>
+                                                    </select>
+                                                </div>
+                                                <div bl-input-boxes="border" class="clearfix input-boxes"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="border-radius-panel" class="inspector-panel accordion-item">
+                                        <h4 class="accordion-heading">{{ 'borderRoundness' | translate }} <i class="fa fa-angle-down pull-right"></i></h4>
+                                        <div class="accordion-body">
+                                            <div id="borderRadius-box" class="panel-box clearfix">
+                                                <div class="clearfix input-boxes radius-boxes" style="height: 95px;">
+                                                    <div class="big-box col-sm-6">
+                                                        <input ng-model="inspector.styles.border.radius" ng-model-options="{ debounce: 300 }">
+                                                    </div>
+                                                    <div class="small-boxes col-sm-6">
+                                                        <input ng-model="inspector.styles.border.radiusTopLeft" ng-model-options="{ debounce: 300 }">
+                                                        <input ng-model="inspector.styles.border.radiusTopRight" ng-model-options="{ debounce: 300 }">
+                                                        <input ng-model="inspector.styles.border.radiusBottomLeft" ng-model-options="{ debounce: 300 }">
+                                                        <input ng-model="inspector.styles.border.radiusBottomRight" ng-model-options="{ debounce: 300 }">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                                <!-- /border box ends -->
+
+                                <div class="arrow-right" id="color-picker-arrow"></div>
+                                <div class="arrow-right" id="background-arrow"></div>
+
+</div>

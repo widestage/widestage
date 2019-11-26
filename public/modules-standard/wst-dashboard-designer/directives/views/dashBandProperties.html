@@ -1,0 +1,13 @@
+<div class="container-fluid no-padding" style="width:230px">
+  <div class="container-fluid object-header">
+              <span ng-i18next="Band"></span>
+              <button type="button" class="btn btn-danger pull-right"  ng-click="delete()" ng-i18next="Delete"></button>
+  </div>
+<button class="btn btn-info" ng-click="addReport()" ng-i18next="Add report" style="width:100%"></button>
+
+
+
+<html-inspector element="htmlObject" properties="band.properties" on-change="onPropertyChanged"></html-inspector>
+
+
+</div>

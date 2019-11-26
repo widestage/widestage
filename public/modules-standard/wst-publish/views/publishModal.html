@@ -1,0 +1,53 @@
+<div class="row" id="publish-modal">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title" ng-i18next="Publish" style="margin-left:5px;"></h3>
+                <div class="panel-options">
+                  <div class="form-group">
+                      <button ng-click="modalOptions.close()" class="btn btn-gray btn-single  pull-right" ng-i18next="Close"></button>
+                      <button ng-click="unpublish()" class="btn btn-info  pull-right" ng-if="objectIsPublic == true" ng-i18next="Unpublish" ></button>
+                  </div>
+                </div>
+            </div>
+            <div class="panel-body" style="padding-top:0px">
+                          <div class="row object-label-row">
+                                <h5 class="panel-title" >{{objectLabel}}</h5>
+                          </div>
+                          <div class="row">
+                              <a ng-click="expandAll()"><i class="fa fa-plus-square" style="font-weight:bolder"></i></a>
+                              <a ng-click="collapseAll()"><i class="fa fa-minus-square" style="font-weight:bolder"></i></a>
+                          </div>
+
+                          <div ng-if="isSUPERADMIN" class="row" ng-class="{'selected': objectParentFolder == 'root' && objectIsPublic == true}">
+                              <span class="tree-node tree-node-content tree-node-folder angular-ui-tree-handle" ng-i18next="ROOT FOLDER"></span>
+                              <button ng-if="objectParentFolder != 'root' || objectIsPublic == false" class="btn btn-success btn-xs  pull-right" ng-click="selectThisFolder('root')" ng-i18next="Select"></button>
+                              <span class="badge badge-black  pull-right" ng-if="objectParentFolder == 'root' && objectIsPublic == true" ng-i18next="Selected"></span>
+                          </div>
+
+                          <div ui-tree data-nodrop-enabled id="tree-root" >
+                              <ol ui-tree-nodes data-nodrop-enabled ng-model="userObjects">
+                                  <li ng-if="((node.permissions.publish == true) && node.nodeType != 'report' && node.nodeType != 'dashboard')  " ng-repeat="node in userObjects" ui-tree-node ng-include="'publicFoldersPublish_renderer.html'"></li>
+                              </ol>
+                          </div>
+
+            </div>
+
+
+
+
+
+<script type="text/ng-template" id="publicFoldersPublish_renderer.html">
+    <div  data-nodrag ui-tree-handle data-nodrop-enabled class="tree-node tree-node-content tree-node-folder" ng-class="{'selected': objectParentFolder == node.id && objectIsPublic == true}" ng-if="((node.permissions.publish == true) && node.nodeType != 'report' && node.nodeType != 'dashboard')  "> <!--&& node.nodes.length > 0 -->
+        <span class="fa" ng-class="{'fa-folder': collapsed,'fa-folder-open': !collapsed}" ng-click="toggle(this)"></span>
+        <span data-nodrag ng-click="toggle(this)" style="padding-left: 5px;margin-right: 5px;" >{{node.title}}</span>
+        <button ng-if="objectParentFolder != node.id || objectIsPublic == false" class="btn btn-success btn-xs" ng-click="selectThisFolder(node.id)" ng-i18next="Select" style="position: absolute;right: 0px;top: 4px;height: 19px;"></button>
+        <span class="badge badge-black  " ng-if="objectParentFolder == node.id && objectIsPublic == true" ng-i18next="Selected" style="position: absolute;right: 0px;top: 4px;"></span>
+    </div>
+
+    <ol ng-if="node.nodes" data-nodrag ui-tree-nodes data-nodrop-enabled ng-model="node.nodes" ng-class="{hidden: collapsed}">
+        <li ng-if="((node.permissions.publish == true) && node.nodeType != 'report' && node.nodeType != 'dashboard')"    data-nodrag ng-repeat="node in node.nodes" ui-tree-node ng-include="'publicFoldersPublish_renderer.html'">
+        </li>
+    </ol>
+</script>
+
+</div>

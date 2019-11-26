@@ -1,0 +1,63 @@
+<section id="connections" class="model scrollPane">
+  <link rel="stylesheet" type="text/css" href="wst-connections-tree/views/connectionsTree.css" />
+    <h4 ng-i18next="Connections"></h4>
+    <perfect-scrollbar class="scroller" wheel-propagation="true" wheel-speed="10" min-scrollbar-length="20" style="height: 100%">
+    <ul>
+      <li class="connection" ng-repeat="item in datasources">
+          <i class="fa fa-plug" ng-class="{'unselected-datasource': ((layerDatasourceId && item._id != layerDatasourceId) || item.status == -1),  'selected-datasource': (item._id == layerDatasourceId  || !layerDatasourceId)}"></i>
+          <span ng-class="{'unselected-datasource': ((layerDatasourceId && item._id != layerDatasourceId) || item.status == -1),  'selected-datasource': (item._id == layerDatasourceId  || !layerDatasourceId)}" ng-disabled="item.loading || item.status == -1" data-toggle="collapse" data-target="#connection{{item._id}}" ng-click="onElementClick('connection',item);getSchemasForDatasource(item._id,item,false)">{{item.name}}</span>
+
+          <ul>
+              <li class="connection-schema" ng-repeat="schema in item.schemas">
+
+                <a ng-class="{'unselected-datasource': ((layerDatasourceId && item._id != layerDatasourceId) || item.status == -1),  'selected-datasource': (item._id == layerDatasourceId || !layerDatasourceId)}" data-toggle="collapse" data-target="#schema{{schema.schemaID}}" ng-click="onElementClick('schema',item);getDatasetsForThisSchema(item._id,schema.schema_name,schema,false)" aria-expanded="false" aria-controls="schema{{schema.schemaID}}">
+                  <i class="fa fa-database"></i>
+                  {{schema.schema_name}}
+                </a>
+                    <ul>
+                      <li ng-repeat="entity in schema.entities">
+                        <table class="connection-table-item" >
+                            <tr>
+                                <td class="item-icon" ng-click="onElementClick('table',entity);getFieldsForThisEntity(item._id,entity,entity,false)">
+                                    <i class="fa fa-table connection-table" aria-hidden="true" data-toggle="collapse" data-target="#table{{entity.entityID}}"></i>
+                                </td>
+                                <td class="item-name" ng-click="onElementClick('table',entity);getFieldsForThisEntity(item._id,entity,entity,false)" class="model-tree-td-name">
+                                    <div class="item-container">
+                                        <a class="connection-table" ng-class="{'unselected-datasource': ((layerDatasourceId && item._id != layerDatasourceId) || item.status == -1),  'selected-datasource': (item._id == layerDatasourceId  || !layerDatasourceId)}" data-toggle="collapse" data-target="#table{{entity.entityID}}" aria-expanded="false" aria-controls="table{{entity.entityID}}" tooltip="{{entity.table_name}}">{{entity.table_name}}</a>
+                                    </div>
+                                </td>
+                                <td class="item-add-button" ng-if="onAddedDataset">
+                                    <button ng-if="item._id == layerDatasourceId || !layerDatasourceId" type="button" ng-click="addDatasetToModel(item._id,entity)" class="btn btn-info btn-xs add-to-model-btn" style="font-" ng-i18Next="Add"></button>
+                                </td>
+                                <div class="table-element-btn">
+                                    <div class="btn btn-xs query-schema-element-btn" ng-click="addToQuery(subItem)">Add</div>
+                                    <div class="btn btn-xs query-schema-element-btn" ng-click="getTop100rows(subItem)">100</div>
+                                </div>
+                            </tr>
+                        </table>
+                        <ul>
+                          <div class="connection-attribute" ng-repeat="field in entity.attributes" ng-class="{'unselected-datasource': ((layerDatasourceId && item._id != layerDatasourceId) || item.status == -1),  'selected-datasource': (item._id == layerDatasourceId || !layerDatasourceId)}" ng-click="onElementClick('field',field);">
+                              <div style="display: table; border: 0px;">
+                                  <div style="display: table-row">
+                                      <div class="connection-attribute-label connection-attribute-is-required"  ><i ng-if="field.required" class="fa fa-asterisk "  data-toggle="tooltip" data-placement="top" title="This field is required"></i> </div>
+                                      <div class="connection-attribute-label connection-attribute-is-pk"  ><i ng-if="field.isPK" class="fa fa-key "  data-toggle="tooltip" data-placement="top" title="This field is primary key"></i> </div>
+                                      <div class="connection-attribute-label"  >
+                                          <p class="connection-attribute-column-name">{{field.name}}</p>
+                                      </div>
+                                      <div class="connection-attribute-label connection-attribute-data-type"  >{{field.data_type}}</div>
+                                      <div class="connection-attribute-label connection-attribute-length"  >{{field.length}}</div>
+
+                                  </div>
+                              </div>
+                          </ul>
+
+                        </li>
+                      </ul>
+                </li>
+            </ul>
+
+        </li>
+      </ul>
+
+    </perfect-scrollbar>
+</section>

@@ -1,0 +1,274 @@
+
+<!DOCTYPE html>
+<html id="ng-app" ng-app="wice-login">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="<%= appDescription %>" />
+    <meta name="author" content="" />
+
+    <title><%= appName %></title>
+
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Arimo:400,700,400italic">
+    <link rel="stylesheet" href="/themes/xwst/assets/css/fonts/linecons/css/linecons.css">
+    <!--<link rel="stylesheet" href="/themes/xwst/assets/css/fonts/fontawesome/css/font-awesome.min.css">-->
+    <link rel="stylesheet" href="/themes/xwst/assets/css/bootstrap.css">
+    <link rel="stylesheet" href="/themes/xwst/assets/css/xwst-core.css">
+    <link rel="stylesheet" href="/themes/xwst/assets/css/xwst-forms.css">
+    <link rel="stylesheet" href="/themes/xwst/assets/css/xwst-components.css">
+    <link rel="stylesheet" href="/themes/xwst/assets/css/xwst-skins.css">
+    <link rel="stylesheet" href="/themes/xwst/assets/css/custom.css">
+
+    <!--<link rel="stylesheet" href="/css/wice-login.css">-->
+
+    <script src="/jquery/dist/jquery.min.js"></script>
+    <script src="/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="/toastr/toastr.min.js"></script>
+
+    <style><%- customCSS %></style>
+
+</head>
+
+
+
+
+<body class="page-body login-page" ng-controller="PublicCtrl" style="<%- bodyBackground %>">
+
+    <data id="host" value="<%= subdomain %>"/>
+    <data id="companyID" value="<%= companyID %>"/>
+
+    <div class="page-container">
+
+        <div class="login-container">
+
+
+            <div ng-show="currentBox == 'login'" class="row">
+
+                <div class="col-md-6">
+                    <div class="login-logo" id="login-logo-box" style="background-image:url('<%- customLogo %>');min-height: 150px;background-size: contain;background-repeat: no-repeat;background-position: center center;"> <!--This is the company logo--></div>
+                </div>
+
+                <div class="col-sm-6">
+
+                    <script type="text/javascript">
+                        jQuery(document).ready(function($)
+                        {
+                            // Reveal Login form
+                            setTimeout(function(){ $(".fade-in-effect").addClass('in'); }, 1);
+
+                            // Validation and Ajax action
+                            $("form#login").validate({
+                                rules: {
+                                    username: {
+                                        required: true
+                                    },
+
+                                    passwd: {
+                                        required: true
+                                    }
+                                },
+
+                                messages: {
+                                    username: {
+                                        required: 'Please enter your username.'
+                                    },
+
+                                    passwd: {
+                                        required: 'Please enter your password.'
+                                    }
+                                },
+
+                            });
+
+                            // Set Form focus
+                            $("form#login .form-group:has(.form-control):first .form-control").focus();
+                        });
+                    </script>
+
+
+
+                    <div id="loginBox" class="login-panel" style="display: block">
+                    <!-- Errors container -->
+                        <div class="errors-container alert alert-danger" ng-if="loginError && errorLoginMessage" style="margin: 0px 30px;padding: 10px;" ng-bind="errorLoginMessage" ng-cloak>
+
+                        </div>
+
+                    <form method="post" role="form" id="login" class="login-form fade-in-effect" ng-show="currentpage=='login'">
+
+                        <div class="login-header" ng-init="getCompanyLogo()">
+                            <a class="logo">
+                                <img id="login-logo" ng-src="{{logoPath}}" alt=""  />
+                            </a>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="control-label" for="username">Username</label>
+                            <input type="text" class="form-control input-dark" name="username" id="username" ng-model="userName" autocomplete="off">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="passwd">Password</label>
+                            <input type="password" class="form-control input-dark" name="passwd" id="passwd" ng-model="password" autocomplete="off" />
+                        </div>
+
+                        <div class="form-group">
+                                <label class="inline">
+                                    <input type="checkbox" name="remember_me" ng-model="rememberMe" />
+                                    <span style="font-weight: normal;color:#ccc"> Remember Me</span>
+                                </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="inline">
+                                    <a class="btn btn-link" style="height:10px;padding:0px" ng-click="showRememberPassword()" > forgot your password ?</a>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <button ng-click="login()" class="btn btn-dark  btn-block text-left" style="background-color: #72A230;">
+                                <i class="fa-lock"></i>
+                                Log In
+                            </button>
+                        </div>
+
+                        <!-- External login -->
+                      <% if (isgoogleauthenabled) { %>
+                        <div class="external-login" style="padding:0px">
+                            <a href="/auth/google?host=<%= subdomain %>" class="gplus">
+                              <i class="fa-google-plus"></i>
+                                Login with Google
+                            </a>
+                       <% } %>
+                        <div class="login-footer" >
+
+                        </div>
+
+<!--
+                        <div class="login-footer" ng-if="host != 'local'">
+                            <a href="#" ng-click="currentBox = 'rememberPassword'">Forgot your password?</a>
+                        </br>
+
+
+                            <div class="info-links">
+                                <a href="">ToS</a> -
+                                <a href="">Privacy Policy</a>
+                            </div>
+                        -->
+                        </div>
+
+                    </form>
+                    <form method="post" role="form" id="forgot_password" class="login-form fade-in-effect" ng-show="currentpage=='rememberPassword'">
+
+                        <div class="login-header" ng-init="getCompanyLogo()">
+                            <a class="logo">
+                                <img id="login-logo" ng-src="{{logoPath}}" alt=""  />
+                            </a>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="control-label" for="email">email</label>
+                            <input type="text" class="form-control input-dark" name="username" id="username" ng-model="email" autocomplete="off">
+                        </div>
+
+                        <div class="form-group">
+                            <button ng-click="rememberPassword()" class="btn btn-dark  btn-block text-left" style="background-color: #72A230;">
+                                <i class="fa-lock"></i>
+                                Recover Password
+                            </button>
+                        </div>
+
+                        <div class="errors-container alert alert-danger" ng-if="rememberPasswordError && rememberPasswordErrorMessage" style="padding: 10px;" ng-bind="rememberPasswordErrorMessage" ng-cloak>
+
+                        </div>
+
+                        <div class="success-container alert alert-info" ng-if="rememberPasswordSuccess && rememberPasswordSuccessMessage" style="padding: 10px;" ng-bind="rememberPasswordSuccessMessage" ng-cloak>
+
+                        </div>
+
+                        <a ng-click="ShowLogin()" style="cursor:pointer"> Back to login</a>
+
+                    </form>
+                    </div>
+                    <div ng-show="currentBox == 'rememberPassword'" class="row">
+
+            </div>
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+    </div>
+
+    <!-- Remove this code if you want to disable Loading Overlay in the beginning of document loading
+    <div class="page-loading-overlay">
+        <div class="loader-2"></div>
+    </div>-->
+
+    <!-- Bottom Scripts -->
+
+    <script src="/angular/angular.min.js"></script>
+    <script src="/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <!--<script src="/angular-ui/ui-bootstrap-tpls-0.11.2.min.js"></script>-->
+    <script src="/angular-cookies/angular-cookies.min.js"></script>
+    <script src="/oclazyload/dist/ocLazyLoad.min.js"></script>
+    <script src="/themes/xwst/assets/js/TweenMax.min.js"></script>
+    <script src="/themes/xwst/assets/js/joinable.js"></script>
+    <script src="angular-sanitize/angular-sanitize.min.js"></script>
+    	<!-- transalation ng-i18next -->
+	<script src="i18next/i18next.js"></script>
+	<script src="i18next-xhr-backend/i18nextXHRBackend.min.js"></script>
+	<script src="i18next-sprintf-postprocessor/i18nextSprintfPostProcessor.min.js"></script>
+	<script src="ng-i18next/dist/ng-i18next.min.js"></script>
+	<script>
+		if (window.i18next) {
+			window.i18next
+				.use(window.i18nextXHRBackend)
+				.use(window.i18nextSprintfPostProcessor);
+
+			window.i18next.use({
+				name: 'patrick',
+				type: 'postProcessor',
+				process: function (value, key, options) {
+					//https://www.youtube.com/watch?v=YSzOXtXm8p0
+					return 'No, this is Patrick!';
+				}
+			});
+
+			window.i18next.init({
+				//lng: 'de', // If not given, i18n will detect the browser language.
+				fallbackLng: 'es', // Default is dev
+				backend: {
+					loadPath: 'locales/{{lng}}/translation.json'
+				}/*,
+				postProcess: 'patrick'*/
+			});
+		}
+	</script>
+
+
+    <!-- App -->
+
+    <script src="/themes/xwst/js/directives.js"></script>
+
+
+    <!-- JavaScripts initializations and stuff -->
+    <script src="/themes/xwst/js/xwst-custom.js"></script>
+
+
+
+
+
+
+
+
+<script src="/libs-core/crypto/aes.js"></script>
+<script src="authentication/login.js"></script>
+<!--<script src="angular-socialshare/dist/angular-socialshare.min.js"></script>-->

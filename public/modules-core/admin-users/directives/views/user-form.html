@@ -1,0 +1,116 @@
+<div class="page-content">
+
+<form name="myForm">
+    <tabset class="nav-tabs-justified">
+        <tab heading="General">
+            <div class="row">
+                <div class="col-md-6">
+<!--
+<div id="employee-status-select" class="form-group" ng-class="{'has-error':EmployeesForm.status.$invalid}">
+                                        <label ng-i18next="Status"></label>
+                                        <select name="status" class="form-control" ng-model="selectedEmployee.status" ng-options="obj.value as obj.name for obj in statuses" ng-required="true" required></select>
+                                        <span ng-show="EmployeesForm.status.$invalid" class="help-inline" ng-i18next="This field is required"></span>
+                                    </div>
+                                    <div id="employee-code-input" class="form-group" ng-class="{'has-error':EmployeesForm.employeeCode.$invalid}">
+                                        <label ng-i18next="Employee Code"></label>
+                                        <input name="employeeCode" type="text" class="form-control required" ng-model="selectedEmployee.code" ng-required="true" required>
+                                        <span ng-show="EmployeesForm.employeeCode.$invalid" class="help-inline" ng-i18next="This field is required"></span>
+                                    </div>
+  -->
+
+
+                    <div class="form-group">
+                        <label for="email" class="control-label" ng-i18next="email"></label>
+                        <input type="email" id="email" class="form-control" ng-model="_User.email" required ng-readonly="readonly || mode == 'edit'">
+                        <div role="alert"><span class="error" ng-show="myForm.email.$error.required">email is required</span> </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="fname" class="control-label" ng-i18next="First Name"></label>
+                        <input id="fname" class="form-control" ng-model="_User.firstName" required ng-readonly="readonly">
+                        <div role="alert"><span class="error" ng-show="myForm.fname.$error.required">First Name is required</span> </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lname" class="control-label" ng-i18next="Last Name"></label>
+                        <input id="lname" class="form-control" ng-model="_User.lastName" required ng-readonly="readonly">
+                        <div role="alert"><span class="error" ng-show="myForm.lname.$error.required">Last Name is required</span> </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="roles" class="control-label" ng-i18next="Roles"></label>
+                      <select2 ng-if="!isSUPERADMIN" multiple ng-model="_User.roles" s2-options="obj._id as obj.name for obj in roles" ng-readonly="readonly"></select2>
+                      <span class="label label-danger superuser" ng-if="isSUPERADMIN">SUPERADMIN</span>
+                    </div>
+
+                    <div ng-show="mode == 'new'" class="checkbox">
+                        <label>
+                            <input type="checkbox" id="sendPassword" ng-model="_User.sendPassword" >
+                            <span ng-i18next="Send ramdom password through email"></span>
+                        </label>
+                    </div>
+
+                    <div  ng-show="(_User.sendPassword == false && mode == 'new')" class="form-group">
+                        <label for="email" class="control-label" ng-i18next="Password"></label>
+                        <input id="pwd1" type="password" class="form-control" placeholder="Introduce password" ng-model="_User.pwd1" required>
+                        <input id="pwd2" type="password" class="form-control" placeholder="Repeat password" ng-model="_User.pwd2" required>
+                        <div role="alert"><span class="error text-danger" >{{passwordMessage}}</span> </div>
+                    </div>
+
+
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="title" class="control-label">Title</label>
+                        <input id="title" class="form-control" ng-model="_User.title" ng-readonly="readonly">
+                    </div>
+                    <div class="form-group">
+                        <label for="department" class="control-label">Department</label>
+                        <input id="department" class="form-control" ng-model="_User.department" ng-readonly="readonly">
+                    </div>
+                    <div class="form-group">
+                        <label for="businessUnit" class="control-label">Business unit</label>
+                        <input id="businessUnit" class="form-control" ng-model="_User.businessUnit" ng-readonly="readonly">
+                    </div>
+                    <div class="form-group">
+                        <label for="unit" class="control-label">Unit</label>
+                        <input id="unit" class="form-control" ng-model="_User.unit" ng-readonly="readonly">
+                    </div>
+                    <div class="form-group">
+                        <label for="brand" class="control-label">Brand</label>
+                        <input id="brand" class="form-control" ng-model="_User.brand" ng-readonly="readonly">
+                    </div>
+
+
+                </div>
+            </div>
+        </tab>
+<!--
+        <tab heading="Notifications">
+
+
+        </tab>
+
+        <tab heading="Devices">
+
+
+        </tab>
+
+        <tab heading="Settings">
+
+
+        </tab>
+-->
+    </tabset>
+
+    <div ng-if="alertMessage && alertMessage != ''" class="alert-block" style="color:red">{{alertMessage}}</div>
+
+
+</form>
+
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn"
+          ng-click="modalOptions.close()" ng-i18next="Cancel"></button>
+  <button class="btn btn-primary"
+          ng-click="modalOptions.ok();" ng-disabled="(!_User.email)" ng-show="!readonly" ng-i18next="Save"></button>
+</div>

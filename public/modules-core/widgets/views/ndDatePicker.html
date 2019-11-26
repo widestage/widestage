@@ -1,0 +1,9 @@
+<!--<input type="text" class="form-control" datepicker-popup="{{dateFormat}}" ng-model="ngModel" style="{{style}}"
+       ng-click="openDatePicker($event)" min-date="minDate" max-date="maxDate" ng-change="onDatePickerChange()"
+       is-open="datePicker.opened" datepicker-options="dateOptions" close-text="Close" placeholder="{{placeholder}}"
+       ng-style="ngStyle"/>-->
+
+<div class="input-group">
+       <input type="text" class="form-control datepicker" ng-model="selectedDate" ng-change="onDatePickerChange()">
+       <div class="input-group-addon"><a href="#"><i class="fa fa-calendar"></i></a></div>
+</div>

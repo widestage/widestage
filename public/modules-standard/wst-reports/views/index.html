@@ -1,0 +1,84 @@
+
+
+<div class="container-fluid" id="parentIntro" intro-help ng-intro-method="showIntro" ng-intro-options="IntroOptions">
+
+  <div class="page-title"> <!--full-width-->
+    <div class="title-env">
+      <h1 class="title" ng-i18next="Reports"></h1>
+      <p class="description" ng-if="description"></p>
+    </div>
+    <div style="margin: 0px 20px;text-align: right;">
+      <div class="right-toolbar">
+        <div class="input-group input-group-minimal panel-search-input" style="margin-right: 10px;margin-top:3px;">
+            <input type="search" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="{{'Search' | i18next}}" autocomplete="off" ng-model="search" ng-enter="getReports({search: search})">
+                <span class="input-group-addon">
+                    <i class="fa fa-search hand-cursor" ng-click="getReports({search: search})"></i>
+                </span>
+        </div>
+        <a id="newReportBtn" ng-if="isGranted('Reports','create')" ng-click="newReport()" class="btn btn-success pull-right" tooltip="Click here to create a new report" tooltip-placement="bottom" ng-i18next="New Report" style="margin-right: 10px;"> </a>
+
+      </div>
+    </div>
+  </div>
+
+    <div class="col-md-12 no-padding" id="reportList" ng-init="getReports()">
+
+        <alert type="info" ng-show="items.length == 0">
+          <i class="fa fa-exclamation-triangle" style="font-size:24px"></i>
+          <span ng-i18next="No reports found"></span>
+        </alert>
+
+        <div class="panel panel-default" ng-show="items.length > 0">
+
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                          <th style="text-align: right;width:50px" ng-i18next="Status"></th>
+                          <th></th>
+
+                            <th ng-i18next="Report Name"></th>
+
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="report in items" id="reportListItem">
+                          <td>
+                              <a id="reportListItemStatus" class="badge pull-right" ng-class="{'badge-success': report.status == 'Active', 'badge-danger': report.status != 'Active'}" ng-click="changeReportStatus(report)" tooltip="Click here to change the status of the report" tooltip-placement="left">{{report.status}}</a>
+                          </td>
+                            <td style="width:30px;">
+                                  <img ng-if="report.reportType == 'grid'" src="themes/xwst/assets/images/grid.png" style="height:25px;width:25px;">
+                                  <img ng-if="report.reportType == 'vertical-grid'" src="themes/xwst/assets/images/vertical_grid.png" style="height:25px;width:25px;">
+                                  <img ng-if="report.reportType == 'chart-line'" src="themes/xwst/assets/images/chart_line.png" style="height:25px;width:25px;">
+                                  <img ng-if="report.reportType == 'chart-donut'" src="themes/xwst/assets/images/chart_donut.png" style="height:25px;width:25px;">
+                                  <img ng-if="report.reportType == 'indicator'" src="themes/xwst/assets/images/indicator.png" style="height:25px;width:25px;">
+                                  <img ng-if="report.reportType == 'gauge'" src="themes/xwst/assets/images/gauge.png" style="height:25px;width:25px;">
+                            </td>
+                            <td>
+                                <a href="/#/reports/{{report._id}}" tooltip="Click here to view" tooltip-placement="top">
+                                    <h4 id="reportListItemName" class="list-group-item-heading">{{report.reportName}}</h4>
+                                    <small>{{report.description}}</small>
+                                </a>
+                            </td>
+
+                            <td class="align-right">
+                                <a id="reportListItemEditBtn" ng-click="editReport(report)" class="btn btn-black btn-sm btn-icon icon-left" tooltip="Click here to modify this report" tooltip-placement="bottom" ng-i18next="Designer"></a>
+
+                                <a id="reportListItemDeleteBtn" class="btn btn-danger btn-sm btn-icon icon-left" ng-click="deleteReport(report)" tooltip="Click here to delete this report" tooltip-placement="bottom" ng-i18next="Delete"></a>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <nd-table-footer page="page" pages="pages" per-page="perPage" count="count" find="getReports"></nd-table-footer>
+
+        </div>
+
+    </div>
+
+</div>

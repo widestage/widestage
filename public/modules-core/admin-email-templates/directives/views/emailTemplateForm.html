@@ -1,0 +1,67 @@
+
+
+<div class="page-content">
+
+<form name="myForm">
+
+  <div class="form-group" ng-if="wstDeveloper">
+      <label ng-i18next="Template name"></label>
+      <input type="text" class="form-control" ng-model="template.name" placeholder="{{$i18next.t('Template name')}}">
+  </div>
+  <div class="form-group"  ng-if="wstDeveloper" >
+      <label ng-i18next="Template code"></label>
+      <input type="text" class="form-control" ng-model="template.code" placeholder="{{$i18next.t('Template code')}}">
+  </div>
+  <div class="form-group"  ng-if="wstDeveloper">
+      <label ng-i18next="Description"></label>
+      <input type="text" class="form-control" ng-model="template.description" placeholder="{{$i18next.t('Description')}}">
+  </div>
+
+  <div class="form-group">
+      <label ng-i18next="Tags"></label>
+
+      <table class="table table-bordered table-condensed">
+        <thead>
+          <tr>
+            <th ng-i18next="Name"></th>
+            <th ng-i18next="Tag"></th>
+            <th><button ng-if="!addingNewTag && wstDeveloper" type="button" name="button" class="btn btn-success btn-xs" ng-i18next="New Tag" ng-click="newTag()"></button></th>
+          </tr>
+          <tr ng-if="addingNewTag  && wstDeveloper">
+            <th><input type="text" ng-model="newTag.name"></th>
+            <th><input type="text" ng-model="newTag.value"></th>
+            <th><button type="button" name="button" class="btn btn-info btn-xs" ng-disabled="!newTag.name || !newTag.value" ng-i18next="Save" ng-click="saveTag()"></button></th>
+          </tr>
+        </thead>
+          <tr ng-repeat="tag in template.tags">
+              <td>{{tag.name}}</td>
+              <td>{{tag.value}}</td>
+              <td><button ng-if="wstDeveloper" type="button" name="button" class="btn btn-danger btn-xs" ng-i18next="Delete" ng-click="deleteTag(tag)"></button></td>
+          </tr>
+      </table>
+
+
+  </div>
+
+
+
+                <div class="form-group">
+                    <label ng-i18next="Message Subject"></label>
+                    <input type="text" class="form-control" ng-model="template.subject" placeholder="{{$i18next.t('Message subject')}}">
+                </div>
+                <div class="form-group">
+                    <label ng-i18next="Message Body"></label>
+                    <html-editor ng-model="template.body" on-change="htmlChanged"></html-editor>
+                </div>
+
+
+</form>
+
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn"
+          ng-click="modalOptions.close()" ng-i18next="Cancel"></button>
+  <button class="btn btn-primary"
+          ng-click="modalOptions.ok();" ng-disabled="(!template.name || !template.code || !template.subject || !template.body)" ng-show="!readonly" ng-i18next="Save"></button>
+</div>

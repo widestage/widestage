@@ -1,0 +1,22 @@
+<div class="row" id="layerElementModal">
+  <div class="panel panel-default">
+            <div class="panel-heading">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
+              <h4 class="modal-title" ng-i18next="Report name"></h4>
+              </div>
+
+          <div class="panel-body" ng-init="tabbed_panel_active = 1">
+            <div class="form-group">
+                <label for="field-3" class="control-label" ng-i18next="Report name"></label>
+
+                <input type="text" class="form-control" id="field-3"  ng-model="report.reportName" required>
+            </div>
+          </div>
+
+
+          <div class="panel-footer ng-scope">
+              <button type="button" class="btn btn-white pull-right" data-dismiss="modal" ng-click="modalOptions.close()" ng-i18next="Close"></button>
+              <button ng-disabled="!report.reportName" type="button" class="btn btn-info  pull-right"  ng-click="modalOptions.ok()" ng-i18next="Save"></button>
+          </div>
+    </div>
+</div>

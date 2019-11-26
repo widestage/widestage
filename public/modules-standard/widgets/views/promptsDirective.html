@@ -1,0 +1,184 @@
+<div class="">
+
+        <form role="form" class="form-inline" name="FORM_filter">
+        <div class="col-md-1" ng-if="isPrompt == 'true'" style="padding:1px">
+            <p class="prompt-label" style="text-align: end;line-height: 20px;vertical-align: middle;color: #000;font-size: 16px;">{{filter.promptTitle}}:</p>
+        </div>
+
+        <div class="col-md-11" style="padding:1px">
+            <div class="form-group" ng-class="{'has-error': filter.promptMandatory == true && (filter.filterText1 == '' || filter.filterText1 == undefined) && isPrompt == 'true'}">
+
+<table class="prompt-table">
+
+<tr >
+    <td ng-if="filter.condition && isPrompt == 'false'">
+            <!-- and, or, and not, or not-->
+            <div ng-if="filter.condition && isPrompt == 'false'" class="btn-group" dropdown="">
+                <!--<button type="button" class="btn " ng-bind="filter.conditionLabel" style="margin-bottom: 0px"></button>-->
+                <button type="button" class="btn  dropdown-toggle btn-xs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-bottom: 0px">
+                    {{filter.conditionLabel}} <i class="fa fa-caret-down"></i>
+                </button>
+
+                <ul ng-if="filter.condition" class="dropdown-menu" aria-labelledby="dropdownMenu4" >
+                        <li ng-repeat="theCondition in conditionTypes"><a ng-click="updateCondition(filter,theCondition)" ng-bind="theCondition.conditionLabel"></a></li>
+                </ul>
+            </div>
+
+    </td>
+    <td>
+
+    <input ng-if="isPrompt == 'false'" type="text" class="form-control" ng-model="filter.objectLabel" ng-readonly="true">
+</td>
+<td ng-if="isPrompt == 'false'">
+           <!-- equal, not equal, bigger than, etc...-->
+          <div ng-if="isPrompt == 'false'" class="btn-group" dropdown="">
+              <button type="button" class="btn  btn-xs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-bottom: 0px">{{filter.filterTypeLabel}} <i class="fa fa-caret-down"></i></button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenu4" >
+                      <li ng-repeat="option in getElementFilterOptions(filter.elementType)"><a ng-click="setFilterType(filter,option)">{{option.label}}</a></li>
+                  </ul>
+          </div>
+
+</td>
+<td>
+            <!-- Date -->
+                                <div class="form-group" ng-if="(filter.elementType == 'DATE' && (filter.filterType != 'null' && filter.filterType != 'notNull'))">
+
+                                    <!--preformated date selector -->
+                                    <div class="input-group" dropdown ng-if="filter.elementType == 'DATE' && (filter.filterType == 'equal-pattern' || filter.filterType == 'diferentThan-pattern' || filter.filterType == 'biggerThan-pattern' || filter.filterType == 'biggerOrEqualThan-pattern' || filter.filterType == 'lessThan-pattern' || filter.filterType == 'lessOrEqualThan-pattern')">
+                                         <input placeholder="{{filter.promptTitle}}" type="text" class="form-control no-right-border form-focus-green" ng-model="filter.filterLabel1" ng-readonly="true">
+                                        <span class="input-group-btn" >
+                                            <span class="dropdown" >
+                                                <button class="btn btn-white filter-dropdown-button" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fa fa-caret-down"></i>
+                                                </button>
+                                                    <ul class="dropdown-menu shorter-menu" aria-labelledby="dropdownMenu4b" >
+                                                        <li ng-repeat="option in queryModel.getDatePatternFilters()"><a ng-click="setDatePatternFilterType(filter,option);">{{option.label}}</a></li>
+
+                                                    </ul>
+                                          </span>
+                                        </span>
+                                        <span ng-if="filter.promptMandatory != true || isPrompt == 'false'" class="input-group-btn" >
+
+                                                <button type="button" class="btn btn-white clear-filter-button" ng-click="clearFilter(filter)">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+
+                                        </span>
+
+                                     </div>
+
+                                    <!-- date input -->
+                                    <table ng-if="filter.elementType == 'DATE'">
+                                        <tr ng-if="(filter.elementType == 'DATE' && (filter.filterType == 'between' || filter.filterType == 'notBetween'))">
+                                          <th ng-i18next="from"></th>
+                                          <th ng-i18next="to"></th>
+                                        </tr>
+                                        <tr>
+                                          <td ng-if="(filter.elementType == 'DATE' && (filter.filterType == 'equal' || filter.filterType == 'diferentThan' || filter.filterType == 'biggerThan' || filter.filterType == 'biggerOrEqualThan' || filter.filterType == 'lessThan'  || filter.filterType == 'lessOrEqualThan' || filter.filterType == 'between'  || filter.filterType == 'notBetween'))">
+                                            <div uib-datepicker ng-model="filter.filterText1" class="well well-sm" datepicker-options="datePickOptions" ng-change="dateFilterChanged(filter)"></div>
+
+                                          </td>
+                                          <td ng-if="(filter.elementType == 'DATE' && (filter.filterType == 'between' || filter.filterType == 'notBetween'))">
+                                            <div uib-datepicker ng-model="filter.filterText2" class="well well-sm" datepicker-options="datePickOptions" ng-change="dateFilterChanged(filter)"></div>
+
+                                          </td>
+                                        </tr>
+                                    </table>
+
+                                </div>
+
+                                <table ng-if="!(filter.filterType == 'null' || filter.filterType == 'notNull') && (filter.elementType === 'STRING') && (filter.filterType != 'notIn') && (filter.filterType != 'in')" >
+                                    <tr>
+                                      <td>
+                                        <input placeholder="{{filter.promptTitle}}" type="text" class="form-control form-focus-green" ng-model="filter.filterText1" ng-change="inputChanged(filter)"  ng-required="filter.promptMandatory == true" style="height: 32px;width:90px">
+                                      </td>
+                                      <td ng-if="!(filter.filterType == 'between' || filter.filterType == 'notBetween' || filter.filterType == 'startWith' || filter.filterType == 'notStartWith' || filter.filterType == 'endsWith' || filter.filterType == 'notEndsWith' || filter.filterType == 'like' || filter.filterType == 'notLike' || filter.filterType == 'null' || filter.filterType == 'isNotNull' || filter.filterType == 'contains' || filter.filterType == 'notContains')">
+                                        <span class="input-group-btn"  >
+                                            <span class="dropdown" >
+                                                <button type="button" class="btn btn-white dropdown-toggle filter-dropdown-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-click="getDistinctValues(filter)"  tooltip="Click here to select a value" tooltip-placement="bottom" style="margin-bottom: 0px;width:10px;padding-left: 3px;">
+                                                    <i class="fa fa-caret-down"></i>
+                                                </button>
+                                                    <ul class="dropdown-menu shorter-menu" aria-labelledby="dropdownMenu5b" >
+                                                        <li ng-repeat="value in distinctData"><a ng-click="selectSearchValue(value.id)">{{value.text}}</a></li>
+                                                        <li ng-if="filter.promptMandatory != true">
+                                                        <a ng-click="clearFilter(filter)">Clear filter</a>
+                                                        </li>
+                                                    </ul>
+                                          </span>
+                                        </span>
+                                      </td>
+                                       <td ng-if="(filter.filterType == 'between' || filter.filterType == 'notBetween')">
+                                           <span class="btn btn-xs" style="margin-right:2px;margin-left:2px;margin-bottom: 0px;background-color: transparent;" ng-i18next="and"></span>
+                                      </td>
+                                      <td ng-if="(filter.filterType == 'between' || filter.filterType == 'notBetween')">
+                                          <input type="text" ng-change="inputChanged(filter)" class="form-control form-focus-green" ng-model="filter.filterText2" style="width: 90px;" />
+                                     </td>
+                                       <td ng-if="(filter.promptMandatory != true || isPrompt == 'false') && (filter.filterText1 || filter.filterText2)">
+                                            <span  class="input-group-btn" >
+                                                    <button type="button" class="btn btn-white clear-filter-button" ng-click="clearFilter(filter)"  tooltip="Click here to clear the selected value" tooltip-placement="bottom" style="margin-bottom: 0px;width:10px;padding-left: 3px;">
+                                                        <i class="fa fa-times"></i>
+                                                    </button>
+                                            </span>
+                                      </td>
+                                  </tr>
+                                </table>
+
+                              <!--  <div class="input-group" dropdown ng-if="!(filter.filterType == 'null' || filter.filterType == 'notNull') && (filter.elementType === 'STRING') && (filter.filterType != 'notIn') && (filter.filterType != 'in')">
+
+                                         <input placeholder="{{filter.promptTitle}}" type="text" class="form-control no-right-border form-focus-green" ng-model="filter.filterText1" ng-change="inputChanged(filter)"  ng-required="filter.promptMandatory == true" style="height: 32px;border-right: 0px">
+
+                                        <span ng-if="(filter.promptMandatory != true || isPrompt == 'false')" class="input-group-btn" >
+
+                                                <button type="button" class="btn btn-white clear-filter-button" ng-click="clearFilter(filter)"  tooltip="Click here to clear the selected value" tooltip-placement="bottom">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+
+                                        </span>
+
+                                        <span ng-show="(filter.filterType == 'between' || filter.filterType == 'notBetween')"><span class="btn" style="margin-right:2px;margin-left:2px;margin-bottom: 0px;background-color: transparent;" ng-i18next="and"></span>  <input type="text" ng-change="inputChanged(filter)" class="form-control form-focus-green" ng-model="filter.filterText2" />  </span>
+                                        <select2 ng-change="inputChanged(filter)" ng-if="(filter.filterType == 'notIn' || filter.filterType == 'in')" multiple ng-init="getDistinctValues(filter)" ng-model="filter.filterText1" s2-options="val.id as val.text for val in (distinctData || getDistinctData(filter))" style="width:250px" ></select2>
+
+                                </div>-->
+
+                                <table ng-if="filter.elementType == 'INTEGER' || filter.elementType == 'DECIMAL'" >
+                                    <tr>
+                                      <td>
+                                       <input  placeholder="{{filter.promptTitle}}" type="number" class="form-control form-focus-green" ng-model="filter.filterText1" ng-change="inputChanged(filter)"  ng-required="filter.promptMandatory == true" style="height: 32px;width: 90px;">
+                                      </td>
+
+                                       <td ng-if="(filter.filterType == 'between' || filter.filterType == 'notBetween')">
+                                           <span class="btn btn-xs" style="margin-right:2px;margin-left:2px;margin-bottom: 0px;background-color: transparent;" ng-i18next="and"></span>
+                                      </td>
+                                      <td ng-if="(filter.filterType == 'between' || filter.filterType == 'notBetween')">
+                                          <input type="number" ng-change="inputChanged(filter)" class="form-control form-focus-green" ng-model="filter.filterText2" style="width: 90px;" />
+                                     </td>
+                                       <td ng-if="(filter.promptMandatory != true || isPrompt == 'false') && (filter.filterText1 || filter.filterText2)">
+                                            <span  class="input-group-btn" >
+                                                    <button type="button" class="btn btn-white clear-filter-button" ng-click="clearFilter(filter)"  tooltip="Click here to clear the selected value" tooltip-placement="bottom" style="margin-bottom: 0px;width:10px;padding-left: 3px;">
+                                                        <i class="fa fa-times"></i>
+                                                    </button>
+                                            </span>
+                                      </td>
+                                  </tr>
+                                </table>
+
+                                <select2 ng-change="inputChanged(filter)" ng-if="(filter.filterType == 'notIn' || filter.filterType == 'in')" multiple ng-init="getDistinctValues(filter)" ng-model="filter.filterText1" s2-options="val.id as val.text for val in (distinctData || getDistinctData(filter))" style="width:250px" ></select2>
+
+
+<!--
+                                     <select2 ng-show="(filter.filterType == 'notIn' || filter.filterType == 'in')" multiple ng-init="getDistinctValues(filter)" ng-model="filter.filterText1" s2-options="val.id as val.text for val in distinctData" style="width:250px"></select2>
+-->
+                                <!--between-->
+
+</td></tr></table>
+
+            </div>
+
+            <p ng-if="isPrompt == 'true' && filter.promptInstructions && filter.promptInstructions != ''"  style="font-style:italic;color: #999;">{{filter.promptInstructions}}</p>
+
+        </div>
+
+        </form>
+    <span class="has-error-message" ng-show="filter.promptMandatory == true && (filter.filterText1 == '' || filter.filterText1 == undefined) && isPrompt == 'true'" class="help-inline">This field is required</span>
+
+</div>

@@ -1,0 +1,73 @@
+<div class="container-fluid">
+
+<div class="row">
+      <input  class="iswitch iswitch-secondary" type="checkbox" ng-model="report.properties.chart.legend_show" ng-change="report.properties.chart.refresh()"><span ng-i18next="Show legend"></span>
+      <br>
+      <input class="iswitch iswitch-secondary" type="checkbox" ng-model="report.properties.chart.tooltip_show"  ng-change="report.properties.chart.refresh()"><span ng-i18next="Show Tooltip"></span>
+      <br>
+</div>
+<div class="row" ng-if="report.reportType == 'chart-line'" >
+      <input  class="iswitch iswitch-secondary" type="checkbox" ng-model="report.properties.chart.axis_x_show" ng-change="report.properties.chart.refresh()"><span ng-i18next="Show X Values"></span>
+      <br>
+      <input  class="iswitch iswitch-secondary" type="checkbox" ng-model="report.properties.chart.axis_y_show" ng-change="report.properties.chart.refresh()"><span ng-i18next="Show Y Values"></span>
+    <!--
+      <br>
+      <input  class="iswitch iswitch-secondary" type="checkbox" ng-model="report.properties.chart.axis_y2_show" ng-change="report.properties.chart.refresh()"><span ng-i18next="Show Y2 Values"></span>
+    -->
+      <br>
+      <input  class="iswitch iswitch-secondary" type="checkbox" ng-model="report.properties.chart.axis_rotated" ng-change="report.properties.chart.refresh()"><span ng-i18next="Axis Rotated"></span>
+      <br>
+</div>
+
+<div class="row" ng-if="report.reportType == 'chart-donut'">
+      <input  class="iswitch iswitch-secondary" type="checkbox" ng-model="report.properties.chart.label_show" ng-change="report.properties.chart.refresh()"><span ng-i18next="Show labels"></span>
+      <br>
+      <div class="form-group">
+          <label for="donutTitle" class="control-label" ng-i18next="Title"></label>
+          <input id="donutTitle" class="form-control" ng-model="report.properties.chart.donut_title" ng-change="report.properties.chart.refresh()">
+      </div>
+      <br>
+      <div class="form-group">
+          <label for="pieType" class="control-label" ng-i18next="Type"></label>
+          <select id="pieType" class="form-control ng-pristine ng-untouched ng-valid ng-not-empty" ng-model="report.properties.chart.type" ng-options="obj.value as obj.name for obj in [{value:'pie',name:'pie'},{value:'donut',name:'donut'}]" ng-change="report.properties.chart.refresh()"></select>
+      </div>
+</div>
+
+<div class="row" style="margin-top: 20px" ng-if="report.reportType == 'chart-line'">
+      <h4 ng-i18next="Values"></h4>
+        <table style="width:220px;border:1px solid #ccc;    margin-top: 5px;padding: 5px;background-color: #000;">
+          <tr ng-repeat="dataColumn in getDataColumns()" style="height: 32px;border-bottom: 1px solid #fff;margin-top: 5px;">
+            <td style="width:150px;padding: 5px;">{{dataColumn.elementLabel}}</td>
+            <td >
+              <div class="btn-group" ng-if="(dataColumn.elementRole == 'measure' && (report.reportType == 'chart-line'))" dropdown="" style="margin-left: 0px">
+                <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="width: 45px; margin-bottom:0px;">
+
+                              <img ng-if="dataColumn.type == 'spline'"  src="themes/xwst/assets/images/spline.png"/>
+                              <i ng-if="dataColumn.type == 'bar'" class="fa fa-chart-bar"></i>
+                              <i ng-if="dataColumn.type == 'area'" class="fa fa-chart-area"></i>
+                              <i ng-if="dataColumn.type == 'line' || !dataColumn.type " class="fa fa-chart-line"></i>
+
+                              <img ng-if="dataColumn.type == 'area-spline'"  src="themes/xwst/assets/images/area-spline.png"/>
+                              <img ng-if="dataColumn.type == 'scatter'"  src="themes/xwst/assets/images/scatter.png"/>
+
+
+                                <span class="caret"></span>
+                </button>
+                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu5" style="z-index:100" >
+                                      <li ng-if="report.reportType == 'chart-line'"><a ng-click="changeChartColumnType(dataColumn,'spline')"><img  src="themes/xwst/assets/images/spline.png"/> spline</a></li>
+                                      <li ng-if="report.reportType == 'chart-line'"><a ng-click="changeChartColumnType(dataColumn,'bar')"><i class="fa fa-chart-bar"></i> Bar</a></li>
+                                      <li ng-if="report.reportType == 'chart-line'"><a ng-click="changeChartColumnType(dataColumn,'area')"><i class="fa fa-chart-area"></i> Area</a></li>
+                                      <li ng-if="report.reportType == 'chart-line'"><a ng-click="changeChartColumnType(dataColumn,'line')"><i class="fa fa-chart-line"></i> Line</a></li>
+                                      <li ng-if="report.reportType == 'chart-line'"><a ng-click="changeChartColumnType(dataColumn,'area-spline')"><img  src="themes/xwst/assets/images/area-spline.png"/> Area spline</a></li>
+                                      <li ng-if="report.reportType == 'chart-line'"><a ng-click="changeChartColumnType(dataColumn,'scatter')"><img  src="themes/xwst/assets/images/scatter.png"/> Scatter</a></li>
+                            </ul>
+              </div>
+
+            </td>
+            <td>
+                <wst-color-small side="right" ng-model="dataColumn.color" on-change-color="report.properties.chart.refresh()"> </wst-color-small>
+            </td>
+          </tr>
+        </table>
+</div>
+</div>

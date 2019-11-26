@@ -1,0 +1,344 @@
+#objectPanel {
+    position: absolute;
+    top: 45px;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    width: 300px;
+    box-sizing: border-box;
+    padding: 15px 30px 15px 100px;
+    color: #fff;
+    background: #252627;
+}
+
+#objectPanel input {
+    background-color: #272c33;
+    border: 0px;
+    color: white;
+}
+#objectPanel v-pane-header {
+    background-color: #272c33;
+    color: #8da8b8;
+    border-radius: 3px;
+    width: 100%;
+    height: 30px;
+    font-size: 12px;
+    padding: 5px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    font-weight: 500;
+    line-height: 20px;
+    border: 0px !important;
+    margin-bottom: 10px;
+}
+#objectPanel .vAccordion--default v-pane-header::after, .vAccordion--default v-pane-header::before {
+    right: 10px;
+    background-color: #8da8b8;
+}
+
+#objectPanel #fill-color, #objectPanel #gradient, #objectPanel #image {
+    width: 100%;
+    display: inline-block;
+    height: 35px;
+    border: 2px solid #3b7694;
+    background-color: #263845;
+    color: #3b7694;
+    border-radius: 3px;
+    margin-right: 5px;
+    background-image: none;
+    cursor: pointer;
+}
+
+#objectPanel>menu {
+    position: absolute;
+    left: 0;
+    top: 40px;
+    bottom: 0;
+    z-index: 11;
+    width: 35px;
+    list-style: none;
+    text-align: center;
+    background: #72A230;
+}
+user agent stylesheetli {
+    display: list-item;
+    text-align: -webkit-match-parent;
+}
+li.search {
+    margin: 0;
+    border: 0 none #fff;
+    padding: 0;
+}
+
+#objectPanel>menu li {
+    font-size: 70%;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+
+#objectPanel>.content {
+    position: absolute;
+    left: 35px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+    padding: 20px 18px 20px 10px;
+    text-align: left;
+    background-color: #3f4652;
+}
+
+
+article, blockquote, body, dd, dl, dt, fieldset, figure, form, h1, h2, h3, h4, h5, h6, header, li, menu, nav, ol, p, section, ul {
+    margin: 0;
+    border: 0 none #fff;
+    padding: 0;
+}
+
+user agent stylesheetarticle, aside, footer, header, hgroup, main, nav, section {
+    display: block;
+}
+
+#objectPanel>menu a:hover, #objectPanel>menu .on a {
+    /*background-image: url(https://static.canva.com/static/images/icon_tabs_search_on.png); */
+    color: #00d4db!important;
+    -webkit-transform: none;
+    transform: none;
+    background-color: #3f4652;
+}
+
+#objectPanel>menu .layout a:hover, #objectPanel>menu .layout.on a {
+    /*background-image: url(https://d28pzkwbso7p1u.cloudfront.net/ndDesigner/images/catalog/icon_tabs_layouts_on.png);*/
+}
+
+#objectPanel>menu .search a:hover, #objectPanel>menu .search.on a {
+    /*background-image: url(https://d28pzkwbso7p1u.cloudfront.net/ndDesigner/images/catalog/icon_tabs_search_on.png);*/
+}
+
+#objectPanel>menu .text a:hover, #objectPanel>menu .text.on a {
+    /*background-image: url(https://d28pzkwbso7p1u.cloudfront.net/ndDesigner/images/catalog/icon_tabs_text_on.png);*/
+}
+
+#objectPanel>menu .backgrounds a:hover, #objectPanel>menu .backgrounds.on a {
+    /*background-image: url(https://d28pzkwbso7p1u.cloudfront.net/ndDesigner/images/catalog/icon_tabs_bgs_on.png);*/
+}
+
+#objectPanel>menu .uploads a:hover, #objectPanel>menu .uploads.on a {
+    /*background-image: url(https://d28pzkwbso7p1u.cloudfront.net/ndDesigner/images/catalog/icon_tabs_uploads_on.png);*/
+}
+
+#objectPanel>menu a {
+    display: block;
+    width: 35px;
+    height: 120px;
+    /*padding-top: 41px;*/
+    box-sizing: border-box;
+    /*background-image: url(https://d28pzkwbso7p1u.cloudfront.net/ndDesigner/images/catalog/icon_tabs_search.png);*/
+    background-repeat: no-repeat;
+    background-size: 20px 20px;
+    background-position: 50% 19px;
+    color: #fff;
+    text-decoration: none;
+    transition: all .15s linear,opacity 0s linear;
+}
+
+
+
+#objectPanel .vScrollTrack {
+    top: -47px;
+}
+
+#objectPanel .scrollThumb, .paletteToolbarWrapper .scrollThumb {
+    /*background-color: #fff;*/
+    border-width: 0;
+    height: 7px;
+    width: 7px;
+}
+
+.objectPanel-menu-label {
+    transform: rotate(-90deg);
+    width: 120px;
+    /* height: 100px; */
+    left: -40px;
+    position: relative;
+    top: 35px;
+    right: 0px;
+    /* font-size: smaller; */
+    cursor: default;
+}
+
+.object-panel-header {
+    height:40px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    /*padding: 5px;*/
+    right: 0px;
+    background-color: #272c33;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 100;
+}
+
+.object-panel-header-inner {
+    height:40px;
+    position: absolute;
+    top: 0px;
+    left: 40px;
+    right: 0px;
+    background-color: #3f4652;
+    color: #ffffff;
+    padding: 5px;
+}
+
+.object-panel-header-icon {
+    width: 40px;
+    height: 100%;
+    background-color: #72A230;
+}
+
+.object-panel-header-icon i {
+    font-size: 22px;
+    margin-left: 10px;
+    margin-top: 8px;
+    cursor: pointer;
+}
+
+.object-panel-header-icon.active {
+    background-color: #3f4652;
+}
+
+.rotate {
+    /*transform: rotate(-90deg);*/
+}
+
+.objectPanelMainArea {
+    position: absolute;
+    left: 300px;
+    right: 0px;
+    top: 50px;
+    bottom: 0px;
+    padding: 0 18px 18px 0;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 10px;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    overflow: auto;
+    -webkit-flex: 1 1 100%;
+    -moz-flex: 1 1 100%;
+    -ms-flex: 1 1 100%;
+    flex: 1 1 100%;
+}
+
+#htmlInspector label[for]
+{
+  padding-right: 5px;
+    font-size: 11px;
+}
+
+
+#htmlInspector label[for]
+{
+  padding-right: 5px;
+    font-size: 11px;
+    color: #999;
+}
+
+#htmlInspector .input-group
+{
+  width: 120px;
+margin-bottom: 5px;
+background-color: inherit;
+color: #999;
+font-size: 12px;
+
+}
+
+#htmlInspector .form-control
+{
+background-color: inherit;
+color: #ccc;
+font-size: 12px;
+border: 1px solid #999;
+}
+
+#htmlInspector  .input-group-addon
+{
+width:15px;
+background-color: inherit;
+color: #999;
+font-size: 12px;
+border: 1px solid #999;
+    border-left: 0px;
+}
+
+#htmlInspector  .dropdown-menu
+{
+  float:right;
+}
+
+#htmlInspector  .popover {
+    top: 0px !important;
+    right: 0px !important;
+}
+
+#htmlInspector  .form-control-td select {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    width: 120px;
+}
+
+#htmlInspector  .panel-group .panel
+{
+  padding: 0px;
+background-color: transparent;
+width:230px;
+}
+
+#htmlInspector .panel-group .panel .panel-heading .panel-title
+{
+  color: #fff;
+  font-size: 14px;
+}
+
+#htmlInspector .input-group.show
+{
+  display: inline-table!important;
+}
+
+#htmlInspector .input-group .dropdown-menu.show
+{
+  transform: translate3d(0px, 32px, 0px)!important;
+}
+
+
+#propertiesPanel .object-header
+{
+background-color: #ccc;
+    padding: 0px;
+    height: 32px;
+    line-height: 32px;
+    vertical-align: middle;
+    padding-left: 5px;
+    color: #000;
+}
+
+#propertiesPanel .properties-title
+{
+  border-bottom: 1px solid #72A230;
+    margin-bottom: 10px;
+    text-align: right;
+    color: #72A230;
+}

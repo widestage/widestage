@@ -1,0 +1,277 @@
+<page-title ng-if="layoutOptions.pageTitles" title="Company settings">
+
+    <div class="right-toolbar">
+        <button type="button" ng-click="save()" class="btn btn-info btn-single save-button pull-right"><i class="fa fa-save"></i> Save settings</button>
+    </div>
+
+</page-title>
+
+<div class="row" ng-show="errors.requiredData">
+    <div class="col-md-12">
+        <div class="alert alert-danger"> 
+            <strong>Required data!</strong> 
+            Company Name, Company Language and Company Subdomain is required.
+        </div>
+    </div>
+</div>
+    
+<div class="row" ng-init="initForm()">
+
+    
+    <div class="col-md-12">
+        
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"></h3>
+                <div class="panel-options">
+                    <a href="" data-toggle="panel">
+                        <span class="collapse-icon">–</span>
+                        <span class="expand-icon">+</span>
+                    </a>
+                    <!--<a href="" data-toggle="remove">
+                        ×
+                    </a>-->
+                </div>
+            </div>
+            <div class="panel-body">
+
+                <form name="myForm">
+
+                    <div class="form-group">
+                        <label class="control-label">Company Name</label>
+                        <input type="text" class="form-control" ng-model="_Company.name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Company Language</label>
+                        <select class="form-control" ng-model="_Company.language">
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Company Subdomain</label>
+                        <input type="text" class="form-control" ng-model="_Company.subdomain" required>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Primary contact</h3>
+                <div class="panel-options">
+                    <a href="" data-toggle="panel">
+                        <span class="collapse-icon">–</span>
+                        <span class="expand-icon">+</span>
+                    </a>
+                    <!--<a href="" data-toggle="remove">
+                        ×
+                    </a>-->
+                </div>
+            </div>
+            <div class="panel-body">
+
+                <form name="myForm">
+
+                    <div class="form-group">
+                        <label class="control-label">Name</label>
+                        <input type="text" class="form-control" ng-model="_Company.contact_name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">email</label>
+                        <input type="text" class="form-control" ng-model="_Company.contact_email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">phone</label>
+                        <input type="text" class="form-control" ng-model="_Company.contact_phone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Role</label>
+                        <input type="text" class="form-control" ng-model="_Company.contact_role" required>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Custom</h3>
+                <div class="panel-options">
+                    <a href="" data-toggle="panel">
+                        <span class="collapse-icon">–</span>
+                        <span class="expand-icon">+</span>
+                    </a>
+                    <!--<a href="" data-toggle="remove">
+                        ×
+                    </a>-->
+                </div>
+            </div>
+            <div class="panel-body">
+
+                <form name="myForm">
+
+
+                    <div class="form-group">
+                        <label class="control-label">Logo</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" ng-model="_Company.customLogo">
+                            <span class="input-group-addon hand-cursor" id="basic-addon2" ngf-select ngf-change="upload($file)" ngf-multiple="false" ngf-accept="'image/*'">Select File</span>
+                        </div>
+                        <img ng-src="{{_Company.customLogo}}" class="image-input-preview"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Background</label>
+                        <div class="input-group">
+                            <input colorpicker type="text" class="form-control" ng-model="_Company.customBackground"/>
+                            <span class="input-group-addon" ng-style="{background: _Company.customBackground}"></span>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Plan</h3>
+                <div class="panel-options">
+                    <a href="" data-toggle="panel">
+                        <span class="collapse-icon">–</span>
+                        <span class="expand-icon">+</span>
+                    </a>
+                    <!--<a href="" data-toggle="remove">
+                        ×
+                    </a>-->
+                </div>
+            </div>
+            <div class="panel-body">
+
+                <form name="myForm">
+
+
+                </form>
+
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Invoices</h3>
+                <div class="panel-options">
+                    <a href="" data-toggle="panel">
+                        <span class="collapse-icon">–</span>
+                        <span class="expand-icon">+</span>
+                    </a>
+                    <!--<a href="" data-toggle="remove">
+                        ×
+                    </a>-->
+                </div>
+            </div>
+            <div class="panel-body">
+
+                <form name="myForm">
+
+
+                </form>
+
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Quotas Statistics</h3>
+                <div class="panel-options">
+                    <a href="" data-toggle="panel">
+                        <span class="collapse-icon">–</span>
+                        <span class="expand-icon">+</span>
+                    </a>
+                    <!--<a href="" data-toggle="remove">
+                        ×
+                    </a>-->
+                </div>
+            </div>
+            <div class="panel-body">
+
+                <ul class="list-group list-group-minimal">
+                    <li class="list-group-item">
+                        <span class="badge badge-roundless badge-primary" ng-bind="_Company.totalUsage"></span>
+                        Total usage
+                        <div class="progress progress-bar-default" ng-show="_Company.limitUsage" style="margin: 0px;margin-top: 10px;">
+                            <div class="progress-bar" role="progressbar" 
+                            ng-style="{width: (_Company.totalUsage/_Company.usageLimit)*100+'%'}"></div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge badge-roundless badge-blue" ng-bind="_Company.numberOfExecutions"></span>
+                        Number of executions
+                        <div class="progress progress-bar-blue" ng-show="_Company.limitExecutions" style="margin: 0px;margin-top: 10px;">
+                            <div class="progress-bar" role="progressbar" 
+                            ng-style="{width: (_Company.numberOfExecutions/_Company.limitOfExecutions)*100+'%'}"></div>
+                        </div>
+                    </li>
+                </ul>
+
+                <accordion close-others="true">
+                    <accordion-group ng-repeat="(year, yearObj) in _Company.usageStatistics">
+                        <accordion-heading>{{year}}</accordion-heading>
+                        <ul class="list-group list-group-minimal">
+                            <li class="list-group-item" ng-repeat="(month, monthObj) in yearObj">
+                                Month: {{month}}
+                                <p>
+                                    Total usage
+                                    <span class="badge badge-roundless badge-primary pull-right">{{monthObj.totalUsage}}</span> 
+                                </p>
+                                <p>
+                                    Number of executions
+                                    <span class="badge badge-roundless badge-blue pull-right">{{monthObj.numberOfExecutions}}</span>
+                                </p>
+                            </li>
+                        </ul>
+                    </accordion-group>
+                </accordion>
+
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Cache</h3>
+                <div class="panel-options">
+                    <a href="" data-toggle="panel">
+                        <span class="collapse-icon">–</span>
+                        <span class="expand-icon">+</span>
+                    </a>
+                    <!--<a href="" data-toggle="remove">
+                        ×
+                    </a>-->
+                </div>
+            </div>
+            <div class="panel-body">
+
+                <form name="myForm">
+
+                    <div class="form-group">
+                        <label class="control-label">Cache time (in seconds)</label>
+                        <input type="number" class="form-control" ng-model="_Company.cacheTime">
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>

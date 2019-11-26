@@ -1,0 +1,24 @@
+<div id="workArea" class="queries-canvas-parent">
+
+    <div class="container-fluid" style="height: 48%;width: 100%">
+            <textarea id="sqlTextArea" ng-model="sqlText" style="height: 100%;width: 100%;resize: none;font-size: 16px;"> </textarea>
+            <button class="btn btn-danger queries-run-button" ng-disabled="selectedConnection == undefined || sqlText == undefined || sqlText == ''" ng-click="runQuery()">Run</button>
+    </div>
+
+    <div class="container-fluid" style="height: 50%;width: 100%">
+        <div ng-if="!messagePanelVisible && !noRecordsPanelVisible" ui-grid="gridOpts" class="myGrid" style="height: 100%;" ui-grid-pinning ui-grid-move-columns ui-grid-resize-columns ui-grid-selection ui-grid-exporter></div>
+        <div ng-if="messagePanelVisible" class="alert alert-danger" style="margin-top: 25px">
+            <div>
+                <strong class="ng-scope">Oh snap!</strong>
+                <span class="ng-scope"> {{errorMessage}}</span>
+            </div>
+        </div>
+        <div ng-if="noRecordsPanelVisible" class="alert alert-warning" style="margin-top: 25px">
+            <div>
+                <strong class="ng-scope"> No records found or empty result!</strong>
+            </div>
+        </div>
+
+    </div>
+
+</div>

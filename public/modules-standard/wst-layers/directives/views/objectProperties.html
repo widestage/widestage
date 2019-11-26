@@ -1,0 +1,295 @@
+<div id="objectProperties">
+    <h4 ng-i18next="Properties"></h4>
+        <div class="container-fluid tool-set" ng-if="objectType != 'model' && objectType != '' && objectType != undefined">
+            <div class="container-fluid">
+                    <span ng-if="objectType == 'join'" ng-i18next="Join"></span>
+                    <span ng-if="objectType == 'entity'" ng-i18next="Entity"></span>
+                    <span ng-if="objectType == 'attribute'" ng-i18next="Attribute"></span>
+                    <span ng-if="objectType == 'comment'" ng-i18next="Comment"></span>
+                    <button type="button" class="btn btn-danger pull-right"  ng-click="delete()" ng-i18next="Delete"></button>
+                    <button ng-if="!object.elementRole && objectType == 'attribute'" type="button" class="btn btn-success pull-right" ng-click="publishElement()" data-toggle="tooltip" data-placement="bottom" title="Add to layer's elements">+</button>
+                    <button ng-if="object.elementRole && objectType == 'attribute'" type="button" class="btn btn-warning pull-right" ng-click="removeElement()" data-toggle="tooltip" data-placement="bottom" title="Remove from layer's elements">-</button>
+
+            </div>
+        </div>
+
+
+    <div class="container-fluid main">
+
+      <div class="container-fluid" ng-if="objectType == '' || objectType == undefined">
+                <br/>
+                <br/>
+                <span ng-i18next="No Selection"></span>
+      </div>
+
+      <div ng-if="objectType == 'entity'">
+        <div class="nav-tabs-justified" ng-init="tabbed_panel_active = 91">
+
+              <ul class="nav nav-tabs active" ng-class="{'nav-stacked': vertical, 'nav-justified': justified}" >
+                <li ng-class="{'active': tabbed_panel_active == 91}" heading="Home" >
+                          <a ng-click="tabbed_panel_active = 91"  ng-i18next="General"></a>
+                      </li>
+                <li ng-class="{'active': tabbed_panel_active == 92}" heading="Profile" >
+                          <a ng-click="tabbed_panel_active = 92"  ng-i18next="Advanced"></a>
+                      </li>
+
+
+              </ul>
+              <div class="tab-content">
+                      <div class="tab-pane" ng-class="{'active': tabbed_panel_active == 91}" >
+
+                          <div class="container-fluid tab-container">
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="field-3" class="control-label properties">Name</label>
+                                                <input no-special-char id="field-3" class="form-control" ng-model="object.table_name" ng-pattern="/^[a-zA-Z0-9]*$/" required disabled="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="field-3" class="control-label properties">Label</label>
+                                                <input id="field-3" class="form-control" ng-model="object.table_label" required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="field-9" class="control-label properties" ng-i18next="N to N table"></label>
+                                                <input type="checkbox" id="field-9" class="form-control" ng-model="object.n2n" required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="field-5" class="control-label properties">Description</label>
+                                                <textarea ng-model="object.description" class="form-control autogrow" id="field-5"  style="overflow: hidden; word-wrap: break-word; resize: horizontal; height: 50px;"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" ng-if="object.sqlQuery">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="field-5" class="control-label">SQL</label>
+                                                <textarea ng-model="object.sqlQuery" class="form-control autogrow" id="field-5"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                          </div>
+                      </div>
+                      <div class="tab-pane"  ng-class="{'active': tabbed_panel_active == 92}" >
+                                <div class="container-fluid tab-container">
+                                      <span ng-i18next="No advanced properties"></span>
+                                </div>
+
+                			</div>
+                  </div>
+              </div>
+      </div>
+
+      <div ng-if="objectType == 'attribute'">
+
+          <div class="nav-tabs-justified" ng-init="tabbed_panel_active = 1">
+
+          <ul class="nav nav-tabs active" ng-class="{'nav-stacked': vertical, 'nav-justified': justified}" >
+      			<li ng-class="{'active': tabbed_panel_active == 1}" heading="Home" >
+                      <a ng-click="tabbed_panel_active = 1"  ng-i18next="General"></a>
+                  </li>
+      			<li ng-class="{'active': tabbed_panel_active == 2}" heading="Profile" >
+                      <a ng-click="tabbed_panel_active = 2"  ng-i18next="Advanced"></a>
+                  </li>
+
+
+      		</ul>
+                <div class="tab-content">
+                        <div class="tab-pane" ng-class="{'active': tabbed_panel_active == 1}" >
+
+                            <div class="container-fluid tab-container">
+
+                            <div class="row" >
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label  class="control-label properties">Name</label>
+                                                <input type="text" class="form-control" placeholder="{{object.elementName}}" ng-changed="onElementChanged(object)" disabled="">
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="row" >
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label  class="control-label properties">Label</label>
+                                                <input type="text" class="form-control" ng-model="object.elementLabel" ng-changed="onElementChanged(object)">
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="row" >
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="field-4" class="control-label">Type</label>
+                                                            <select id="field-4" class="form-control ng-pristine ng-untouched ng-valid ng-not-empty" ng-model="object.elementType" ng-options="obj.value as obj.name for obj in elementTypes" ng-changed="onElementChanged(object)"></select>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="row" >
+
+
+                                    <div class="col-md-12" ng-if="object.elementType != 'DECIMAL' && object.elementType != 'INTEGER' && object.elementType != 'FLOAT' && object.elementType != 'DATE'">
+                                        <div class="form-group">
+                                            <label for="field-4" class="control-label">Default Aggregation</label>
+                                                            <select  id="field-4b" class="form-control ng-pristine ng-untouched ng-valid ng-empty" ng-model="object.defaultAggregation" ng-options="obj.value as obj.name for obj in stringDefaultAggregation" ng-changed="onElementChanged(object)"></select>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="col-md-12" ng-if="object.elementType == 'DECIMAL' || object.elementType == 'INTEGER' || object.elementType == 'FLOAT' || selectedElement.elementType == 'DATE'">
+                                        <div class="form-group">
+                                            <label for="field-4" class="control-label">Default Aggregation</label>
+                                                            <select  id="field-4b" class="form-control ng-pristine ng-untouched ng-valid ng-empty" ng-model="object.defaultAggregation" ng-options="obj.value as obj.name for obj in numberDefaultAggregation" ng-changed="onElementChanged(object)"></select>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="row" ng-if="object.elementType == 'DECIMAL' || selectedElement.elementType == 'DATE' || object.elementType == 'INTEGER' || object.elementType == 'FLOAT'">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label  class="control-label properties">Format</label>
+                                            <input type="text" class="form-control" ng-model="object.format" placeholder="format..." ng-changed="onElementChanged(object)">
+                                            <p class="help-block"><a class="pull-right" href="http://numeraljs.com/" target="_blank">More Info</a></p>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+
+            			</div>
+                  </div>
+                  <div class="tab-pane"  ng-class="{'active': tabbed_panel_active == 2}" >
+                            <div class="container-fluid tab-container">
+                                  <span ng-i18next="No advanced properties"></span>
+                            </div>
+
+            			</div>
+
+
+              </div>
+          </div>
+
+      </div>
+
+      <div ng-if="objectType == 'join'">
+        <div class="nav-tabs-justified" ng-init="tabbed_panel_active = 81">
+
+              <ul class="nav nav-tabs active" ng-class="{'nav-stacked': vertical, 'nav-justified': justified}" >
+                <li ng-class="{'active': tabbed_panel_active == 81}" heading="Home" >
+                          <a ng-click="tabbed_panel_active = 81"  ng-i18next="General"></a>
+                      </li>
+                <li ng-class="{'active': tabbed_panel_active == 82}" heading="Profile" >
+                          <a ng-click="tabbed_panel_active = 82"  ng-i18next="Advanced"></a>
+                      </li>
+
+
+              </ul>
+              <div class="tab-content">
+                      <div class="tab-pane" ng-class="{'active': tabbed_panel_active == 81}" >
+
+                          <div class="container-fluid tab-container">
+                                  <label  class="control-label properties" ng-i18next="Join multiplicity"></label>
+                                      <div class="btn-group btn-group-justified" style="width:100%">
+                                          <a type="button" class="btn btn-sm" ng-class="{'btn-info': object.multiplicity == 'left','btn-white': object.multiplicity != 'left'}"   ng-click="changeJoinMultiplicity('left')">Left</a>
+
+                                          <a type="button" class="btn btn-sm" ng-class="{'btn-info': object.multiplicity == 'default','btn-white': object.multiplicity != 'default'}"  ng-click="changeJoinMultiplicity('default')">Inner</a>
+
+                                          <a type="button" class="btn btn-sm" ng-class="{'btn-info': object.multiplicity == 'right','btn-white': object.multiplicity != 'right'}"  ng-click="changeJoinMultiplicity('right')">Right</a>
+                                      </div>
+
+                          </div>
+                      </div>
+                      <div class="tab-pane"  ng-class="{'active': tabbed_panel_active == 82}" >
+                                <div class="container-fluid tab-container">
+                                      <span ng-i18next="No advanced properties"></span>
+                                </div>
+
+                			</div>
+                </div>
+              </div>
+
+      </div>
+
+
+      <div ng-if="objectType == 'model'">
+        <div class="nav-tabs-justified" ng-init="tabbed_panel_active = 91">
+
+              <ul class="nav nav-tabs active" ng-class="{'nav-stacked': vertical, 'nav-justified': justified}" >
+                <li ng-class="{'active': tabbed_panel_active == 91}" heading="Home" >
+                          <a ng-click="tabbed_panel_active = 91"  ng-i18next="General"></a>
+                      </li>
+                <li ng-class="{'active': tabbed_panel_active == 92}" heading="Profile" >
+                          <a ng-click="tabbed_panel_active = 92"  ng-i18next="Advanced"></a>
+                      </li>
+
+
+              </ul>
+              <div class="tab-content">
+                      <div class="tab-pane" ng-class="{'active': tabbed_panel_active == 91}" >
+
+                          <div class="container-fluid tab-container">
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="field-3" class="control-label properties">Name</label>
+                                                <input id="field-3" class="form-control" ng-model="object.name" required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="field-5" class="control-label properties">Description</label>
+                                                <textarea ng-model="object.description" class="form-control autogrow" id="field-5"  style="overflow: hidden; word-wrap: break-word; resize: horizontal; height: 50px;"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" >
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="field-4" class="control-label" ng-i18next="Connection"></label>
+                                                                <select id="field-4" class="form-control ng-pristine ng-untouched ng-valid ng-not-empty" ng-model="object.model.datasourceID" ng-options="obj._id as obj.name for obj in connections" ng-changed="onElementChanged(object)"></select>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+                          </div>
+                      </div>
+                      <div class="tab-pane"  ng-class="{'active': tabbed_panel_active == 92}" >
+                                <div class="container-fluid tab-container">
+                                    <span ng-i18next="No advanced properties"></span>
+                                </div>
+
+                      </div>
+                  </div>
+              </div>
+      </div>
+
+    </div>
+
+</div>

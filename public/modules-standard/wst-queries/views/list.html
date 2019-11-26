@@ -1,0 +1,53 @@
+<page-title ng-if="layoutOptions.pageTitles" title="Query history">
+
+</page-title>
+
+<div class="row" ng-init="getQueries(1,'')">
+
+    <div class="col-md-12">
+
+        <alert type="info" ng-show="items.length == 0">
+          <i class="fa fa-exclamation-triangle" style="font-size:24px"></i>
+          <span ng-i18next="No queries found"></span>
+        </alert>
+
+        <div class="panel panel-default" style="height: 100%">
+            <div class="panel-heading">
+                <h3 class="panel-title"></h3>
+
+                <div class="panel-search">
+                    <div id="search-positions-input" class="input-group input-group-minimal panel-search-input">
+                        <input type="search" class="form-control ng-pristine ng-valid ng-touched" placeholder="Search..." autocomplete="off" ng-model="search" ng-enter="getLogs(1, search)">
+                        <span class="input-group-addon">
+                            <i class="fa fa-search hand-cursor" ng-click="getQueries(1, search)"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="grid1" ui-grid="queryListGridOpts" class="queriesGrid" style="height: 100%;" ui-grid-pinning ui-grid-move-columns ui-grid-resize-columns ui-grid-selection ui-grid-exporter ></div>
+
+
+            <ul ng-if="pager.pages.length > 1" class="pagination">
+                <li ng-class="{disabled:pager.currentPage === 1}">
+                    <a ng-click="getQueries(1,'')">First</a>
+                </li>
+                <li ng-class="{disabled:pager.currentPage === 1}">
+                    <a ng-click="getQueries(pager.currentPage - 1,'')">Previous</a>
+                </li>
+                <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                    <a ng-click="getQueries(page,'')">{{page}}</a>
+                </li>
+                <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                    <a ng-click="getQueries(pager.currentPage + 1,'')">Next</a>
+                </li>
+                <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                    <a ng-click="getQueries(pager.totalPages,'')">Last</a>
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
+
+</div>

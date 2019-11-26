@@ -1,0 +1,46 @@
+<div id="filtersPanel"  class="container-fluid column-zone no-padding" drop="onDropFilter($data, $event, 'filter')" drop-effect="copy" drop-accept="['json/custom-object','json/column']" drag-over="onDragOver($event)" drag-over-class="drag-over-accept">
+    <div class="drop-zone-label pull-right" ng-hide="query.groupFilters.length > 0" ng-i18next="Drop here your filters"></div>
+    <ul class="ul-drop no-padding" ng-model="query.groupFilters" ui-sortable="filterSortableOptions">
+
+
+        <li class="filter-box" ng-class="{'incomplete-filter': !isfilterComplete(filter)}" style="margin-left: 90px;"
+                            drop="onDropOnFilter($data, $event, filter)" drop-effect="copy" drop-accept="'json/custom-object'" ng-repeat="filter in query.groupFilters" >
+
+
+
+                            <span class="pull-right" style="padding: 7px 0;"><i class="fa fa-times hand-cursor" ng-click="removeFilter(filter)"></i></span>
+
+
+
+                            <div class="container-fluid form-inline ">
+                                <!--runtime filter-->
+                                <div class="col-md-1" style="padding:1px">
+
+                                    <!--<button class="btn popover-primary ng-scope" ng-class="{'btn-black': filter.filterPrompt == true, 'btn-white': filter.filterPrompt == false}" ng-click="filterPromptsClick(filter)" popover-trigger="mouseenter" popover-placement="bottom" popover-title="Runtime Filter" popover="{{getButtonFilterPromptMessage(filter)}}">
+                                        <i class="fa fa-filter"></i><i class="fa fa-question"></i>
+                                    </button>-->
+
+                                    <div class="btn-group" dropdown>
+                                        <button type="button" class="btn  dropdown-toggle btn-xs" ng-class="{'btn-danger':filter.filterPrompt == true,'btn-white': !filter.filterPrompt}" data-toggle="dropdown">
+                                            <i class="fa fa-filter"></i><i class="fa fa-question"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li ng-show="filter.filterPrompt == true">
+                                                <a href="" ng-click="filterPromptsClick(filter)" ng-i18next="Select to deactivate the runtime"></a>
+                                            </li>
+                                            <li ng-show="!filter.filterPrompt == true">
+                                                <a href="" ng-click="filterPromptsClick(filter)" ng-i18next="Make this filter appear in the report interface"></a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-11"  style="padding:1px">
+                                    <nd-prompt element-id="filter.elementID" label="filter.objectLabel" value-field="filter.name" show-field="filter.name" prompts="prompts" after-get-values="afterFilterGetValues" is-prompt="false" filter="filter" on-change="filterChanged" ng-model="lastFilterSelectedValue"></nd-prompt>
+                                </div>
+
+                            </div>
+
+
+        </li>
+    </ul>
+</div>

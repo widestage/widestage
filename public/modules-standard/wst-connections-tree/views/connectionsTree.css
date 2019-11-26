@@ -1,0 +1,183 @@
+#connections h4
+{
+  border-bottom: 1px solid #72A230;
+  margin-bottom: 10px;
+  text-align: right;
+  color: #72A230;
+}
+
+#connections .connection
+{
+  cursor:pointer;
+  font-size: 14px;
+  width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+}
+#connections .scroller
+{
+
+    position: absolute;
+    top: 50px;
+    bottom: 0px;
+    overflow-y: scroll;
+    padding-bottom: 50px;
+}
+
+#connections .connection-schema a
+{
+  padding-left:10px;
+  color: #fff;
+  cursor:pointer;
+  font-size: 14px;
+}
+
+#connections .connection-table-item
+{
+  margin-left:20px;
+  width: 200px;
+}
+
+#connections .connection-table-item .item-icon
+{
+  width: 20px;
+}
+#connections .connection-table-item .item-name
+{
+  width: 150px;
+  overflow:hidden;
+}
+
+#connections .connection-table-item .item-name .item-container
+{
+    height: 20px;
+    width: 1px;
+}
+
+#connections .connection-table-item .item-name .item-container a
+{
+  padding-left:0px;
+  color: #fff;
+  width: 100%;
+    height: 100%;
+    overflow:hidden;
+}
+
+#connections .connection-table-item .item-add-button
+{
+  width: 30px;
+}
+
+#connections .connection-attribute {
+    /* border: 1px solid #CCC; */
+    margin-left:30px;
+    cursor: pointer;
+    z-index: 11;
+    overflow: hidden;
+    padding-left: 0px;
+    padding-top: 0px;
+    width: 200px;
+    /* background-color: #d5d5d5; */
+    height: 20px;
+}
+
+#connections .connection-attribute-label {
+    overflow: hidden;
+    font-size: 10px;
+    padding-left: 3px;
+    color: #ccc;
+}
+
+#connections .connection-attribute-is-pk {
+    /*color: #ccc;*/
+    max-width: 10px;
+    display: table-cell;
+    width: 12px;
+    height: 15px;
+    overflow: hidden;
+}
+
+#connections .connection-attribute-is-required {
+   /* color: #ccc; */
+    max-width: 10px;
+    display: table-cell;
+    width: 12px;
+    height: 15px;
+    overflow: hidden;
+}
+
+#connections .connection-attribute-column-name {
+  /*  color: #fff;*/
+    font-size: 12px;
+    max-width: 150px;
+    display: table-cell;
+    width: 150px;
+    overflow: hidden;
+    /*font-weight: bold;*/
+    height: 15px;
+}
+
+#connections .connection-attribute-data-type {
+    max-width: 50px;
+    display: table-cell;
+    width: 50px;
+    height: 15px;
+    overflow: hidden;
+    /*color: #ccc;*/
+    font-style: italic;
+    white-space: nowrap;
+}
+
+#connections .connection-attribute-length {
+    max-width: 30px;
+    display: table-cell;
+    width: 30px;
+    height: 15px;
+    overflow: hidden;
+    color: #ccc;
+    font-style: italic;
+}
+
+#connections .selected-datasource {
+    color: #72A230;
+    /*font-weight: bolder;*/
+}
+
+#connections .unselected-datasource {
+    color: #999;
+}
+
+.scrollPane {
+    outline: none;
+}
+
+#connections .delete-schema-element-btn {
+        font-size: xx-small;
+    color: #FF0000;
+    border: 1px solid #FF0000;
+    background-color: #fff;
+    border-radius: 2px;
+    margin-left: 3px;
+    margin-top: 3px;
+    min-width: 40px;
+    height: 17px;
+    text-transform: uppercase;
+}
+
+#connections .table-element-btn {
+    padding-left: 2px;
+    padding-right: 5px;
+    z-index: 100;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    display: none;
+    height: 25px;
+    filter: alpha(opacity=50);
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 2px;
+}
+
+#connections .model-tree-td-name:hover .table-element-btn {
+    display:block;
+}

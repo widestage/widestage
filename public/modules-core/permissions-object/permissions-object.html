@@ -1,0 +1,40 @@
+<div class="row">
+
+    <div class="col-md-12">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title" >{{objectPermissionLabel}}</h3>
+                <div class="panel-options">
+                  <div class="form-group">
+                      <button ng-click="modalOptions.close()" class="btn btn-gray btn-single  pull-right" ng-i18next="Close"></button>
+                  </div>
+                </div>
+            </div>
+            <div class="panel-body" style="padding-top:0px">
+                <table>
+                <tr style="font-weight:bold;border-bottom:1px solid #000;background-color:#ccc">
+                      <td style="width:100%;padding:5px"><span ng-i18next="role"></span></td>
+                      <td ng-repeat="permission in permissions" style="text-align:center;min-width:50px;padding:5px"><span ng-i18next="">{{permission.label}}</span></td>
+                </tr>
+
+                <tr ng-repeat="role in matrix">
+                    <td style="width:100%">{{role.name}}</td>
+                    <td ng-repeat="permission in role.permissions" style="text-align:center;min-width:50px;padding:5px">
+                      <input type="checkbox" ng-click="savePermission(role.ID,permission.name,permission)" ng-model="permission.granted">
+                    </td>
+                </tr>
+
+                </table>
+
+
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>

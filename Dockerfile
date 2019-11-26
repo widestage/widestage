@@ -1,6 +1,8 @@
-FROM node:6.2.2
+FROM node:13.0.1
 
-RUN apt-get update && apt-get install -y openjdk-7-jdk &&  npm install -g bower
+MAINTAINER Widestage  <widestage.com>
+
+RUN apt-get update  &&  npm install -g bower
 
 WORKDIR /srv/app/
 

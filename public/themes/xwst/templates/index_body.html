@@ -1,0 +1,321 @@
+<body class="page-body">
+
+	<div class="page-container" id="main-container">
+
+	    <div class="sidebar-menu toggle-others collapsed">
+	        <div class="sidebar-menu-inner ps-container ps-active-y">
+	            <header class="logo-env">
+	                <div class="logo">
+	                    <a href="#/home" class="logo-expanded">
+	                        <img src="themes/xwst/assets/images/custom/logo-black-small.png" width="200" alt="">
+	                    </a>
+	                    <a href="#/home" class="logo-collapsed">
+	                        <img src="themes/xwst/assets/images/custom/logo-image-small.png" width="40" alt="">
+	                    </a>
+	                </div>
+	                <div class="mobile-menu-toggle visible-xs">
+
+	                    <a href="#" data-toggle="user-info-menu">
+	                        <i class="fa-caret-down"></i>
+	                    </a>
+
+	                    <a href="#" data-toggle="mobile-menu">
+	                        <i class="fas fa-bars"></i>
+	                    </a>
+	                </div>
+	            </header>
+
+	            <ul id="main-menu" class="main-menu">
+	              <!--  <li class="has-sub">
+                    <a id="organization-sidebar-dropdown" href="#">
+                        <i class="fas fa-bolt"></i>
+                        <span class="title" ng-i18Next="Execute"></span>
+                    </a>
+                    <ul>
+                        <li id="departments-sidebar-btn" class="">
+                            <a href="#">
+                                <span class="title" ng-i18Next=""></span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>-->
+	                <li class="" ng-if="isGranted('Dashboards','see')">
+	                            <a href="#/dashboards" >
+	                                <i class="fas fa-tachometer-alt"></i>
+	                                <span class="title" ng-i18Next="Dashboards" ></span>
+	                            </a>
+	                </li>
+	                <li class="" ng-if="isGranted('Reports','see')">
+	                            <a  href="#/reports" >
+	                                <i class="fas fa-chart-line"></i>
+	                                <span class="title" ng-i18Next="Reports"></span>
+	                            </a>
+	                </li>
+
+	                <li class=""  ng-if="isGranted('Explorer','access')">
+                            <a id="performance-sidebar-dropdown" href="#/explore">
+                                <i class="fas fa-binoculars"></i>
+                                <span class="title" ng-i18Next="Explorer"></span>
+                            </a>
+                    </li>
+										<li class=""  ng-if="isGranted('Layers','see')">
+	                            <a id="performance-sidebar-dropdown" href="#/admin/layers">
+	                                <i class="fas fa-layer-group"></i>
+	                                <span class="title" ng-i18Next="Layers"></span>
+	                            </a>
+	                    </li>
+										<li class="has-sub" class="">
+		                            <a href="#/admin" >
+		                                <i class="fas fa-cog"></i>
+		                                <span class="title" ng-i18Next="Admin"></span>
+		                            </a>
+																<ul>
+																	<li ng-if="isGranted('pro-sql-editor','see')" id="query-editor-sidebar-btn" class="">
+																			<a href="#/pro/q">
+																					<span class="title" ng-i18Next="Query Editor"></span>
+																			</a>
+																	</li>
+						                        <li ng-if="isGranted('pro-queries','see')" id="query-history-sidebar-btn" class="">
+						                            <a href="#/pro/queries">
+						                                <span class="title" ng-i18Next="Query history"></span>
+						                            </a>
+						                        </li>
+																		<li ng-if="isGranted('Spaces','update')" id="public-space-sidebar-btn" class="">
+						                            <a href="#/admin/public-space">
+						                                <span class="title" ng-i18Next="Public space"></span>
+						                            </a>
+						                        </li>
+																		<li ng-if="isGranted('Connections','see')" id="connections-sidebar-btn" class="">
+						                            <a href="#/admin/connections">
+						                                <span class="title" ng-i18Next="Connections"></span>
+						                            </a>
+						                        </li>
+																		<li ng-if="isGranted('settings','see')" id="settings-sidebar-btn" class="">
+						                            <a href="#/settings">
+						                                <span class="title" ng-i18Next="Settings"></span>
+						                            </a>
+						                        </li>
+																		<li ng-if="isGranted('pro-logs','see')" id="activity-log-sidebar-btn" class="">
+						                            <a href="#/admin/log">
+						                                <span class="title" ng-i18Next="Server log"></span>
+						                            </a>
+						                        </li>
+																		<li ng-if="isGranted('email-templates','see')" id="activity-log-sidebar-btn" class="">
+						                            <a href="#/admin/email/templates">
+						                                <span class="title" ng-i18Next="Email templates"></span>
+						                            </a>
+						                        </li>
+																		<li id="my-account-sidebar-btn" class="">
+						                            <a href="#/my-account">
+						                                <span class="title" ng-i18Next="My Account"></span>
+						                            </a>
+						                        </li>
+
+						                    </ul>
+		                </li>
+
+	                <li class="has-sub" ng-if="isGranted('users','see')" class="">
+	                            <a href="#/company/setup" >
+	                                <i class="fas fa-users-cog"></i>
+	                                <span class="title" ng-i18Next="Users & Roles"></span>
+	                            </a>
+															<ul>
+					                        <li ng-if="isGranted('users','see')" id="admin-users-sidebar-btn" class="">
+					                            <a href="#/admin/users">
+					                                <span class="title" ng-i18Next="Users"></span>
+					                            </a>
+					                        </li>
+																	<li ng-if="isGranted('roles','see')" id="admin-roles-sidebar-btn" class="">
+					                            <a href="#/admin/roles">
+					                                <span class="title" ng-i18Next="Roles"></span>
+					                            </a>
+					                        </li>
+					                    </ul>
+	                </li>
+	            </ul>
+
+	        </div>
+	    </div>
+
+        <div id="main-app-content" class="main-content">
+            <nav class="navbar user-info-navbar fixed" role="navigation">
+            <ul class="user-info-menu left-links list-inline list-unstyled">
+
+                <li class="hidden-sm hidden-xs" style="min-height: 76px;"><a href="#" data-toggle="sidebar">
+                <i class="fas fa-bars"></i>
+                </a></li>
+
+
+                <li dropdown id="main-menu-notifications-dropdown" class="light-blue menu-notifications" ng-controller="notificationsCtrl" ng-init="getNotificationsDropdown()">
+
+                <a dropdown-toggle id="notifications-dropdown" class="dropdown-toggle" href="" ng-click="markAsViewed();unviewedNotifications=0;">
+                    <i class="far fa-bell"></i>
+                    <span class="badge notifications-counter"
+                          ng-bind="unviewedNotifications" ng-class="{'badge-danger': unviewedNotifications > 0}"></span>
+                </a>
+
+                <ul class="dropdown-menu notifications" aria-labelledby="notifications-dropdown">
+
+                    <li>
+                        <ul class="dropdown-menu-list list-unstyled ps-scrollbar" style="max-height: none;">
+
+                            <li class="notification-primary" ng-repeat="notification in notifications" ng-class="{'active': !notification.viewed}">
+                                <a href="{{notification.url}}" ng-class="{'defaultCursor': !notification.url}">
+                                    <span>
+                                        <strong>{{notification.text}}</strong>
+                                    </span>
+                                    <br/>
+                                    <span class="small time pull-right" ng-bind="notification.createdFrom">
+                                    </span>
+
+                                    <div class="row" ng-if="notification.type == 2" style="margin-top: 5px">
+                                        <div class="col-md-12">
+                                            <button class="btn btn-xs btn-info" ng-show="!notification.accepted" style="width: 100%;"
+                                                    ng-click="acceptNotification(notification)" ng-i18next="Accept"></button>
+                                            <button class="btn btn-xs btn-info" ng-show="notification.accepted" style="width: 100%;"
+                                                    ng-disabled="true" ng-i18next="Accepted"></button>
+                                        </div>
+                                    </div>
+
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+
+                    <li class="external">
+                        <a href="#/notifications">
+                            <span ng-i18next="See all notifications"></span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </li>
+                </ul>
+
+            </li>
+
+
+                <li id="main-menu-language-switcher" class="dropdown hover-line language-switcher">
+            <a href="" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img ng-show="!user.language || user.language == 'en' || user.language == 'en-GB'"
+                     src="images/flags/flag-uk.png">
+                <img ng-show="user.language == 'es' || user.language == 'es-ES'"
+                     src="images/flags/flag-es.png">
+                <img ng-show="user.language == 'pt' || user.language == 'pt-PT'"
+                     src="images/flags/flag-br.png">
+            </a>
+
+            <ul class="dropdown-menu languages">
+                <li ng-hide="user.language == 'en' || user.language == 'en-GB'">
+                    <a ng-click="changeLng('en')">
+                        <img src="images/flags/flag-uk.png">
+                        English
+                    </a>
+                </li>
+                <li ng-hide="user.language == 'es' || user.language == 'es-ES'">
+                    <a ng-click="changeLng('es')">
+                        <img src="images/flags/flag-es.png">
+                        Español
+                    </a>
+                </li>
+                <li ng-hide="user.language == 'pt' || user.language == 'pt-PT'">
+                    <a ng-click="changeLng('pt')">
+                        <img src="images/flags/flag-br.png">
+                        Português
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+            </ul>
+
+            <ul id="user-dropdown" class="user-info-menu right-links list-inline list-unstyled">
+
+            <li id="main-menu-user-dropdown" class="dropdown user-profile" style="min-height: 76px;">
+                <a class="dropdown-toggle hand-cursor" data-toggle="dropdown">
+                    <span>
+                        <!--<nd-employee-image employee-id="user._id" width="32" height="32" rounded="true"></nd-employee-image>-->
+                        <!--<span ng-bind="user.name.split(' ')[0]"></span>...-->
+                        <span ng-bind="user.name || user.email"></span>
+                        <i class="fas fa-angle-down"></i>
+                    </span>
+                </a>
+                <ul class="dropdown-menu user-profile-menu list-unstyled">
+                    <li>
+                        <a href="#/my-account">
+                            <i class="fas fa-user"></i>
+                            <span ng-i18next="My account"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{user.supportURL}}" target="_blank">
+                            <i class="fas fa-question"></i>
+                            <span ng-i18next="Support Center"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{user.appURL}}" target="_blank">
+                            <i class="fas fa-info"></i>
+                            <span ng-i18next="About"></span>
+                            <span ng-bind="webApp.name"></span>
+                        </a>
+                    </li>
+                    <li class="last">
+                        <a href="/logout">
+                            <i class="fas fa-power-off"></i>
+                            <span ng-i18next="Logout"></span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li id="main-menu-stream-btn">
+                <a href="#" data-toggle="chat">
+                    <i class="fas fa-question-circle"></i>
+                </a>
+            </li>
+
+        </ul>
+
+        </nav>
+
+
+            <div id="app-ui-view" ui-view class="app-ui-view">
+
+            </div>
+
+            <footer class="main-footer footer-type-1">
+                <div class="footer-inner">
+	                <div class="footer-text">
+	                    © 2018
+	                    <strong><%= appName %></strong> - <a href="<%= appURL %>" target="_blank"><%= appURL %></a>
+
+
+	                </div>
+	                <small ng-bind="user.environment" class="pull-right"></small>
+                </div>
+            </footer>
+
+        </div>
+
+        <div id="chat" class="fixed">
+                <div class="chat-inner ps-container ps-active-y">
+                    <h2 class="chat-header" ng-i18next="Help"></h2>
+                    <div class="chat-group">
+														<wice-help></wice-help>
+                    </div>
+                    <!--<chat-widget></chat-widget>-->
+                </div>
+            </div>
+
+	</div>
+
+	<!-- Remove this code if you want to disable Loading Overlay in the beginning of document loading -->
+	<div class="page-loading-overlay">
+		<div class="loader-2"></div>
+	</div>
+
+	<div id="loader-overlay" style="display: none;">
+    	<img class="loader-img" src="themes/xwst/assets/images/preloader.gif"/>
+	</div>
+</body>

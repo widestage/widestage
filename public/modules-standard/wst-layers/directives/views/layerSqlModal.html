@@ -1,0 +1,71 @@
+<div class="row" id="layerElementModal">
+
+    <div class="panel panel-default">
+        <form name="sqlLayerForm">
+            <div class="panel-heading">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
+                <h4 class="modal-title" ng-i18next="Custom query dataset"></h4>
+            </div>
+
+            <div class="panel-body" ng-init="getDatasources()">
+
+                <div class="container-fluid" ng-if="!selectedConnection || selectedConnection.type != 'MONGODB'">
+                    <div class="form-group" ng-if="!layer.model.datasourceID" ng-class="{ 'has-error': sqlLayerForm.datasource.$invalid }">
+                            <label ng-if="datasourceHasToBeChoosed" for="field-3" class="control-label" ng-i18next="1.- Choose a data source"></label>
+
+                            <select  ng-if="datasourceHasToBeChoosed" class="form-control" name="datasource" ng-model="layer.model.datasourceID" ng-required="true" required>
+
+                                <option value="{{dts._id}}" ng-repeat="dts in connections" ng-if="dts.type != 'MONGODB'">
+
+                                    {{dts.name}}
+                                    [
+                                    <span class="list-group-item-heading">{{dts.type}}</span>
+                                    ]
+                                </option>
+
+                            </select>
+                        <span ng-show="sqlLayerForm.datasource.$invalid" class="help-inline" ng-bind="getTranslation('You have to select a valid datasource for this dataset')"></span>
+
+
+                    </div>
+
+                    <div class="form-group" ng-class="{ 'has-error': sqlLayerForm.name.$invalid }">
+        						<label class="control-label" for="field-name">Type a name for this dataset</label>
+                                <input type="text" ng-trim="false" ng-change="temporarySQLCollection.name = temporarySQLCollection.name.split(' ').join('')" class="form-control" id="field-name" name="name" ng-model="temporarySQLCollection.name" placeholder="type a name for the dataset" ng-required="true" ng-pattern="/^[a-zA-Z0-9]*$/" required>
+        						<span ng-show="sqlLayerForm.name.$invalid" class="help-inline" ng-bind="getTranslation('The name is required')"></span>
+                    </div>
+
+                    <div class="form-group" ng-class="{ 'has-error': sqlLayerForm.sql.$invalid }">
+                        <label class="control-label" for="field-sql">SQL query</label>
+                        <textarea class="form-control autogrow" cols="20" id="field-sql" name="sql" ng-model="temporarySQLCollection.sqlQuery" ng-required="true" required></textarea>
+                        <span ng-show="sqlLayerForm.sql.$invalid" class="help-inline" ng-bind="getTranslation('You have to enter an SQL query')"></span>
+                    </div>
+
+                </div>
+
+                <div class="alert alert-danger" role="alert" ng-if="queryFaillure">
+                    {{addSQLErrorMessage}}
+                </div>
+
+                <div class="alert alert-success" role="alert" ng-if="querySuccess">
+                    {{addSQLSuccessMessage}}
+                </div>
+
+                <div class="container-fluid" ng-if="isMongoDBDatasource()">
+                    <div class="alert alert-warning" role="alert" >
+                        Sorry! adding querries to a layer is not supported for MongoDB connections
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-footer">
+                <button type="button" class="btn btn-info pull-right" ng-disabled="(sqlLayerForm.$invalid  || sqlLayerForm.$pristine) || !querySuccess" ng-click="addSqlToLayer()" ng-i18next="Add to layer"></button>
+                <button type="button" class="btn btn-white pull-right" ng-click="modalOptions.close()" data-dismiss="modal" ng-i18next="Close"></button>
+                <!--<button type="button" class="btn btn-black pull-left" ng-disabled="!layer.model.datasourceID || !sqlQuery" ng-click="executeSql()" ng-i18next="Test query"></button>-->
+                <button type="button" class="btn btn-black pull-left" ng-click="executeSql()" ng-i18next="Test query"></button>
+
+            </div>
+        </form>
+
+    </div>
+</div>

@@ -1,4 +1,4 @@
-require('./prototype.js');
+require('./rototype.js');
 
 function Controller(model) {
     this.model = model;
@@ -10,8 +10,11 @@ Controller.method('findAll', function (req, done) {
     var Model = this.model, perPage = config.pagination.itemsPerPage, page = (req.query.page) ? req.query.page : 1;
     var find = {}, searchText = (req.query.search) ? req.query.search : false, fields = {};
     var fieldsToGet = (req.query.fields) ? req.query.fields : false;
-    if (req.query.page > 0)
-        var params = (req.query.page) ? {skip: (page-1)*perPage, limit: perPage} : {};
+
+    if (page <= 0 )
+            var params = {}
+        else
+            var params = (page) ? {skip: (page-1)*perPage, limit: perPage} : {};
 
     if (req.query.sort) {
         var sortField = {};
@@ -88,16 +91,12 @@ Controller.method('findAll', function (req, done) {
     if (mandatoryFilters != [])
         find =  {$and: mandatoryFilters};
 
-
+    //TODO: params don´t work with NEDB
 
     Model.find(find, fields, params, function(err, items){
         if(err) throw err;
-
         Model.count(find, function (err, count) {
-            if (req.query.page > 0)
-                done({result: 1, page: page, pages: ((req.query.page) ? Math.ceil(count/perPage) : 1), items: items});
-            else
-                done({result: 1, page: 1, pages: 1, items: items});
+            done({result: 1, page: page, pages: ((page) ? Math.ceil(count/perPage) : 1), count: count, perPage: perPage,  items: items});
         });
     });
 });
@@ -111,8 +110,14 @@ Controller.method('findOne', function (req, done) {
 
     var find = generateFindFields(req, req.query.id);
 
+    if (req.query.find)
+    {
+        for (var i in req.query.find)
+            find['$and'].push(req.query.find[i]);
+    }
+
+
     this.model.findOne(find,{},function(err, item){
-        //if(err) throw err; Si no encuentra el id salta el error?
         if (!item) {
             done({result: 0, msg: "Item not found."});
         }
@@ -122,6 +127,58 @@ Controller.method('findOne', function (req, done) {
     });
 });
 
+Controller.method('findOneV3', function (req, done) {
+    var find = generateFindFields(req, req.params.id);
+
+    var fieldsToGet = (req.query.fields) ? req.query.fields : false, fields = {};
+
+    if (fieldsToGet) {
+        if (typeof fieldsToGet == 'string') {
+            fields[fieldsToGet] = 1;
+        }
+        else {
+            for (var i in fieldsToGet) {
+                fields[fieldsToGet[i]] = 1;
+            }
+        }
+    }
+
+    if (req.query.find) {
+        try {
+            req.query.find = JSON.parse(req.query.find);
+        }
+        catch(err) {}
+
+        if (!req.query.find.length) {
+            req.query.find = [req.query.find];
+        }
+        for (var i in req.query.find)
+            find['$and'].push(req.query.find[i]);
+    }
+
+    if (this.model.load) {
+        this.model.load(find,fields, function(err, item){
+            //if(err) throw err; Si no encuentra el id salta el error?
+            if (!item) {
+                done({result: 0, msg: "Item not found."});
+            }
+            else {
+                done({result: 1, item: item.toObject()});
+            }
+        });
+    }
+    else {
+        this.model.findOne(find,fields,function(err, item){
+            //if(err) throw err; Si no encuentra el id salta el error?
+            if (!item) {
+                done({result: 0, msg: "Item not found."});
+            }
+            else {
+                done({result: 1, item: item.toObject()});
+            }
+        });
+    }
+});
 
 Controller.method('findOneForServer', function (req, done) {
     if (!req.query.id) {
@@ -131,9 +188,8 @@ Controller.method('findOneForServer', function (req, done) {
 
     var find = generateFindFields(req, req.query.id);
 
-    //this.model.findOne({"_id" : req.query.id},{},function(err, item){
     this.model.findOne(find,{},function(err, item){
-        //if(err) throw err; Si no encuentra el id salta el error?
+
         if (!item) {
             done({result: 0, msg: "Item not found."});
         }
@@ -177,7 +233,6 @@ Controller.method('create', function (req, done) {
 
     this.model.create(data, function(err, item){
         if(err) throw err;
-
         done({result: 1, msg: "Item created", item: item.toObject()});
     });
 });
@@ -210,7 +265,6 @@ Controller.method('update', function (req, done) {
         user_companyName : (req.isAuthenticated()) ? req.user.companyName : null
     });
 
-    //this.model.update({"_id" : id}, {$set: data }, function (err, numAffected) {
     this.model.update(find, {$set: data }, function (err, result) {
         if(err) throw err;
 
@@ -235,24 +289,24 @@ Controller.method('remove', function (req, done) {
     this.model.remove(find, function (err, result) {
         if(err) throw err;
 
-        var numAffected = (typeof result.n == 'undefined') ? result.nModified : result.n; //MongoDB 2.X return n, 3.X return nModified?
 
-        if (numAffected>0)
-        {
-            done({result: 1, msg: numAffected+" items deleted."});
-        } else {
-            done({result: 0, msg: "Error deleting items, no item have been deleted"});
-        }
+            done({result: 1, msg: "items deleted."});
+
     });
 });
 
 function generateFindFields(req, id)
 {
     var mandatoryFilters = [];
-    var idField = {}
+    var idField = {};
+    //idField = {_id:id}
     idField['_id'] = id;
 
-    mandatoryFilters.push(idField);
+    mandatoryFilters.push({_id:id});
+    //var trashField = {}
+    //trashField['nd_trash_deleted'] = false;
+
+      //  mandatoryFilters.push(trashField);
 
     if (req.query.trash == true)
     {
@@ -278,8 +332,10 @@ function generateFindFields(req, id)
         mandatoryFilters.push(companyField);
     }
 
-
-    return  {"$and": mandatoryFilters};
+    if (mandatoryFilters != [])
+        return  {"$and": mandatoryFilters};
+        else
+        return {};
 
 }
 

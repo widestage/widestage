@@ -1,0 +1,131 @@
+<div class="row">
+
+    <div class="col-md-12">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title" ng-i18next="Connection"></h3>
+                <div class="panel-options">
+
+                </div>
+            </div>
+            <div class="panel-body">
+
+                <form role="form">
+
+
+                            <div class="form-group">
+                                <label class="control-label">Connection Type II</label>
+                                <select ng-model="_DataSource.type" placeholder="Select a datasource type..." id="type" class="form-control" ng-change="selectedRoleChanged = true">
+                                    <option label="{{conn.name}}" value="{{conn.name}}" ng-repeat="conn in _ConnectionTypes">{{conn.name}}</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label" for="name">Name</label>
+                                <input class="form-control" name="name" id="name" ng-model="_DataSource.name" data-validate="required" placeholder="Insert here the name for this connection" novalidate="novalidate" required="true" aria-describedby="full_name-error" aria-invalid="false"><span id="full_name-error" class="validate-has-error" style="display: none;"></span>
+                            </div>
+
+                            <div class="form-group" ng-if="_DataSource.type != 'BIGQUERY'">
+                                <label class="control-label" for="host">Host</label>
+                                <input class="form-control" name="host" id="host" ng-model="_DataSource.params.connection.host" data-validate="required" placeholder="Insert here your Host address or IP" novalidate="novalidate" required="true" aria-describedby="full_name-error" aria-invalid="false"><span id="full_name-error" class="validate-has-error" style="display: none;"></span>
+                            </div>
+
+                            <div class="form-group" ng-if="_DataSource.type != 'BIGQUERY'">
+                                <label class="control-label" for="port">Port</label>
+                                <input class="form-control" name="port" id="port" ng-model="_DataSource.params.connection.port" data-validate="required" placeholder="Insert here the port to access the data source" novalidate="novalidate" required="true" aria-describedby="full_name-error" aria-invalid="false"><span id="full_name-error" class="validate-has-error" style="display: none;"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label" for="database" ng-if="_DataSource.type != 'BIGQUERY'">Database</label>
+                                <label class="control-label" for="database" ng-if="_DataSource.type == 'BIGQUERY'">Project ID</label>
+                                <input class="form-control" name="database" id="database" ng-model="_DataSource.params.connection.database" data-validate="required" placeholder="Set here the name of the data source Database to connect" novalidate="novalidate" aria-required="true" aria-describedby="full_name-error" aria-invalid="false"><span id="full_name-error" class="validate-has-error" style="display: none;"></span>
+                            </div>
+
+                            <div class="form-group" ng-if="_DataSource.type == 'BIGQUERY'">
+                                <label class="control-label" for="userName">Google Cloud JSON authorization file</label>
+                                <!--<input type="file" class="form-control" id="file" ng-model="_DataSource.params.connection.file">-->
+                                <div class="input-group">
+                                    <input type="text" class="form-control" ng-model="_DataSource.params.connection.file" placeholder="Google Cloud JSON authorization file" aria-describedby="basic-addon2">
+                                    <span class="input-group-addon hand-cursor" id="basic-addon2" ngf-select ngf-change="upload($file)" ngf-multiple="false" ngf-accept="'application/json'">Select File</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group" ng-if="_DataSource.type != 'BIGQUERY'">
+                                <label class="control-label" for="userName">User name</label>
+                                <input class="form-control" name="userName" id="userName" ng-model="_DataSource.params.connection.userName" data-validate="required" placeholder="Set here the username to access the database" novalidate="novalidate" aria-required="true" aria-describedby="full_name-error" aria-invalid="false"><span id="full_name-error" class="validate-has-error" style="display: none;"></span>
+                            </div>
+
+                            <div class="form-group" ng-if="_DataSource.type != 'BIGQUERY'">
+                                <label class="control-label" for="password">Password</label>
+                                <input class="form-control" type="password" name="password" id="password" ng-model="_DataSource.params.connection.password" data-validate="required" placeholder="Set here the username password to access the database" novalidate="novalidate" aria-required="true" aria-describedby="full_name-error" aria-invalid="false"><span id="full_name-error" class="validate-has-error" style="display: none;"></span>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="password">Data Packet size</label>
+                                        <input class="form-control" type="number" name="packetSize" id="packetSize" ng-model="_DataSource.params.packetSize" data-validate="required" placeholder="Set here the packet size for this datasource (-1 means get always all data)" novalidate="novalidate" aria-required="true" aria-describedby="full_name-error" aria-invalid="false"><span id="full_name-error" class="validate-has-error" style="display: none;"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4" style="padding: 5px;">
+
+                                </div>
+
+                                <div class="col-md-4" style="padding: 5px;">
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>
+                                            <input type="checkbox" ng-model="_DataSource.quotedElementNames">
+                                            Enclose table and field names with double quotes in generated SQL
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4" style="padding: 5px;">
+
+                                </div>
+                                <div class="col-md-4" style="padding: 5px;">
+
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12" style="padding: 5px;">
+                                    <a ng-click="doTestConnection()" ng-disabled="(!_DataSource.params.type == 'BIGQUERY' && (!_DataSource.params.connection.host || !_DataSource.params.connection.port || !_DataSource.params.connection.database || testingConnection)) || (_DataSource.params.type == 'BIGQUERY' && (!_DataSource.params.connection.database) || testingConnection) " class="btn btn-default pull-right" style="margin-left: 5px;margin-right: 5px;">Test Connection</a>
+                                    <div ng-if="testConnection.message" class="row alert" ng-class="{'alert-success': testConnection.result == 1,'alert-danger': testConnection.result != 1}" >
+                                        {{testConnection.message}}
+                                    </div>
+                                    <div ng-if="testConnection.errorMessage" style="font-size:11px;color:#ccc">
+                                        {{testConnection.errorMessage}}
+                                    </div>
+                                </div>
+                            </div>
+
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-default"
+          ng-click="modalOptions.close()" ng-i18next="Cancel"></button>
+  <button class="btn btn-info" ng-if="mode == 'edit'"
+          ng-click="modalOptions.ok();" ng-disabled="(!_DataSource.params.type == 'BIGQUERY' && (!_DataSource.params.connection.host || !_DataSource.params.connection.port || !_DataSource.params.connection.database || testingConnection)) || (_DataSource.params.type == 'BIGQUERY' && (!_DataSource.params.connection.database) || testingConnection) " ng-show="!readonly" ng-i18next="Update"></button>
+  <button class="btn btn-info" ng-if="mode == 'new'"
+                  ng-click="modalOptions.ok();" ng-disabled="(!_DataSource.params.type == 'BIGQUERY' && (!_DataSource.params.connection.host || !_DataSource.params.connection.port || !_DataSource.params.connection.database || testingConnection)) || (_DataSource.params.type == 'BIGQUERY' && (!_DataSource.params.connection.database) || testingConnection) " ng-show="!readonly" ng-i18next="Create"></button>
+
+</div>

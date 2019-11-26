@@ -1,0 +1,48 @@
+<!-- dxpivot -->
+<div ng-if="selectedReport.reportType == 'dxPivot'" id="pivotColumnsPanel"  class="container-fluid column-zone no-padding" drop="onDrop($data, $event, 'pivotColumn')" drop-effect="copy" drop-accept="['json/custom-object','json/column']" drag-over="onDragOver($event)" drag-over-class="drag-over-accept">
+    <div class="filter-zone-label pull-right" ng-hide="selectedReport.properties.pivotColumns.length > 0">Drop here your columns</div>
+    <ul class="ul-drop no-padding" ng-model="selectedReport.properties.pivotColumns" ui-sortable="sortableOptions">
+        <li class="column-box" ng-repeat="column in selectedReport.properties.pivotColumns">
+
+            <div class="dropdown">
+                <i class="fa fa-cube" ng-show="column.elementRole == 'dimension'"></i>
+                <i class="fa fa-list-ol" ng-show="column.elementRole == 'measure' "></i>
+                <span tooltip="Drag to left or right to change column order in the results" tooltip-placement="left">{{column.objectLabel}}</span>
+
+                <i class="fa fa-times hand-cursor  column-box-close-btn" ng-click="remove(column,'pivotColumn')" tooltip="Click here to remove this column from the results" tooltip-placement="left"></i>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<div ng-if="selectedReport.reportType == 'dxPivot'" id="pivotRowsPanel"  class="container-fluid column-zone no-padding" drop="onDrop($data, $event, 'pivotRow')" drop-effect="copy" drop-accept="['json/custom-object','json/column']" drag-over="onDragOver($event)" drag-over-class="drag-over-accept">
+    <div class="filter-zone-label pull-right" ng-hide="selectedReport.properties.pivotRows.length > 0">Drop here your rows</div>
+    <ul class="ul-drop no-padding" ng-model="selectedReport.properties.pivotRows" ui-sortable="sortableOptions">
+        <li class="column-box" ng-repeat="column in selectedReport.properties.pivotRows">
+
+            <div class="dropdown">
+                <i class="fa fa-cube" ng-show="(column.elementType != 'DECIMAL' && column.elementType != 'INTEGER' && column.elementType != 'FLOAT')"></i>
+                <i class="fa fa-list-ol" ng-show="(column.elementType == 'DECIMAL' || column.elementType == 'INTEGER' || column.elementType == 'FLOAT')"></i>
+                <span tooltip="Drag to left or right to change column order in the results" tooltip-placement="left">{{column.objectLabel}}</span>
+
+                <i class="fa fa-times hand-cursor  column-box-close-btn" ng-click="remove(column,'pivotRow')" tooltip="Click here to remove this column from the results" tooltip-placement="left"></i>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<div ng-if="selectedReport.reportType == 'dxPivot'" id="pivotMeasuresPanel"  class="container-fluid column-zone no-padding" drop="onDrop($data, $event, 'pivotMeasure')" drop-effect="copy" drop-accept="['json/custom-object','json/column']" drag-over="onDragOver($event)" drag-over-class="drag-over-accept">
+    <div class="filter-zone-label pull-right" ng-hide="selectedReport.properties.pivotMeasures.length > 0">Drop here your values</div>
+    <ul class="ul-drop no-padding" ng-model="selectedReport.properties.pivotMeasures" ui-sortable="sortableOptions">
+        <li class="column-box" ng-repeat="column in selectedReport.properties.pivotMeasures">
+
+            <div class="dropdown">
+                <i class="fa fa-cube" ng-show="column.elementRole == 'dimension'"></i>
+                <i class="fa fa-list-ol" ng-show="column.elementRole == 'measure' "></i>
+                <span tooltip="Drag to left or right to change column order in the results" tooltip-placement="left">{{column.objectLabel}}</span>
+
+                <i class="fa fa-times hand-cursor  column-box-close-btn" ng-click="remove(column,'pivotMeasure')" tooltip="Click here to remove this column from the results" tooltip-placement="left"></i>
+            </div>
+        </li>
+    </ul>
+</div>

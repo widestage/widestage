@@ -1,0 +1,155 @@
+<section id="explorerIndicatorProperties" class="layer scrollPane">
+
+  <table style="width:230px;">
+    <tr>
+      <td>
+        <label for="background_color" class="control-label" ng-i18next="Widget type"></label>
+
+      </td>
+      <td>
+        <select id="widgetType" class="input-group form-control ng-pristine ng-untouched ng-valid ng-not-empty" ng-model="report.properties.indicator.style" ng-options="obj.value as obj.name for obj in [{value:'style1',name:'style1'},{value:'style2',name:'style2'}]" ng-change="report.properties.indicator.refresh()"></select>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="background_color" class="control-label" ng-i18next="Background color"></label>
+
+      </td>
+      <td>
+
+            <wst-color ng-model="report.properties.indicator.background_color"  on-change-color="report.properties.indicator.refresh()"></wst-color>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="main_font_size" class="control-label" ng-i18next="Main font size"></label>
+      </td>
+      <td>
+            <input type="number" class="input-group form-control" ng-model="report.properties.indicator.main_font_size"  ng-change="report.properties.indicator.refresh()">
+
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="main_font_color" class="control-label" ng-i18next="Main font color"></label>
+      </td>
+      <td>
+        <wst-color  ng-model="report.properties.indicator.main_font_color" on-change-color="report.properties.indicator.refresh()"></wst-color>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="secondary_font_size" class="control-label" ng-i18next="Secondary font size"></label>
+      </td>
+      <td>
+            <input type="number" class="input-group form-control" ng-model="report.properties.indicator.secondary_font_size"  ng-change="report.properties.indicator.refresh()">
+      </td>
+    </tr>
+
+
+    <tr>
+      <td>
+        <label for="secondary_font_color" class="control-label" ng-i18next="Secondary font color"></label>
+
+      </td>
+      <td>
+
+            <wst-color  ng-model="report.properties.indicator.secondary_font_color" on-change-color="report.properties.indicator.refresh()"></wst-color>
+      </td>
+    </tr>
+
+
+    <tr>
+      <td>
+        <label for="secondary_text" class="control-label" ng-i18next="Secondary text"></label>
+
+      </td>
+      <td>
+
+            <input type="text" class="input-group form-control" ng-model="report.properties.indicator.secondary_text"  ng-change="report.properties.indicator.refresh()">
+
+      </td>
+    </tr>
+
+
+    <tr>
+      <td>
+        <label for="icon" class="control-label" ng-i18next="Icon"></label>
+
+      </td>
+      <td>
+
+            <wst-icon class="input-group" ng-model="report.properties.indicator.icon" on-change-icon="report.properties.indicator.refresh()"></wst-icon>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="icon_size" class="control-label" ng-i18next="Icon size"></label>
+
+      </td>
+      <td>
+        <input type="number" class="input-group form-control" ng-model="report.properties.indicator.icon_size"  ng-change="report.properties.indicator.refresh()">
+
+      </td>
+    </tr>
+
+
+    <tr>
+      <td>
+        <label for="icon_background_color" class="control-label" ng-i18next="Icon background color"></label>
+
+      </td>
+      <td>
+
+            <wst-color  ng-model="report.properties.indicator.icon_background_color" on-change-color="report.properties.indicator.refresh()"></wst-color>
+      </td>
+    </tr>
+
+
+    <tr>
+      <td>
+        <label for="icon_color" class="control-label" ng-i18next="Icon color"></label>
+
+      </td>
+      <td>
+
+            <wst-color  ng-model="report.properties.indicator.icon_color" on-change-color="report.properties.indicator.refresh()"></wst-color>
+      </td>
+    </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+    report.properties.indicator.main_value_type = ''; //currency //percentage
+    report.properties.indicator.currency_symbol = '';
+    report.properties.indicator.style = 'style1';
+    -->
+
+
+
+
+
+</section>

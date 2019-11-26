@@ -1,0 +1,78 @@
+
+<div class="container-fluid">
+
+  <div class="page-title"> <!--full-width-->
+  	<div class="title-env">
+  		<h1 class="title" ng-i18next="email templates"></h1>
+  		<p class="description" ng-if="description"></p>
+  	</div>
+  	<div style="margin: 0px 20px;text-align: right;">
+      <div class="right-toolbar">
+          <a ng-if="wstDeveloper"  ng-click="newTemplate()" class="btn btn-success pull-right" ng-i18next="New Template"></a>
+      </div>
+  	</div>
+  </div>
+
+    <div class="col-md-12">
+
+        <alert type="info" ng-show="users.length == 0">
+          <i class="fa fa-exclamation-triangle" style="font-size:24px"></i>
+          <span ng-i18next="No templates found"></span>
+        </alert>
+
+        <div class="panel panel-default" ng-show="templates.length > 0">
+            <div class="panel-heading">
+
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                          <th ng-i18next="Name"></th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr ng-repeat="template in templates">
+                            <td>
+                                <a ng-click="editTemplate(template)">
+                                    <h4 class="list-group-item-heading" ng-bind="template.name"></h4>
+                                    <small>{{template.description}}</small>
+                                </a>
+                            </td>
+
+                        </tr>
+
+
+                    </tbody>
+                </table>
+            </div>
+
+
+            <nd-table-footer page="page" pages="pages" per-page="perPage" count="count" find="getTemplates"></nd-table-footer>
+
+             <ul ng-if="pager.pages.length > 1" class="pagination">
+                <li ng-class="{disabled:pager.currentPage === 1}">
+                    <a ng-click="getUsers(1,'',['userName','lastName','status'])">First</a>
+                </li>
+                <li ng-class="{disabled:pager.currentPage === 1}">
+                    <a ng-click="getUsers(pager.currentPage - 1,'',['userName','lastName','status'])">Previous</a>
+                </li>
+                <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                    <a ng-click="getUsers(page,'',['userName','lastName','status'])">{{page}}</a>
+                </li>
+                <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                    <a ng-click="getUsers(pager.currentPage + 1,'',['userName','lastName','status'])">Next</a>
+                </li>
+                <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                    <a ng-click="getUsers(pager.totalPages,'',['userName','lastName','status'])">Last</a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+</div>

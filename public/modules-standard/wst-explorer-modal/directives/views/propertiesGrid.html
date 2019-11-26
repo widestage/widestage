@@ -1,0 +1,116 @@
+  <section id="explorerIndicatorProperties" class="layer scrollPane">
+    <table style="width:230px;">
+
+      <tr>
+        <td>
+          <label for="background_color" class="control-label" ng-i18next="Background color"></label>
+        </td>
+        <td>
+          <wst-color ng-model="report.properties.grid.background_color"  on-change-color="report.properties.grid.refresh()"></wst-color>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="header_height" class="control-label" ng-i18next="Header height"></label>
+        </td>
+        <td>
+          <input type="number" class="input-group form-control" ng-model="report.properties.grid.header_height"  ng-change="report.properties.grid.refresh()">
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <label for="header_font_size" class="control-label" ng-i18next="Header font size"></label>
+        </td>
+        <td>
+          <input type="number" class="input-group form-control" ng-model="report.properties.grid.header_font_size"  ng-change="report.properties.grid.refresh()">
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <label for="header_font_color" class="control-label" ng-i18next="Header font color"></label>
+        </td>
+        <td>
+          <wst-color  ng-model="report.properties.grid.header_font_color" on-change-color="report.properties.grid.refresh()"></wst-color>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <label for="header_background_color" class="control-label" ng-i18next="Header background color"></label>
+        </td>
+        <td>
+          <wst-color  ng-model="report.properties.grid.header_background_color" on-change-color="report.properties.grid.refresh()"></wst-color>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="header_bottom_line_height" class="control-label" ng-i18next="Header bottom line height"></label>
+        </td>
+        <td>
+          <input type="number" class="input-group form-control" min="0" ng-model="report.properties.grid.header_bottom_line_height"  ng-change="report.properties.grid.refresh()">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="header_bottom_line_color" class="control-label" ng-i18next="Header bottom line color"></label>
+        </td>
+        <td>
+          <wst-color  ng-model="report.properties.grid.header_bottom_line_color" on-change-color="report.properties.grid.refresh()"></wst-color>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <label for="row_height" class="control-label" ng-i18next="Row height"></label>
+        </td>
+        <td>
+          <input type="number" class="input-group form-control" ng-model="report.properties.grid.row_height"  ng-change="report.properties.grid.refresh()">
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <label for="row_font_size" class="control-label" ng-i18next="Row font size"></label>
+        </td>
+        <td>
+          <input type="number" class="input-group form-control" ng-model="report.properties.grid.row_font_size"  ng-change="report.properties.grid.refresh()">
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <label for="row_font_color" class="control-label" ng-i18next="Row font color"></label>
+        </td>
+        <td>
+          <wst-color  ng-model="report.properties.grid.row_font_color" on-change-color="report.properties.grid.refresh()"></wst-color>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="row_bottom_line_height" class="control-label" ng-i18next="Row bottom line height"></label>
+        </td>
+        <td>
+          <input type="number" class="input-group form-control" min="0" ng-model="report.properties.grid.row_bottom_line_height"  ng-change="report.properties.grid.refresh()">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="row_bottom_line_color" class="control-label" ng-i18next="Row bottom line color"></label>
+        </td>
+        <td>
+          <wst-color  ng-model="report.properties.grid.row_bottom_line_color" on-change-color="report.properties.grid.refresh()"></wst-color>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="row_column_line_width" class="control-label" ng-i18next="Row column line width"></label>
+        </td>
+        <td>
+          <input type="number" class="input-group form-control" min="0" ng-model="report.properties.grid.row_column_line_width"  ng-change="report.properties.grid.refresh()">
+        </td>
+      </tr>
+
+
+  </table>

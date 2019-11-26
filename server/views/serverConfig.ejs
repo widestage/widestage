@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html ng-app="wiceServerConfig">
+
+<head>
+<link rel="stylesheet" href="bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="angular-wizard/dist/angular-wizard.min.css">
+
+<style>
+.wizard-container
+{
+      min-height:500px;
+      position: relative;
+}
+
+.wizard-container .steps-indicator
+{
+    position: absolute;
+    top: 0px;
+}
+
+.wizard-container .next-btn
+{
+    position: absolute;
+    bottom: 10px;
+    right:0px;
+}
+
+form .container
+{
+    margin-top:5px;
+}
+
+.lead
+{
+    font-size:16px;
+}
+
+.steps
+{
+  padding-top: 50px;
+}
+
+.ng-invalid {
+  border-color: red;
+  /*background: url(https://cdn0.iconfinder.com/data/icons/fugue/icon/asterisk-small.png) no-repeat;
+	background-position:right middle;*/
+}
+
+.error {
+  color: red;
+}
+
+
+</style>
+
+<script src="angular/angular.min.js"></script>
+<script type="text/javascript" src="jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="angular-wizard/dist/angular-wizard.min.js"></script>
+<script type="text/javascript" src="bootstrap/dist/js/bootstrap.min.js"></script>
+
+
+
+<script>
+ var app = angular.module('wiceServerConfig', ['mgo-angular-wizard'])
+   .controller('ServerConfigController', function($scope,$http,WizardHandler,$window,$location) {
+
+       $scope.greeting = "Hello World";
+       $scope.config = {};
+       $scope.config.port = 8089;
+       $scope.config.db_type ='mongoDB';
+       $scope.config.mongoPort = 27017;
+       $scope.config.mongoServer = "localhost";
+       $scope.config.mongoDatabase = "widestage";
+       $scope.config.uploadStorageType = 'local';
+       $scope.config.mailerService = 'SMTP';
+       $scope.config.mailersecureConnection = true;
+       $scope.config.mailerport = 587;
+       $scope.config.settingsItemsPerPage = 10;
+       $scope.config.settingsDefaultRecordsPerPage = 500;
+
+
+        if ($location.port())
+          var hostURL = $location.protocol() + '://'+ $location.host() +':'+  $location.port();
+          else
+          var hostURL = $location.protocol() + '://'+ $location.host();
+
+       $scope.config.host = hostURL;
+
+       $scope.strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*\?\_\-])(?=.{8,})");
+
+       $scope.applyChanges = function()
+       {
+         console.log('apply changes',$scope.config);
+         $http.post('/server-config', JSON.stringify($scope.config)).
+                    then(function(data, status, headers, config) {
+                       //$window.location.href = '/login';
+                       //$scope.canRestartServer = true;
+                       $('#myModal').modal('show');
+
+                    }).
+                    catch(function(data, status, headers, config) {
+                        $scope.errorLoginMessage = data;
+                        $scope.loginError = true;
+                    });
+
+       };
+
+       $scope.restartServer = function()
+       {
+         $http.post('/restartServer', {}).
+                    then(function(data, status, headers, config) {
+
+
+                    }).
+                    catch(function(data, status, headers, config) {
+                        $scope.errorLoginMessage = data;
+                        $scope.loginError = true;
+                    }).finally(function(){
+                      setTimeout(function(){ $window.location.href = '/login'; }, 1000);
+                    });
+
+       };
+
+
+    });
+
+    var compareTo = function() {
+        return {
+            require: "ngModel",
+            scope: {
+                otherModelValue: "=compareTo"
+            },
+            link: function(scope, element, attributes, ngModel) {
+
+                ngModel.$validators.compareTo = function(modelValue) {
+                    return modelValue == scope.otherModelValue.$modelValue;
+                };
+
+                scope.$watch("otherModelValue", function() {
+                    ngModel.$validate();
+                });
+            }
+        };
+    };
+
+    app.directive("compareTo", compareTo);
+
+</script>
+
+<!--<script src="js/services.js"></script>-->
+
+</head>
+<body ng-controller="ServerConfigController">
+
+<div class="container">
+<!--<div class="col-md-6 col-md-offset-3">  -->
+  <wizard id="wizard" class="wizard-container" on-finish="applyChanges()" on-cancel="cancelledWizard()" >
+
+    <wz-step wz-title="Welcome" canexit="exitValidation">
+
+      <div class="container-fluid center">
+
+                <div class="card card-info" style="margin-top:50px;">
+                      <div class="card-header">
+                        <h3 class="panel-title">Welcome to the server initialisation wizard</h3>
+                      </div>
+                      <div class="card-body">
+                        <p  class="lead">In here you will configure all your server's parameters, this is done only one time, once is done you will never be asked again for this configuration parameters...</p>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <p> Enjoy! </p>
+                      </div>
+                      <div class="card-footer">
+                        <button class="btn btn-info float-right" type="submit" wz-next value="Next" >Next</button>
+                      </div>
+                </div>
+      </div>
+
+
+
+        <br>
+        <br>
+
+
+    </wz-step>
+    <wz-step wz-title="Connection" >
+
+      <div class="container-fluid center">
+
+                <div class="card card-info" style="margin-top:50px;">
+                      <div class="card-header">
+                        <h3 class="panel-title">Server default port and repository connection</h3>
+                      </div>
+                      <div class="card-body">
+                            <p class="lead"> Insert here the necessary parameters for your server to run </p>
+                            <p class="lead"> First, choose the port where your server will be listening on, by default is 8089, but you can change that if you want </p>
+                            <p class="lead"> Choose also your mongoDB repository connection params, mongoDB is necessary for this server to work, you can use a local mongoDB database or use a mongoDB database installed in a different server, to do do, just provide the necesary parameters for the connection. </p>
+
+                          <br/>
+                          <form name="formConnection" novalidate>
+                            <div class="container">
+                              <!-- Text input-->
+                                <div class="form-group row">
+                                  <label class="col-md-4 control-label" for="serverPort">Listening HTTP server port</label>
+                                  <div class="col-md-4">
+                                  <input id="serverPort" name="serverPort" type="number" ng-model="config.port" placeholder="" class="form-control input-md" required>
+                                  <span ng-show="formConnection.serverPort.$touched &&formConnection.serverPort.$error.required" class="help-block error">Please insert a valid port for the Widestage server to run</span>
+                                  </div>
+                                </div>
+                            </div>
+                            <!--<div class="container">
+                              <div class="form-group">
+                                <label class="col-md-4 control-label" for="selectbasic">Repository type</label>
+                                <div class="col-md-4">
+                                  <select id="dbType" name="dbType" ng-model="config.db_type" class="form-control" required>
+                                    <option value="mongoDB">Mongodb server</option>
+                                  </select>
+                                <span ng-show="formConnection.dbType.$touched &&formConnection.dbType.$error.required" class="help-block error">You need to select a repository type.</span>
+                                </div>
+
+                              </div>
+                            </div> -->
+                              <!-- Text input-->
+                              <div ng-if="config.db_type === 'mongoDB'" class="container">
+                                <div class="form-group row">
+                                  <label class="col-md-4 control-label" for="mongodbServer">Mongodb server</label>
+                                  <div class="col-md-4">
+                                  <input id="mongodbServer" name="mongodbServer" type="text" ng-model="config.mongoServer" placeholder="" class="form-control input-md" required>
+                                  <span ng-show="formConnection.mongodbServer.$touched &&formConnection.mongodbServer.$error.required" class="help-block error">Please insert a valid Mongodb server host address</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <!-- Text input-->
+                              <div ng-if="config.db_type === 'mongoDB'" class="container">
+                                <div class="form-group row">
+                                  <label class="col-md-4 control-label" for="mongoPort">Mongodb port</label>
+                                  <div class="col-md-4">
+                                  <input id="mongoPort" name="mongoPort" type="number" ng-model="config.mongoPort" placeholder="" class="form-control input-md" required>
+                                  <span ng-show="formConnection.mongoPort.$touched &&formConnection.mongoPort.$error.required" class="help-block error">Please type the port for your Mongodb server</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <!-- Text input-->
+                              <div ng-if="config.db_type === 'mongoDB'" class="container">
+                                <div class="form-group row">
+                                  <label class="col-md-4 control-label" for="mongodbDatabase">Mongodb database name</label>
+                                  <div class="col-md-4">
+                                  <input id="mongodbDatabase" name="mongodbDatabase" type="text" ng-model="config.mongoDatabase" placeholder="" class="form-control input-md" required>
+                                  <span ng-show="formConnection.mongodbDatabase.$touched &&formConnection.mongodbDatabase.$error.required" class="help-block error">Insert the Mongodb database name</span>
+                                  </div>
+                                </div>
+                              </div>
+                          </form>
+                      </div>
+                      <div class="card-footer">
+                        <button ng-disabled="!formConnection.$valid" class="btn btn-info float-right" type="submit" wz-next value="Next">Next step</button>
+                      </div>
+                </div>
+      </div>
+
+
+
+        <h2></h2>
+
+
+
+    </wz-step>
+    <wz-step wz-title="Admin">
+
+      <div class="container-fluid center">
+
+                <div class="card card-info" style="margin-top:50px;">
+                      <div class="card-header">
+                        <h3 class="panel-title">SuperAdmin Credentials</h3>
+                      </div>
+                      <div class="card-body">
+                        <p class="lead"> The superadmin user is the most high level user for your server, this is necessary to create users and many other administrative operations </p>
+                        <p class="lead"> Type the superadmin email, and a valid password to continue </p>
+
+                        <form name="formAdmin" novalidate>
+                        <!-- Text input-->
+                            <div class="container">
+                              <div class="form-group row">
+                                <label class="col-md-4 control-label" for="mongodbServer">eMail</label>
+                                <div class="col-md-4">
+                                <input id="adminEmail" name="adminEmail" type="email" ng-model="config.adminEmail" placeholder="" class="form-control input-md" required>
+                                <span ng-show="formAdmin.adminEmail.$touched && formAdmin.adminEmail.$error.required" class="help-block error">Admin email is required.</span>
+                                <span class="error" ng-show="formAdmin.adminEmail.$touched && formAdmin.adminEmail.$error.email">Not valid email!</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="container">
+                              <div class="form-group row">
+                                <label class="col-md-4 control-label" for="mongodbServer">Password</label>
+                                <div class="col-md-4">
+                                <input id="adminPassword1" name="adminPassword1" type="password" ng-model="config.adminPass1" ng-pattern="strongRegex" placeholder="" class="form-control input-md"  required>
+                                <span ng-show="formAdmin.adminPassword1.$touched && formAdmin.adminPassword1.$error.required" class="help-block error">The admin password is required.</span>
+                                <span class="help-block error" ng-show="formAdmin.adminPassword1.$touched && formAdmin.adminPassword1.$error.pattern">Password too weak, must contain at least 8 characters of at least 1 uppercase, 1 lowercase, 1 number and 1 special character @ # * % $ & ? _ - </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="container">
+                              <div class="form-group row">
+                                <label class="col-md-4 control-label" for="mongodbDatabase">Repeat password</label>
+                                <div class="col-md-4">
+                                <input id="adminPassword2" name="adminPassword2" type="password" ng-model="config.adminPass2" compare-to="formAdmin.adminPassword1" placeholder="" class="form-control input-md"  required>
+                                <span class="help-block error" ng-show="formAdmin.adminPassword2.$touched && formAdmin.adminPassword2.$error.required">Retype password is required</span>
+                                <span class="help-block error" ng-show="!formAdmin.adminPassword2.$error.required && formAdmin.adminPassword2.$touched && formAdmin.adminPassword2.$error.compareTo">Password does not match</span>
+
+                                </div>
+                              </div>
+                            </div>
+                        </form>
+
+                        <div ng-if="adminAlertMsg" class="alert alert-danger" role="alert">{{adminAlertMsg}}</div>
+
+                      </div>
+                      <div class="card-footer">
+                        <button ng-disabled="!formAdmin.$valid" class="btn btn-info float-right" type="submit" wz-next value="Next">Next step</button>
+                      </div>
+                </div>
+      </div>
+
+    </wz-step>
+    <wz-step wz-title="Uploads" >
+
+      <div class="container-fluid center">
+
+                <div class="card card-info" style="margin-top:50px;">
+                      <div class="card-header">
+                        <h3 class="panel-title">File Uploads Storage</h3>
+                      </div>
+                      <div class="card-body">
+                        <p class="lead">Widestage allows two types of storage uploading, Local and AWS S3. </p>
+                        <p class="lead">If you choose local, all files uploaded will be stored in the server's upload directory, and you will have to take care about backup and storage space. </p>
+                        <p class="lead">If you choose S3 storage then you will take advantage of the S3 platform benefits. If you choose the S3 platform, you need to provide the connection and credentials for the server to connect your S3 Bucket </p>
+
+                        <form name="formStorage" novalidate>
+                          <div class="container">
+                            <div class="form-group row">
+                              <label class="col-md-4 control-label" for="uploadStorageType">Uploads storage type</label>
+                              <div class="col-md-4">
+                                <select id="uploadStorageType" name="uploadStorageType" ng-model="config.uploadStorageType" class="form-control" required>
+                                  <option value="local">local</option>
+                                  <option value="AmazonS3">Amazon S3</option>
+                                </select>
+                                <span ng-show="formStorage.uploadStorageType.$touched && formStorage.uploadStorageType.$error.required" class="help-block error">Please select a storge type for file uploads</span>
+                              </div>
+                              <div ng-show="form.$submitted || form.dbType.$touched">
+                                  <div ng-show="form.dbType.$error.required">You have to select a Repository type.</div>
+                              </div>
+                            </div>
+                            </div>
+                            <!-- Text input-->
+                            <div ng-if="config.uploadStorageType === 'AmazonS3'" class="container">
+                              <div class="form-group row">
+                                <label class="col-md-4 control-label" for="amazonclientID">Client ID</label>
+                                <div class="col-md-4">
+                                <input id="amazonclientID" name="amazonclientID" type="text" ng-model="config.amazonclientID" placeholder="" class="form-control input-md" required>
+                                <span ng-show="formStorage.amazonclientID.$touched && formStorage.amazonclientID.$error.required" class="help-block error">Client ID is required</span>
+
+                                </div>
+                              </div>
+                            </div>
+                            <!-- Text input-->
+                            <div ng-if="config.uploadStorageType === 'AmazonS3'" class="container">
+                              <div class="form-group row">
+                                <label class="col-md-4 control-label" for="amazonclientSecret">Client Secret</label>
+                                <div class="col-md-4">
+                                <input id="amazonclientSecret" name="amazonclientSecret" type="text" ng-model="config.amazonclientSecret" placeholder="" class="form-control input-md" required>
+                                <span ng-show="formStorage.amazonclientSecret.$touched && formStorage.amazonclientSecret.$error.required" class="help-block error">Client Secret is required</span>
+
+                                </div>
+                              </div>
+                            </div>
+
+                            <!-- Text input-->
+                            <div ng-if="config.uploadStorageType === 'AmazonS3'" class="container">
+                              <div class="form-group row">
+                                <label class="col-md-4 control-label" for="amazonregion">Region</label>
+                                <div class="col-md-4">
+                                <input id="amazonregion" name="amazonregion" type="text" ng-model="config.amazonregion" placeholder="" class="form-control input-md" required>
+                                <span ng-show="formStorage.amazonregion.$touched && formStorage.amazonregion.$error.required" class="help-block error">Amazon S3 Region is required</span>
+
+                                </div>
+                              </div>
+                            </div>
+                            <!-- Text input-->
+                            <div ng-if="config.uploadStorageType === 'AmazonS3'" class="container">
+                              <div class="form-group row">
+                                <label class="col-md-4 control-label" for="amazonbucket">Bucket</label>
+                                <div class="col-md-4">
+                                <input id="amazonbucket" name="amazonbucket" type="text" ng-model="config.amazonbucket" placeholder="" class="form-control input-md" required>
+                                <span ng-show="formStorage.amazonbucket.$touched && formStorage.amazonbucket.$error.required" class="help-block error">S3 Bucket is required</span>
+
+                                </div>
+                              </div>
+                            </div>
+                            <!-- Text input-->
+                            <div ng-if="config.uploadStorageType === 'AmazonS3'" class="container">
+                              <div class="form-group row">
+                                <label class="col-md-4 control-label" for="amazonfolder">Folder</label>
+                                <div class="col-md-4">
+                                <input id="amazonfolder" name="amazonfolder" type="text" ng-model="config.amazonfolder" placeholder="" class="form-control input-md" required>
+                                <span ng-show="formStorage.amazonfolder.$touched && formStorage.amazonfolder.$error.required" class="help-block error">Amazon S3 Folder is required</span>
+
+                                </div>
+                              </div>
+                            </div>
+                        </form>
+
+
+                      </div>
+                      <div class="card-footer">
+                        <button ng-disabled="!formStorage.$valid" class="btn btn-info float-right" type="submit" wz-next value="Next">Next step</button>
+                      </div>
+                </div>
+      </div>
+
+    </wz-step>
+    <wz-step wz-title="Mail" >
+
+      <div class="card card-info" style="margin-top:50px;">
+            <div class="card-header">
+              <h3 class="panel-title">Server configuration for sending emails</h3>
+            </div>
+            <div class="card-body">
+              <p  class="lead">Your server will use these connection parameters to connect to an SMTP server, to send the platform's generated emails, like when inviting new users, password reset, etc...</p>
+              <form name="formMail" novalidate>
+                <div class="container">
+                  <div class="form-group row">
+                    <label class="col-md-4 control-label" for="mailerService">Sending service</label>
+                    <div class="col-md-4">
+                      <select id="mailerService" name="mailerService" ng-model="config.mailerService" class="form-control" required>
+                        <option value="SMTP">SMTP</option>
+                    <!--<option value="sendmail">linux sendmail</option> -->
+                      </select>
+                      <span ng-show="formMail.mailerService.$touched && formMail.mailerService.$error.required" class="help-block error">Mail sending service is required</span>
+
+                    </div>
+                    <div ng-show="form.$submitted || form.dbType.$touched">
+                        <div ng-show="form.dbType.$error.required">You have to select a Repository type.</div>
+                    </div>
+                  </div>
+                  </div>
+                  <!-- Text input-->
+                  <div ng-if="config.mailerService === 'SMTP'" class="container">
+                    <div class="form-group row">
+                      <label class="col-md-4 control-label" for="mailerhost">Host</label>
+                      <div class="col-md-4">
+                      <input id="mailerhost" name="mailerhost" type="text" ng-model="config.mailerhost" placeholder="" class="form-control input-md" required>
+                      <span ng-show="formMail.mailerhost.$touched && formMail.mailerhost.$error.required" class="help-block error">SMTP Host is required</span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Text input-->
+                  <div ng-if="config.mailerService === 'SMTP'" class="container">
+                    <div class="form-group row">
+                      <label class="col-md-4 control-label" for="mailersecureConnection">Use SSL for connection</label>
+                      <div class="col-md-4">
+                      <input id="mailersecureConnection" name="mailersecureConnection" type="checkbox" ng-model="config.mailersecureConnection" placeholder="" class="form-control input-md" required>
+                      <span ng-show="formMail.mailersecureConnection.$touched && formMail.mailersecureConnection.$error.required" class="help-block error">Required</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Text input-->
+                  <div ng-if="config.mailerService === 'SMTP'" class="container">
+                    <div class="form-group row">
+                      <label class="col-md-4 control-label" for="mailerport">Port</label>
+                      <div class="col-md-4">
+                      <input id="mailerport" name="mailerport" type="number" ng-model="config.mailerport" placeholder="" class="form-control input-md" required>
+                      <span ng-show="formMail.mailerport.$touched && formMail.mailerport.$error.required" class="help-block error">SMPT Port is required</span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Text input-->
+                  <div ng-if="config.mailerService === 'SMTP'" class="container">
+                    <div class="form-group row">
+                      <label class="col-md-4 control-label" for="maileruser">User</label>
+                      <div class="col-md-4">
+                      <input id="maileruser" name="maileruser" type="text" ng-model="config.maileruser" placeholder="" class="form-control input-md" required>
+                      <span ng-show="formMail.maileruser.$touched && formMail.maileruser.$error.required" class="help-block error">SMTP user is required</span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Text input-->
+                  <div ng-if="config.mailerService === 'SMTP'" class="container">
+                    <div class="form-group row">
+                      <label class="col-md-4 control-label" for="mailerpass">Password</label>
+                      <div class="col-md-4">
+                      <input id="mailerpass" name="mailerpass" type="password" ng-model="config.mailerpass" placeholder="" class="form-control input-md" required>
+                      <span ng-show="formMail.mailerpass.$touched && formMail.mailerpass.$error.required" class="help-block error">SMTP password is required</span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Text input-->
+                  <div ng-if="config.mailerService === 'SMTP'" class="container">
+                    <div class="form-group row">
+                      <label class="col-md-4 control-label" for="mailerfrom">From email</label>
+                      <div class="col-md-4">
+                      <input id="mailerfrom" name="mailerfrom" type="email" ng-model="config.mailerfrom" placeholder="" class="form-control input-md" required>
+                      <span ng-show="formMail.mailerfrom.$touched && formMail.mailerfrom.$error.required" class="help-block error">Mail From email address is required</span>
+                      <span class="error" ng-show="formMail.mailerfrom.$touched && formMail.mailerfrom.$error.email">Not valid email!</span>
+                      </div>
+                    </div>
+                  </div>
+              </form>
+            </div>
+            <div class="card-footer">
+              <button ng-disabled="!formMail.$valid" class="btn btn-info float-right" type="submit" wz-next value="Next">Next step</button>
+            </div>
+      </div>
+    </wz-step>
+    <wz-step wz-title="Settings">
+
+      <div class="card card-info" style="margin-top:50px;">
+            <div class="card-header">
+              <h3 class="panel-title">Other settings</h3>
+            </div>
+            <div class="card-body">
+              <p  class="lead">Choose here the default pagination size</p>
+              <p  class="lead">The less records per page, the less latency while retrieving data from your server...</p>
+              <form name="formSettings" novalidate>
+                  <div class="container">
+                    <div class="form-group row">
+                      <label class="col-md-4 control-label" for="settingsItemsPerPage">Items per page on pagination</label>
+                      <div class="col-md-4">
+                      <input id="settingsItemsPerPage" name="settingsItemsPerPage" type="number" ng-model="config.settingsItemsPerPage" placeholder="" class="form-control input-md" required>
+                      <span ng-show="formSettings.settingsItemsPerPage.$touched && formSettings.settingsItemsPerPage.$error.required" class="help-block error">Introduce a number of items per page for pagination in lists.</span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Text input-->
+                  <div class="container">
+                    <div class="form-group row">
+                      <label class="col-md-4 control-label" for="settingsDefaultRecordsPerPage">Default records per page in generated queries</label>
+                      <div class="col-md-4">
+                      <input id="settingsDefaultRecordsPerPage" name="settingsDefaultRecordsPerPage" type="number" ng-model="config.settingsDefaultRecordsPerPage" placeholder="" class="form-control input-md" required>
+                      <span ng-show="formSettings.settingsDefaultRecordsPerPage.$touched && formSettings.settingsDefaultRecordsPerPage.$error.required" class="help-block error">Default records per page in generated queries is required</span>
+                      </div>
+                    </div>
+                  </div>
+              </form>
+            </div>
+            <div class="card-footer">
+              <button ng-disabled="!formSettings.$valid" class="btn btn-info float-right" type="submit" wz-next value="Next">Next step</button>
+            </div>
+      </div>
+    </wz-step>
+
+    <wz-step wz-title="Save">
+
+      <div class="card card-info" style="margin-top:50px;">
+            <div class="card-header">
+              <h3 class="panel-title">Save Initialisation parameters</h3>
+            </div>
+            <div class="card-body">
+              <p  class="lead">Your server parameters are:</p>
+              <table class="table table-striped">
+                <tbody>
+                  <tr>
+                      <td> <b>Database used is</b>  : {{config.db_type}}
+                          <br>
+                            <b>Host</b>  : {{config.mongoServer}}
+                          <br>
+                            <b>Port</b>  : {{config.mongoPort}}
+                          <br>
+                            <b>Database name</b>  : {{config.mongoDatabase}}
+                      </td>
+                      <td> <b>Your SuperAdmin email  is</b>  : {{config.adminEmail}}</td>
+                      <td> <b>Your mail service is </b> : {{config.mailerService}}
+                        <br>
+                          <b>Server</b>  : {{config.mailerhost}}
+                        <br>
+                          <b>Port</b>  : {{config.mailerport}}
+                        <br>
+                          <b>From eMail</b>  : {{config.mailerfrom}}
+
+                      </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card-footer">
+              <button class="btn btn-info float-right" ng-click="applyChanges()">Save server configuration</button>
+            </div>
+      </div>
+
+<!--
+        <button class="btn btn-warning pull-right" ng-if="canRestartServer" ng-click="restartServer()">Restart server</button>
+-->
+
+
+
+    </wz-step>
+</wizard>
+ <!--</div> -->
+  </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+      </div>
+      <div class="modal-body">
+        <p>All done!, restart your server for the configuration to be applied, and refresh this page...</p>
+
+        <br>
+        <small>*NOTE: If you changed your application port will need to change the url accordingly</small>
+        <br>
+        <br>
+        <br>
+        <p>Thanks</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <!--<button type="button" class="btn btn-primary" ng-click="restartServer()">Restart server</button>-->
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>

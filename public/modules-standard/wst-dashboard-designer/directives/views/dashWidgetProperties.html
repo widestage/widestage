@@ -1,0 +1,13 @@
+<div class="container-fluid no-padding" style="width:230px">
+  <div class="container-fluid object-header">
+              <span ng-i18next="Widget"></span>
+              <button type="button" class="btn btn-danger pull-right"  ng-click="delete()" ng-i18next="Delete"></button>
+  </div>
+  <br>
+      <input  class="iswitch iswitch-secondary" type="checkbox" ng-model="widget.properties.showHeader" ><span ng-i18next="Show Header"></span>
+      <br>
+      <!--<input class="iswitch iswitch-secondary" type="checkbox" ng-model="report.properties.chart.tooltip_show"  ng-change="report.properties.chart.refresh()"><span ng-i18next="Show Tooltip"></span>
+      <br>-->
+      <html-inspector element="htmlObject" properties="widget.properties" on-change="onPropertyChanged"></html-inspector>
+
+</div>

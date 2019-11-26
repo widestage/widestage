@@ -1,0 +1,61 @@
+
+<div class="explorer-main-container" >
+
+    <div class="explorer-container">
+
+        <div class="explorer-header">
+            <div class="explorer-header-title">
+                <h3 class="pull-left" editable-text="_Layer.name"></h3>
+
+            </div>
+            <div class="explorer-header-buttons">
+                <a ng-if="isGranted('Layers','update')" ng-click="save()" class="btn btn-success save-button" style="margin-left: 5px;margin-right: 5px;"> <i class="fa fa-save"> </i> <span ng-i18next="Save"></span></a>
+                <input id="zoomSlider" min="1" max="20" step="1" ng-model="zoomValue" type="range"/>
+
+                <li class="dropdown properties-menu">
+                    <a href="" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span>
+                            <i class="fa fa-ellipsis-v"></i>
+                        </span>
+                    </a>
+
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a ng-click="shareLayer()">
+                                <i class="fa fa-share-square"></i>
+                                Share
+                            </a>
+                        </li>
+                    </ul>
+		      </li>
+
+
+            </div>
+        </div>
+
+
+        <div class="explorer-body" ng-init="view()"   bs-loading-overlay bs-loading-overlay-reference-id="layerView" style="background-position: -25px -1px;background-image: url(&quot;data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzQiIGhlaWdodD0iMzQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSIzNCIgaGVpZ2h0PSIzNCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDguNSBMIDM0IDguNSBNIDguNSAwIEwgOC41IDM0IE0gMCAxNyBMIDM0IDE3IE0gMTcgMCBMIDE3IDM0IE0gMCAyNS41IEwgMzQgMjUuNSBNIDI1LjUgMCBMIDI1LjUgMzQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2UwZTBlMCIgb3BhY2l0eT0iMC4yIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNIDM0IDAgTCAwIDAgMCAzNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZTBlMGUwIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=&quot;);
+            ">
+            <wst-object-panel layer="_Layer" ></wst-object-panel>
+
+
+
+
+
+            <div id="collections" class="canvas-parent" ng-click="selectedCanvas($event)" style="left: 300px">
+
+                <wst-entity-diagram model="_Layer.model" on-select="onDiagramSelect" on-change="onDiagramChanged" on-element-icon-click="elementAdd" on-delete-object="onDeleteObject" zoom="zoomValue"></wst-entity-diagram>
+
+            </div>
+        </div>
+
+
+
+        </div>
+    </div>
+</div>
+<!--<div ng-include src="datasetModal"></div>
+<div ng-include src="elementModal"></div>
+<div ng-include src="datasetPropertiesModal"></div>
+<div ng-include src="sqlModal"></div>
+<div ng-include src="setupModal"></div>-->

@@ -3,105 +3,121 @@ var env = process.env.NODE_ENV || 'production';
 process.argv.forEach(function(val, index, array) {
     if (index == 2) env = val;
 });
-global.env = env;
+if (!global.env)  //for calls from test
+  global.env = env;
 
-// production only
-if (env == 'production') {
+console.log('Loaded enviroment',env);
 
-};
+const serverRoot = 'server/';
+
+var server = undefined;
 
 
 var express = require('express'),
     path = require('path'),
     http = require('http');
 
-
+global.http = http;
 
 var cluster = require('cluster');
-var passport = require("passport");
-//var mongoose = require('mongoose');
-var session = require('express-session');
-var RedisStore = require('connect-redis')(session); //npm install connect-redis --- to store variable sessions
-var cookieParser = require('cookie-parser');
-var cookieSession = require('cookie-session');
+global.lang = require('i18next');
+//const favicon = require('serve-favicon')
 
-//var bb = require('express-busboy');
+
+
+//track logger
+var morgan = require('morgan');
+
+
 var app = express();
-//bb.extend(app);
 
-// set the view engine to ejs
+
+// helmet for security, uncomment if you are not using the module security (modules-core)
+/* var helmet = require('helmet') app.use(helmet())  */
+
+//HTTP request logger
+
+if (env == 'production')
+{
+    app.use(morgan('dev', {
+      skip: function (req, res) { return res.statusCode < 400 }
+    }));
+} else {
+    app.use(morgan('tiny'));
+}
+
+//
+
 app.set('view engine', 'ejs');
-app.set('views', __dirname + '/views');
+app.set('views', __dirname + '/server/views');
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public/modules-core')));
+app.use(express.static(path.join(__dirname, 'public/modules-standard')));
+app.use(express.static(path.join(__dirname, 'public/modules-pro')));
 app.use(express.static(path.join(__dirname, 'bower_components')));
+//app.use(express.static(path.join(__dirname, 'node_modules')));
 
-app.use(cookieParser());
-app.use(cookieSession({key:"widestage", secret:"HEWÑÑasdfwejñlkjqwernnkkk13134134wer", httpOnly: true, secure: false, cookie: {maxAge: 60 * 60 * 1000}}));
-app.use(session({secret: 'ndwidestagev0', cookie: {httpOnly: true, secure: false}, store: new RedisStore({maxAge: 60 * 60 * 1000}), resave: false, saveUninitialized: true}));
+
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json({limit: '50mb'})); // get information from html forms
 app.use(bodyParser.urlencoded({ extended: true }));
 
 var multer = require('multer');
-//app.use(multer());
-app.use(multer({dest:'./uploads'}).any());
+app.use(multer({dest:'./public/uploads/temp'}).single('file'));
 
-var authentication = true;
+global.app = app;
 
-global.authentication  = authentication;
-global.logFailLogin = true;
-global.logSuccessLogin = true;
+require('./server/globals');
 
-if (authentication)
+if (global.env != 'test')
 {
-    app.use(passport.initialize());
-    app.use(passport.session());
-    app.use(passport.authenticate('remember-me'));
-}
+        if (cluster.isMaster) {
+            var numCPUs = require('os').cpus().length;
 
-if (cluster.isMaster) {
-    var numCPUs = require('os').cpus().length;
+            // Fork workers.
+            for (var i = 0; i < numCPUs; i++) {
+                console.log ('forking ',i);
+                cluster.fork();
+            }
 
-    // Fork workers.
-    for (var i = 0; i < numCPUs; i++) {
-        cluster.fork();
-    }
+            cluster.on('exit', function(deadWorker, code, signal) {
+                var worker = cluster.fork();
 
-    cluster.on('exit', function(deadWorker, code, signal) {
-        var worker = cluster.fork();
+                // Note the process IDs
+                var newPID = worker.process.pid;
+                var oldPID = deadWorker.process.pid;
 
-        // Note the process IDs
-        var newPID = worker.process.pid;
-        var oldPID = deadWorker.process.pid;
+                // Log the event
+                console.log('worker '+oldPID+' died.');
+                console.log('worker '+newPID+' born.');
+            });
+        } else {
+                var serverConfig = require('./server/serverConfig/serverConfig.js');
+                serverConfig.init(app, function(){
+                    var ipaddr  = global.config.ip || '127.0.0.1';
+                    var port    = global.config.port  || 8089;
+                    console.log( "the port is " + port);
+                    global.server = app.listen(port,ipaddr, function() {
+                          console.log("Server running at http://" + ipaddr + ":" + port + "/ in worker "+cluster.worker.id);
+                          console.log(" installed modules are : " + global.listMods.join("\r\n"));
+                        });
+                });
+        }
 
-
-    });
 } else {
-    var config = require('./server/config/config')[env];
-    global.config = config;
 
-    require('./server/config/mongoose')();
-    require('./server/config/passport')(passport);
+    var serverConfig = require('./server/serverConfig/serverConfig.js');
+                serverConfig.init(app, function(){
+                    var ipaddr  = global.config.ip || '127.0.0.1';
+                    var port    = global.config.port  || 8089;
+                    console.log( "the port is " + port);
+                    global.server = app.listen(port,ipaddr, function() {
+                          console.log("Server running at http://" + ipaddr + ":" + port );
+                          console.log(" installed modules are : " + global.listMods.join("\r\n"));
+                        });
+                });
 
-    require('./server/globals');
-    require('./server/config/mailer');
-
-    require('./server/config/routes')(app, passport);
-
-    var fs = require('fs');
-
-    //Custom routes
-    var routes_dir = __dirname + '/server/custom';
-    fs.readdirSync(routes_dir).forEach(function (file) {
-        if(file[0] === '.') return;
-        require(routes_dir+'/'+ file+'/routes.js')(app);
-    });
-    
-    var ipaddr  = process.env.IP || config.ip;
-    var port    = process.env.PORT  || config.port;
-
-    app.listen(port, ipaddr);
-
-    console.log("Server running at http://" + ipaddr + ":" + port + "/ in worker "+cluster.worker.id);
 }
+
+module.exports = global.server;

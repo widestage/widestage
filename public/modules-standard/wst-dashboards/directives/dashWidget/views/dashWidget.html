@@ -1,0 +1,16 @@
+<div class="panel panel-default dash-widget-panel" ng-click="widgetSelected()" style="background-color:transparent;padding: 10px 10px;margin-bottom:0px">
+  <div class="panel-heading" ng-if="block.properties.showHeader">
+    <h4 class="panel-title">{{block.title}}</h4>
+    <div class="panel-options">
+        <a href="#" ng-click="deleteBlock()" >x</a>
+    </div>
+  </div>
+  <div class="panel-body" style="overflow-y: hidden;padding-top: 0px;height:90%">
+
+    <wst-grid ng-if="selectedReport.reportType == 'grid'" report="selectedReport" style="min-height:200px;position:relative;width:100%;height:100%">  </wst-grid>
+    <wst-vertical-grid ng-if="selectedReport.reportType == 'vertical-grid'" report="selectedReport" style="min-height:200px;position:relative;width:100%;height:100%">  </wst-vertical-grid>
+    <wst-indicator ng-if="selectedReport.reportType == 'indicator'" report="selectedReport" style="min-height:200px;position:relative;width:100%;height:100%">  </wst-indicator>
+    <wst-chart ng-if="selectedReport.reportType == 'chart-line' || selectedReport.reportType == 'chart-donut' || selectedReport.reportType == 'gauge'" report="selectedReport" style="min-height:200px;position:relative;width:100%;height:100%"></wst-chart>
+
+  </div>
+</div>

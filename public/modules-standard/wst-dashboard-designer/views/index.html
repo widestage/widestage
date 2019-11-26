@@ -1,0 +1,24 @@
+<div id="dashboardDesigner" >
+
+    <div class="designer-header" >
+
+        <div class="designer-header-title">
+                <i class="fas fa-tachometer-alt" style="margin-right:15px"></i>  <h3  ng-i18next="Dashboard"></h3>
+        </div>
+
+        <div class="designer-header-buttons">
+
+<button class="btn btn-info" ng-click="save()" ng-i18next="Save"></button>
+        </div>
+
+
+    </div>
+
+    <div class="designer-body">
+      <wst-dashboard-designer-properties-panel dashboard="selectedDash"></wst-dashboard-designer-properties-panel>
+      <wst-dashboard-designer-main-area dashboard="selectedDash" id="designerMainArea"></wst-dashboard-designer-main-area>
+
+
+    </div>
+
+</div>

@@ -1,0 +1,11 @@
+.queries-canvas-parent {
+    position: absolute;
+    top: 50px;
+    left: 300px;
+    /* overflow: scroll; */
+    cursor: -webkit-grab;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    background-color: transparent;
+}

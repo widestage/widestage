@@ -1,0 +1,109 @@
+@media screen and (max-width: 768px) {
+    .row-offcanvas {
+        position: relative;
+        -webkit-transition: all 0.25s ease-out;
+        -moz-transition: all 0.25s ease-out;
+        transition: all 0.25s ease-out;
+        width:calc(100% + 220px);
+    }
+
+    .row-offcanvas-left
+    {
+        left: -220px;
+    }
+
+    .row-offcanvas-left.active {
+        left: 0;
+    }
+
+    .sidebar-offcanvas {
+        position: absolute;
+        top: 0;
+    }
+
+    .page-container .sidebar-menu {
+    width: 100%;
+    position: initial;
+    }
+
+    .page-container .main-content {
+    width: 100%;
+    position: initial;
+    }
+
+    .page-container .sidebar-menu .sidebar-menu-inner .main-menu {
+        margin-bottom: 0;
+        /*display: block;*/
+        margin-bottom: 0;
+        position: absolute;
+        background-color: #2c2e30;
+        z-index: 99;
+        top: 60px;
+        width: 90%;
+        opacity: 0.95;
+    }
+    .sidebar-user-info {
+         display: block;
+
+    }
+    .page-container .main-content .navbar.user-info-navbar {
+        display: block;
+    }
+    .user-timeline-stories .timeline-story .story-content {
+        padding-left: 0;
+    }
+    .user-timeline-stories .timeline-story > .story-content {
+        margin-top: 20px;
+    }
+
+    .profile-env .user-timeline-stories .timeline-story .story-album {
+        padding-bottom: 0;
+    }
+    .profile-env .user-timeline-stories .timeline-story .story-album .col-1,
+    .profile-env .user-timeline-stories .timeline-story .story-album .col-2 {
+        padding: 0;
+        width: 100%;
+        float: none;
+        margin-bottom: 10px;
+    }
+
+    .sidebar-menu.collapsed+.main-content .main-footer {
+         left: 0px;
+    }
+
+    .page-container .main-content .main-footer {
+        display:none;
+    }
+
+    .app-ui-view
+    {
+      position:relative;
+      top: 0px;
+      bottom: 0px;
+      right: 0px;
+      left: 0px;
+      overflow-y: auto;
+    }
+
+    .page-container .main-content .page-title
+    {
+      padding: 0px;
+    }
+
+    .container-fluid
+    {
+      padding-left: 0px;
+      padding-right: 0px;
+    }
+
+    .report-view-container
+    {
+      position:relative;
+    }
+
+    .sidebar-menu .main-menu ul
+    {
+      display:block;
+    }
+
+}

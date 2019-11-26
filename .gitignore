@@ -1,11 +1,4 @@
-.idea
-node_modules
-bower_components
-.DS_Store
-.vscode
-/server/keys/COMPID/bigQuery/Essential_Big_Data-392992cba62f.json
-/server/keys/COMPID/bigQuery/Essential_Big_Data-b8c90025164d.json
-/apache-drill-1.8.0.tar.gz
-/.vscode/
-/uploads/
-/server/keys/
+bower_components/
+node_modules/
+public/uploads/
+.git

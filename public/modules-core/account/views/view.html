@@ -1,0 +1,95 @@
+<div class="page-title">
+  <div class="title-env">
+    <h1 class="title" ng-i18next="My profile"></h1>
+    <p class="description" ng-i18next="User profile and activity timeline"></p>
+  </div>
+  <div class="breadcrumb-env">
+    <a  href="/logout" class="btn btn-danger">Logout</a>
+  </div>
+</div>
+
+<section class="profile-env" ng-init="view()">
+
+    <div class="container-fluid">
+
+        <div class="col-sm-3">
+
+
+
+            <div class="user-info-sidebar">
+
+                <a href="" class="user-img">
+                   <!-- <img src="" alt="user-img" class="img-cirlce img-responsive img-thumbnail">-->
+                </a>
+
+
+
+                    <div style="text-align: center" style="color:#000">
+
+                        <button ng-if="_User.provider == 'local'" class="btn btn-success" ng-click="changeMyPassword()" ng-i18next="Change my password"></button>
+
+                        <br>
+
+                        <br>
+
+                        <div class="user-name">
+                            {{_User.name || _User.firstName + ' ' + _User.lastName}}
+                        </div>
+
+                        <a class="badge"  ng-class="{'badge-success': _User.status == 'Active', 'badge-danger': _User.status == 'Not active'}"ng-click="changeUserStatus(_User)">
+                            {{_User.status}}
+                        </a>
+
+                        <span class="user-title">
+                            {{_User.email}}
+                        </span>
+
+                        <span ng-i18next="Roles"></span>
+
+                        <select2 ng-if="!isSuperAdmin()" multiple ng-model="_User.roles" s2-options="obj._id as obj.name for obj in roles" ng-readonly="true" style="border: 0px solid #000;background-color: transparent;"></select2>
+
+                        <span class="label label-danger superuser" ng-if="isSuperAdmin()">SUPERADMIN</span>
+
+
+                    </div>
+
+
+                        <!--<span class="user-title">
+                            {{_User.code}}
+                        </span>-->
+                <hr>
+
+
+
+
+
+
+                <hr>
+
+            </div>
+
+        </div>
+
+        <div class="col-sm-9" style="background-color: #fff;height: 100%;">
+            <div class="row">
+                <div class="col-sm-6">
+
+                </div>
+
+                <div class="col-sm-6">
+
+                </div>
+        </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<nd-modal id="editUserModal">
+<div ng-include src="editUserModal"></div>
+</nd-modal>
+
+<div ng-if="_User._id == user._id" ng-include src="changePasswordModal"></div>

@@ -1,0 +1,50 @@
+<section id="elementsPanel" data-num-cols="4" ng-init="tabs.selected = 'elements'" class="catalogSidebar">
+
+    <div class="elements-panel-header">
+            <div class="elements-panel-header-icon" ng-click="tabs.selected = 'properties'" ng-class="{'active': tabs.selected == 'properties'}">
+                <i class="fa fa-cog" ng-click="tabs.selected = 'properties'"></i>
+            </div>
+            <div class="elements-panel-header-inner">
+                    <!--<i class="toggle-button fa-minus-circle"  ng-click="toggle();$event.stopPropagation()" role="button" tabindex="0" style="right: 5px;
+    position: absolute;
+    font-size: 20px;"></i>-->
+            </div>
+
+    </div>
+
+    <menu>
+        <li id="searchTabButton" class="search hand-cursor" ng-class="{'on': tabs.selected == 'elements'}">
+            <a  ng-click="tabs.selected = 'elements'">
+                <div class="elementsPanel-menu-label" ng-i18next="Elements" ></div>
+
+            </a>
+        </li>
+    </menu>
+
+    <section class="content" >
+        <section id="propertiesTab" class="results infinite ng-hide" ng-show="tabs.selected == 'properties'" style="padding:5px;">
+          <perfect-scrollbar class="scroller" wheel-propagation="true" wheel-speed="10" min-scrollbar-length="20" style="height: 100%;width: 230px;">
+
+              <div class="report-properties-block">
+                      <input type="checkbox" ng-model="interactiveMode" ng-change="changeInteractiveMode()" class="iswitch iswitch-secondary"> <span ng-i18next="Interactive Mode">   </span>
+              </div>
+
+                  <properties-c3-chart report="selectedObject" ng-if="selectedItemType == 'chart-line' || selectedItemType == 'chart-donut' ||selectedItemType == 'chart-pie' ||selectedItemType == 'gauge'" ></properties-c3-chart>
+                  <properties-grid report="selectedObject" ng-if="selectedItemType == 'grid'" ></properties-grid>
+
+                  <explorer-column-properties ng-if="selectedItemType == 'column'" column="selectedObject" report="report"></explorer-column-properties>
+                  <!--<explorer-item-properties object-type="selectedItem" object="theSelectedElement" on-delete="deleteObject()" on-add-element-to-layer="addElementToLayer"  on-remove-element-from-layer="removeElementFromLayer" on-change="changeObject" element-types="elementTypes" number-default-aggregation="numberDefaultAggregation" string-default-aggregation="stringDefaultAggregation"></explorer-item-properties>-->
+                  <explorer-indicator-properties report="selectedObject" ng-if="selectedItemType == 'indicator'"></explorer-indicator-properties>
+                  <explorer-properties-vertical-grid report="selectedObject" ng-if="selectedItemType == 'vertical-grid'"></explorer-properties-vertical-grid>
+
+          </perfect-scrollbar>
+        </section>
+
+        <section id="elementsTab" class="results infinite layer-elements ng-hide " ng-show="tabs.selected == 'elements'">
+            <section id="dataObjectsInner" class="layer scrollPane" ng-include="'wst-explorer-modal/directives/views/data-elements.html'">
+
+            </section>
+        </section>
+
+    </section>
+</section>

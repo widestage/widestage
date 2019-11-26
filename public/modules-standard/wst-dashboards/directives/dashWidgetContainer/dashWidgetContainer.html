@@ -1,0 +1,6 @@
+<div class="container-fluid wst-dashboard-container" ng-click="onSelectContainer()" ng-class="{design: designerMode == true}">
+
+    <div ng-include src="promptsBlock" class=" prompts-block"></div>
+
+    <dash-widget-band id="{{'BAND-'+band.id}}"  band="band" designer-mode="designerMode" ng-repeat="band in dashboard.bands" selected="selectedBand.id == band.id" on-select="onSelectBand"></dash-widget-band>'
+</div>

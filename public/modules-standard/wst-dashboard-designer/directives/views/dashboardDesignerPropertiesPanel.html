@@ -1,0 +1,48 @@
+<section id="propertiesPanel" data-num-cols="4" ng-init="tabs.selected = 'elements'" class="catalogSidebar">
+
+
+
+    <div class="properties-panel-header">
+            <div class="properties-panel-header-icon" ng-click="tabs.selected = 'properties'" ng-class="{'active': tabs.selected == 'properties'}">
+                <i class="fa fa-cog" ng-click="tabs.selected = 'properties'"></i>
+            </div>
+            <div class="properties-panel-header-inner">
+                    <!--<i class="toggle-button fa-minus-circle"  ng-click="toggle();$event.stopPropagation()" role="button" tabindex="0" style="right: 5px;
+    position: absolute;
+    font-size: 20px;"></i>-->
+
+            </div>
+
+    </div>
+
+    <menu>
+        <li id="searchTabButton" class="search hand-cursor" ng-class="{'on': tabs.selected == 'widgets'}">
+            <a  ng-click="tabs.selected = 'widgets'">
+                <div class="properties-panel-menu-label" ng-i18next="Widgets" ></div>
+
+            </a>
+        </li>
+    </menu>
+
+    <section class="content" >
+        <section id="propertiesTab" class="results infinite ng-hide" ng-show="tabs.selected == 'properties'" style="padding:5px;height: 100%">
+            <h4 class="properties-title" ng-i18next="Properties"></h4>
+            <perfect-scrollbar class="scroller" wheel-propagation="true" wheel-speed="10" min-scrollbar-length="20" style="height: 100%;width: 230px;">
+
+                  <dash-widget-properties ng-if="selectedItemType == 'widget'" widget="selectedWSTObject" html-object="selectedObject" on-delete="deleteBlock"></dash-widget-properties>
+
+                  <dash-band-properties ng-if="selectedItemType == 'widget-band'" band="selectedWSTObject" html-object="selectedObject" on-delete="deleteBand"></dash-band-properties>
+
+                  <dash-properties ng-if="selectedItemType == 'dash-container'" dashboard="selectedWSTObject" html-object="selectedObject"></dash-properties>
+            </perfect-scrollbar>
+        </section>
+
+        <section id="widgets" class="results infinite layer-elements ng-hide " ng-show="tabs.selected == 'widgets'">
+            <!--<section id="dataObjectsInner" class="layer scrollPane" ng-include="'wst-explorer-modal/directives/views/data-elements.html'">
+
+            </section>-->
+            WIDGETS
+        </section>
+
+    </section>
+</section>

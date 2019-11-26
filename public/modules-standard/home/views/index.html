@@ -1,0 +1,154 @@
+<!--<div class="alert alert-info" id="parentIntro" ng-if="getUserContextHelp('homeIndex')">
+    <div>
+        <h3>Getting started with widestage?</h3>
+        <span>Take our guided tour to familiarize yourself...</span>
+        <br/>
+        <br/>
+        <br/>
+        <span style="color:#000;"> Do not show this block again <input type="checkbox" ng-click="setUserContextHelpViewed('homeIndex')"></span>
+        <a class="btn btn-white pull-right" ng-click="showIntro()">Start guided tour</a>
+    </div>
+</div>-->
+<div ng-show="!reportInterface" id="parentIntro" intro-help ng-intro-method="showIntro"  ng-intro-options="IntroOptions"  class="explorer-main-container" >
+
+<div class="dx-warning" id="parentIntro" ng-if="!notShowHomeContextHelp">
+    <div>
+        <h2 ng-i18next="Getting started with widestage?"></h2>
+
+
+                <div class="container" style="text-align:center">
+                      <iframe width="560" height="315" src="https://www.youtube.com/embed/YH4_-prEaRs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <span style="color:#000;" ng-i18next=" Do not show this block again"></span> <input type="checkbox" ng-click="doNotShowHomeContextHelp()">
+            </div>
+            <div class="col-md-6 align-right">
+                <!--<a class="btn btn-white pull-right" ng-click="showIntro()" ng-i18next="Start guided tour"></a>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="col-md-6">
+        <div id="publicArea" class="panel panel-color panel-success" ng-init="refreshHome()">
+
+            <div class="panel-heading">
+                <h3 class="panel-title" ng-i18next="Public Area"></h3>
+
+                <div class="panel-options">
+                    <a href="" data-toggle="reload">
+                        <a ng-click="expandAll()"><i class="fa fa-plus-square" style="font-weight:bolder"></i></a>
+                        <a ng-click="collapseAll()"><i class="fa fa-minus-square" style="font-weight:bolder"></i></a>
+                        <a href="" ng-click="refreshHome()"><i class="fa fa-sync" style="font-weight:bolder"></i></a>
+                    </a>
+                </div>
+            </div>
+
+            <div class="panel-body" >
+                <div class="user-objects" ng-if="userObjects && userObjects.length > 0">
+                    <div ui-tree data-nodrop-enabled id="tree-root" >
+                        <ol ui-tree-nodes data-nodrop-enabled ng-model="userObjects">
+                            <li ng-repeat="node in userObjects" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+                        </ol>
+                    </div>
+                </div>
+                <h3 ng-if="!userObjects || userObjects.length == 0" ng-i18next="There are no elements published..." style="color:#ccc"></h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="row" >
+
+            <div id="latestExecutions" class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title" ng-i18next="Latest executions"></h3>
+
+                    <div class="panel-options">
+
+                        <a href="" data-toggle="panel">
+                            <span class="collapse-icon">&ndash;</span>
+                            <span class="expand-icon">+</span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <table class="table table-condensed" ng-if="lastExecutions && lastExecutions.length > 0">
+                    <tbody>
+                        <tr ng-repeat="execution in lastExecutions">
+                            <td>
+                                <a ng-if="execution.type == 'report'" href="/#/reports/{{execution._id}}"><i class="fa fa-chart-line" style="margin-right: 2px;"></i> {{execution.name}}</a>
+                                <a ng-if="execution.type == 'dash'" href="/#/dashboard/{{execution._id}}"><i class="fa fa-tachometer-alt" style="margin-right: 2px;"></i> {{execution.name}}</a>
+                            </td>
+                            <td class="align-right">
+                                <span>{{execution.lastDateMoment}}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3 ng-if="!lastExecutions || lastExecutions.length == 0" ng-i18next="There is no execution history..." style="color:#ccc"></h3>
+
+            </div>
+        </div>
+        <div class="row" >
+            <div id="mostExecuted" class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title" ng-i18next="Most executed"></h3>
+
+                    <div class="panel-options">
+
+                        <a href="" data-toggle="panel">
+                            <span class="collapse-icon">&ndash;</span>
+                            <span class="expand-icon">+</span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <table class="table table-condensed" ng-if="mostExecutions && mostExecutions.length > 0">
+                    <tbody>
+                        <tr ng-repeat="execution in mostExecutions">
+                            <td >
+                                <a ng-if="execution.type == 'report'" href="/#/reports/{{execution._id}}"><i class="fa fa-chart-line" style="margin-right: 2px;"></i> {{execution.name}}</a>
+                                <a ng-if="execution.type == 'dash'" href="/#/dashboardsv2/{{execution._id}}"><i class="fa fa-tachometer-alt" style="margin-right: 2px;"></i> {{execution.name}}</a>
+                            </td>
+                            <td class="align-right">
+                                <span>{{execution.count}}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3 ng-if="!mostExecutions || mostExecutions.length == 0" ng-i18next="There is no execution history..." style="color:#ccc"></h3>
+            </div>
+        </div>
+        <wst-shared-list-panel doc-type="'all'"></wst-shared-list-panel>
+
+    </div>
+</div>
+
+<script type="text/ng-template" id="nodes_renderer.html" >
+    <div data-nodrag ui-tree-handle data-nodrop-enabled class="tree-node tree-node-content tree-node-folder" ng-if="(node.permissions.see && node.nodeType != 'report' && node.nodeType != 'dashboard' )  "> <!--&& node.nodes.length > 0 -->
+        <span class="fa" ng-class="{'fa-folder': collapsed,'fa-folder-open': !collapsed}" ng-click="toggle(this)" style="font-size: larger;    cursor: default;"></span><span data-nodrag ng-click="toggle(this)" style="padding-left: 5px;font-size: larger;    cursor: default;">{{node.title}}</span>
+    </div>
+
+    <div data-nodrag class="tree-node tree-node-item" ng-if="node.nodeType == 'report'">
+        <i class="fa fa-chart-line" style="font-weight:bolder;color:#8dc63f"></i>  <a data-nodrag  href="/#/reports/{{node.id}}" style="color: slateblue;font-size: larger;font-style: italic;">{{node.title}}</a>
+    </div>
+
+    <div data-nodrag class="tree-node tree-node-item" ng-if="node.nodeType == 'dashboard'">
+        <i class="fa fa-tachometer-alt"  style="color:#8dc63f"></i>  <a data-nodrag  href="/#/dashboardsv2/{{node.id}}" style="color: slateblue;font-size: larger;font-style: italic;">{{node.title}}</a>
+    </div>
+
+    <div data-nodrag class="tree-node tree-node-item" ng-if="node.nodeType == 'page'">
+        <i class="fa fa-newspaper-o"  style="color:#8dc63f"></i>  <a data-nodrag  href="/#/pages/{{node.id}}" style="color: slateblue;font-size: larger;font-style: italic;">{{node.title}}</a>
+    </div>
+
+    <ol ng-if="node.nodes" data-nodrag ui-tree-nodes="" data-nodrop-enabled ng-model="node.nodes" ng-class="{hidden: collapsed}">
+        <li data-nodrag ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'">
+        </li>
+    </ol>
+</script>

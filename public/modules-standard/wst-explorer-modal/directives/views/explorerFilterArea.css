@@ -1,0 +1,26 @@
+#filtersPanel .filter-zone {
+    width: 100%;
+    margin: 5px;
+    min-height: 45px;
+    /*border: dotted 3px #999999;*/
+    position: relative;
+    border-radius: 25px;
+    background-color: gainsboro;
+}
+
+
+
+#filtersPanel .filter-box {
+    width: auto;
+    min-height: 30px;
+    border: solid 1px #999999;
+    margin: 5px;
+    padding: 5px;
+    z-index: 0;
+    background-color: #FFF;
+    margin-left: 90px;
+    margin-right: 25px;
+    border-radius: 10px;
+
+    /*float:left;*/
+}

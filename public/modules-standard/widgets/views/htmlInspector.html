@@ -1,0 +1,178 @@
+
+<section id="htmlInspector" class="layer" style="height: 100%">
+
+  <uib-accordion close-others="oneAtATime">
+      <div uib-accordion-group class="panel-default" heading="{{getTranslation('Style properties')}}" is-open="true" is-disabled="false">
+              <table style="width:230px; margin-top:10px">
+                <tr>
+                  <td>
+                    <label for="background_color" class="control-label" ng-i18next="Height"></label>
+
+                  </td>
+                  <td>
+                    <input type="number" class="input-group form-control" ng-model="properties.css.height"  ng-change="changed('height','px')">
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <label for="background_color" class="control-label" ng-i18next="Background color"></label>
+
+                  </td>
+                  <td>
+                        <wst-color ng-model="properties.css.background_color"  on-change-color="changed('background_color')"></wst-color>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label for="main_font_size" class="control-label" ng-i18next="Background Image"></label>
+                  </td>
+                  <td>
+                    <button type="button" ng-click="openImageGallery('companyLogo')" class="btn btn-primary btn-block">{{ 'Upload Image' | i18next }}</button>
+
+                  </td>
+                </tr>
+
+
+                <tr>
+                  <td>
+                    <label for="main_font_size" class="control-label" ng-i18next="Font size"></label>
+                  </td>
+                  <td>
+                        <input type="number" class="input-group form-control" ng-model="properties.css.font_size"  ng-change="changed('font_size','px')">
+
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <label for="main_font_color" class="control-label" ng-i18next="Font color"></label>
+                  </td>
+                  <td>
+                    <wst-color  ng-model="properties.css.font_color" on-change-color="changed('font_color')"></wst-color>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <label for="secondary_font_size" class="control-label" ng-i18next="Margin"></label>
+                  </td>
+                  <td>
+                        <input type="number" class="input-group form-control" ng-model="properties.css.margin"  ng-change="changed('margin','px')">
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label for="secondary_font_size" class="control-label" ng-i18next="Margin Top"></label>
+                  </td>
+                  <td>
+                        <input type="number" class="input-group form-control" ng-model="properties.css.margin_top"  ng-change="changed('margin_top','px')">
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label for="secondary_font_size" class="control-label" ng-i18next="Margin Bottom"></label>
+                  </td>
+                  <td>
+                        <input type="number" class="input-group form-control" ng-model="properties.css.margin_bottom"  ng-change="changed('margin_bottom','px')">
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label for="secondary_font_size" class="control-label" ng-i18next="Margin Left"></label>
+                  </td>
+                  <td>
+                        <input type="number" class="input-group form-control" ng-model="properties.css.margin_left"  ng-change="changed('margin_left','px')">
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label for="secondary_font_size" class="control-label" ng-i18next="Margin Right"></label>
+                  </td>
+                  <td>
+                        <input type="number" class="input-group form-control" ng-model="properties.css.margin_right"  ng-change="changed('margin_right','px')">
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <label for="secondary_font_size" class="control-label" ng-i18next="Padding"></label>
+                  </td>
+                  <td>
+                        <input type="number" class="input-group form-control" ng-model="properties.css.padding"  ng-change="changed('padding','px')">
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label for="secondary_font_size" class="control-label" ng-i18next="Padding Top"></label>
+                  </td>
+                  <td>
+                        <input type="number" class="input-group form-control" ng-model="properties.css.padding_top"  ng-change="changed('padding_top','px')">
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label for="secondary_font_size" class="control-label" ng-i18next="Padding Bottom"></label>
+                  </td>
+                  <td>
+                        <input type="number" class="input-group form-control" ng-model="properties.css.padding_bottom"  ng-change="changed('padding_bottom','px')">
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label for="secondary_font_size" class="control-label" ng-i18next="Padding Left"></label>
+                  </td>
+                  <td>
+                        <input type="number" class="input-group form-control" ng-model="properties.css.padding_left"  ng-change="changed('padding_left','px')">
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label for="secondary_font_size" class="control-label" ng-i18next="Padding Right"></label>
+                  </td>
+                  <td>
+                        <input type="number" class="input-group form-control" ng-model="properties.css.padding_right"  ng-change="changed('padding_right','px')">
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <label for="icon_size" class="control-label" ng-i18next="border style"></label>
+
+                  </td>
+                  <td>
+                    <select id="borderStyle" class="input-group form-control ng-pristine ng-untouched ng-valid ng-not-empty" ng-model="properties.css.border_style" ng-options="obj.value as obj.name for obj in borderStyles" ng-change="changed('border_style')"></select>
+
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <label for="secondary_font_color" class="control-label" ng-i18next="Border color"></label>
+
+                  </td>
+                  <td>
+
+                        <wst-color  ng-model="properties.css.border_color" on-change-color="changed('border_color')"></wst-color>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <label for="icon_size" class="control-label" ng-i18next="border width"></label>
+
+                  </td>
+                  <td>
+                    <input type="number" class="input-group form-control" ng-model="properties.css.border_width"  ng-change="changed('border_width','px')">
+
+                  </td>
+                </tr>
+            </table>
+      </div>
+      <div uib-accordion-group class="panel-default" heading="{{group.title}}" ng-repeat="group in groups">
+        {{group.content}}
+      </div>
+
+    </uib-accordion>
+
+</section>

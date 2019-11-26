@@ -1,0 +1,133 @@
+#objectProperties h4
+{
+  border-bottom: 1px solid #72A230;
+  margin-bottom: 10px;
+  text-align: right;
+  color: #72A230;
+}
+
+#objectProperties .control-label {
+    color : #000;
+    font-weight: normal;
+        font-size: 10px;
+}
+
+#objectProperties .tool-set {
+    padding: 0px;
+    /*border: 1px solid #fff;
+    border-radius: 5px;*/
+    margin: 5px;
+    margin-bottom: 20px;
+}
+
+#objectProperties .tool-set .container-fluid {
+    background-color:#ccc;
+    padding:0px;
+    height: 32px;
+    line-height: 32px;
+    vertical-align: middle;
+    padding-left: 5px;
+    color:#000;
+}
+
+#objectProperties .main {
+    padding: 0px;
+    /*border: 1px solid #fff;*/
+    margin: 5px;
+    /*background-color: #272c33;*/
+    padding-top: 0px;
+    /*border-radius: 5px;*/
+}
+
+
+#objectProperties input {
+        height: 20px;
+    font-size: 10px;
+    background-color: #fff !important;
+    color: #000 !important;
+}
+
+#objectProperties .form-group {
+    margin-bottom: 5px;
+}
+
+#objectProperties textarea {
+    overflow: hidden;
+    word-wrap: break-word;
+    resize: horizontal;
+    height: 100px;
+    font-size: 10px;
+}
+
+#objectProperties select {
+        height: 20px;
+    font-size: 10px;
+}
+
+#objectProperties .panel-tabs {
+    background-color: transparent;
+    padding: 0px;
+    margin: 0px;
+}
+
+#objectProperties  .panel.panel-tabs>.panel-heading .nav-tabs>li>a
+{
+    height: 20px;
+    margin-left:0px;
+    top: 0px;
+    background-color: #3f4652;
+}
+
+#objectProperties .panel.panel-tabs>.panel-heading .nav-tabs>li.active>a
+{
+    background-color: #EEEEEE;
+    color: #000;
+}
+
+
+#objectProperties .nav.nav-tabs + .tab-content {
+     background: transparent;
+     padding: 0px !important;
+     margin-bottom: 0px;
+}
+
+#objectProperties .nav.nav-tabs>li>a {
+     margin-right: 0px;
+     padding: 5px;
+
+     cursor: pointer;
+    background-color: #3f4652;
+    color: #ccc;
+    border-radius: 0px;
+}
+
+#objectProperties .nav.nav-tabs > li.active > a {
+    border: 0;
+    background-color: #EEEEEE;
+    color: #000;
+}
+
+#objectProperties .tab-container {
+    padding-bottom: 20px;
+    padding-left: 7px;
+    padding-right: 7px;
+    padding-top: 20px;
+    min-height: 300px;
+}
+
+#objectProperties .help-block {
+    color: #fff;
+    font-size: 10px;
+}
+
+#objectProperties .help-block a {
+    color: #ccc;
+    cursor: pointer;
+    text-align: right;
+}
+
+
+#objectProperties .main-properties-container {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}

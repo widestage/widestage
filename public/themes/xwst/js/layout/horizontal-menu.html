@@ -1,0 +1,136 @@
+            <nav class="navbar user-info-navbar fixed" role="navigation">
+               <ul class="user-info-menu left-links list-inline list-unstyled">
+
+                <li class="hidden-sm hidden-xs" style="min-height: 76px;"><a href="#" data-toggle="sidebar"> <i
+                        class="fa-bars"></i> </a></li>
+
+
+                <li dropdown id="main-menu-notifications-dropdown" class="light-blue menu-notifications" ng-controller="notificationsCtrl" ng-init="getNotificationsDropdown()">
+
+                <a dropdown-toggle id="notifications-dropdown" class="dropdown-toggle" href="" ng-click="markAsViewed();unviewedNotifications=0;">
+                    <i class="fa fa-bell-o"></i>
+                    <span class="badge notifications-counter"
+                          ng-bind="unviewedNotifications" ng-class="{'badge-danger': unviewedNotifications > 0}"></span>
+                </a>
+
+                <ul class="dropdown-menu notifications" aria-labelledby="notifications-dropdown">
+
+                    <li>
+                        <ul class="dropdown-menu-list list-unstyled ps-scrollbar" style="max-height: none;">
+
+                            <li class="notification-primary" ng-repeat="notification in notifications" ng-class="{'active': !notification.viewed}">
+                                <a href="{{notification.url}}" ng-class="{'defaultCursor': !notification.url}">
+                                    <span>
+                                        <strong>{{notification.text}}</strong>
+                                    </span>
+                                    <br/>
+                                    <span class="small time pull-right" ng-bind="notification.createdFrom">
+                                    </span>
+
+                                    <div class="row" ng-if="notification.type == 2" style="margin-top: 5px">
+                                        <div class="col-md-12">
+                                            <button class="btn btn-xs btn-info" ng-show="!notification.accepted" style="width: 100%;"
+                                                    ng-click="acceptNotification(notification)" ng-i18next="Accept"></button>
+                                            <button class="btn btn-xs btn-info" ng-show="notification.accepted" style="width: 100%;"
+                                                    ng-disabled="true" ng-i18next="Accepted"></button>
+                                        </div>
+                                    </div>
+
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+
+                    <li class="external">
+                        <a href="#/notifications">
+                            <span ng-i18next="See all notifications"></span>
+                            <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                </ul>
+
+            </li>
+
+
+                <li id="main-menu-language-switcher" class="dropdown hover-line language-switcher">
+            <a href="" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img ng-show="!user.language || user.language == 'en' || user.language == 'en-GB'"
+                     src="images/flags/flag-uk.png">
+                <img ng-show="user.language == 'es' || user.language == 'es-ES'"
+                     src="images/flags/flag-es.png">
+                <img ng-show="user.language == 'pt' || user.language == 'pt-PT'"
+                     src="images/flags/flag-br.png">
+            </a>
+
+            <ul class="dropdown-menu languages">
+                <li ng-hide="user.language == 'en' || user.language == 'en-GB'">
+                    <a ng-click="changeLng('en')">
+                        <img src="images/flags/flag-uk.png">
+                        English
+                    </a>
+                </li>
+                <li ng-hide="user.language == 'es' || user.language == 'es-ES'">
+                    <a ng-click="changeLng('es')">
+                        <img src="images/flags/flag-es.png">
+                        Español
+                    </a>
+                </li>
+                <li ng-hide="user.language == 'pt' || user.language == 'pt-PT'">
+                    <a ng-click="changeLng('pt')">
+                        <img src="images/flags/flag-br.png">
+                        Português
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+            </ul>
+
+            <ul id="user-dropdown" class="user-info-menu right-links list-inline list-unstyled">
+
+            <li id="main-menu-user-dropdown" class="dropdown user-profile" style="min-height: 76px;">
+                <a class="dropdown-toggle hand-cursor" data-toggle="dropdown">
+                    <span>
+                        <span ng-bind="user.name || user.code || user.email"></span>
+                        <i class="fa-angle-down"></i>
+                    </span>
+                </a>
+                <ul class="dropdown-menu user-profile-menu list-unstyled">
+                    <li>
+                        <a href="#/my-account">
+                            <i class="fa fa-user"></i>
+                            <span ng-i18next="My account"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://help.intalligent.info" target="_blank">
+                            <i class="fa fa-question"></i>
+                            <span ng-i18next="Support Center"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://www.talentdiscoverer.com" target="_blank">
+                            <i class="fa fa-info"></i>
+                            <span ng-i18next="About"></span>
+                            <span ng-bind="webApp.name"></span>
+                        </a>
+                    </li>
+                    <li class="last">
+                        <a href="/logout">
+                            <i class="fa fa-power-off"></i>
+                            <span ng-i18next="Logout"></span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            
+            <li id="main-menu-stream-btn">
+                <a href="#" data-toggle="chat">
+                    <i class="fa fa-question-circle"></i>
+                </a>
+            </li>
+
+        </ul>
+
+        </nav>

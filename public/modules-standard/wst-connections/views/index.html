@@ -1,0 +1,70 @@
+
+<div class="container-fluid" id="parentIntro" intro-help ng-intro-method="showIntro" ng-intro-options="IntroOptions">
+
+  <div class="page-title"> <!--full-width-->
+  	<div class="title-env">
+  		<h1 class="title" ng-i18next="Connections"></h1>
+  		<p class="description" ng-if="description"></p>
+  	</div>
+  	<div style="margin: 0px 20px;text-align: right;">
+      <div class="right-toolbar">
+          <a ng-click="newConnection()" ng-if="isGranted('Connections','create')" class="btn btn-success pull-right" ng-i18next="New Connection"></a>
+      </div>
+  	</div>
+  </div>
+
+    <div class="col-md-12 no-padding" id="datasourceList" ng-init="getConnections(1,'',['name','type','params.connection.host','params.connection.port','params.connection.database'])">
+
+        <alert type="info" ng-show="items.length == 0">
+          <i class="fa fa-exclamation-triangle" style="font-size:24px"></i>
+            <span ng-i18next="No connections found"></span>
+        </alert>
+
+        <div class="panel panel-default" ng-show="items.length > 0">
+
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Connection Type</th>
+                            <th>Name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="dts in items" id="datasourceListItem">
+                            <td>
+                                <span ng-click="editConnection(dts)" id="datasourceListItemType" class="branded-label" >{{dts.type}}</span>
+                            </td>
+                            <td ng-click="editConnection(dts)" style="cursor:pointer">
+                                <h4  id="datasourceListItemName" class="list-group-item-heading" tooltip="Click here to see or set data source details">{{dts.name}} </h4>
+                                <p  id="datasourceListItemDetails" class="list-group-item-text">
+
+                                    <label class="small" style="margin-right: 5px">host: </label>{{dts.params.connection.host}}
+                                    <label class="small" style="margin-right: 5px">port: </label>{{dts.params.connection.port}}
+                                    <label class="small" style="margin-right: 5px">database: </label>{{dts.params.connection.database}}
+                                </p>
+                            </td>
+
+                            <td class="align-right">
+                              <a id="datasourceDeleteBtn" ng-click="deleteConnection(dts)" class="btn btn-danger btn-sm btn-icon icon-left" tooltip="Click here to delete the connection" tooltip-placement="bottom" ng-i18next="Delete"></a>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <!--<pagination total-items="pager.pages.length" ng-model="pager.currentPage" max-size="5" class="pagination-sm" boundary-links="true"></pagination>-->
+
+            <nd-table-footer page="page" pages="pages" per-page="perPage" count="count" find="getConnections"></nd-table-footer>
+
+
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,63 @@
+<div class="container-fluid">
+
+<div class="modal-header">
+    <button type="button" class="close" ng-click="modalOptions.close();" aria-hidden="true">&times;</button>
+    <h4>Delete Layer</h4>
+</div>
+<div class="modal-body">
+
+    <div ng-show="!deleteData.layer.shared" class="alert alert-info">
+        <p ng-i18next="This layer is not shared!"></p>
+    </div>
+    <div ng-show="deleteData.layer.shared" class="alert alert-danger">
+        <p ng-i18next="This layer is shared!"></p>
+        <p ng-show="deleteData.layer.shared == 1" ng-i18next="This layer is shared with registered users"></p>
+        <p ng-show="deleteData.layer.shared == 2" ng-i18next="This layer is shared with universal link"></p>
+        <p ng-show="deleteData.layer.shared == 3" ng-i18next="This layer is embed shared with registered users"></p>
+        <p ng-show="deleteData.layer.shared == 4" ng-i18next="This layer is embed shared for everyone"></p>
+    </div>
+
+    <div ng-show="deleteData.reports.length == 0" class="alert alert-info">
+        <p ng-i18next="This layer is not used in any reports!!"></p>
+    </div>
+    <div ng-show="deleteData.reports.length > 0" class="alert alert-danger">
+        <p ng-i18next="This layer is used in the following reports:"></p>
+
+        <div class="form-group" ng-repeat="report in deleteData.reports">
+            <label>{{report.reportName}}</label>
+            <select class="form-control" ng-model="report.deleteAction">
+                <option value="0" ng-i18next="Disable this report"></option>
+                <option value="1" ng-i18next="Delete this report"></option>
+                <option value="-1" ng-i18next="Do noting"></option>
+            </select>
+        </div>
+    </div>
+
+    <div ng-show="deleteData.dashboards.length == 0" class="alert alert-info">
+        <p ng-i18next="This layer is not used in any dashboard!!"></p>
+    </div>
+    <div ng-show="deleteData.dashboards.length > 0" class="alert alert-danger">
+        <p ng-i18next="This layer is used in the following dashboards:"></p>
+
+        <div class="form-group" ng-repeat="dashboard in deleteData.dashboards">
+            <label>{{dashboard.dashboardName}}</label>
+            <select class="form-control" ng-model="dashboard.deleteAction">
+                <option value="0" ng-i18next="Disable this dashboard"></option>
+                <option value="1" ng-i18next="Delete this dashboard"></option>
+                <option value="-1" ng-i18next="Do noting"></option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label ng-i18next="Please, type DELETE to confirm"></label>
+        <input name="reportName" type="text" class="form-control" ng-model="deleteData.deleteString" ng-required="true" required >
+        <span ng-show="deleteData.deleteString != 'DELETE'" class="help-inline" ng-i18next="This confirmation is required"></span>
+    </div>
+</div>
+<div class="modal-footer">
+    <button data-ng-click="deleteConfirmed()" ng-disabled="deleteData.deleteString != 'DELETE'"  class="btn btn-danger pull-right"   ng-i18next="Delete"></button>
+    <button type="button" class="btn pull-right" ng-click="modalOptions.close();" style="margin-right: 5px;" ng-i18next="Cancel"></button>
+
+</div>
+</div>

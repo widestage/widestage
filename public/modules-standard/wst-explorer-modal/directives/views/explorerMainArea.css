@@ -1,0 +1,133 @@
+#explorerMainArea {
+    position: absolute;
+    left: 300px;
+    right: 0px;
+    top: 50px;
+    bottom: 0px;
+    padding: 0 18px 18px 0;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding:10px;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    overflow: auto;
+    -webkit-flex: 1 1 100%;
+    -moz-flex: 1 1 100%;
+    -ms-flex: 1 1 100%;
+    flex: 1 1 100%;
+
+}
+
+#explorerMainArea .column-zone {
+    width: 100%;
+    margin: 2px;
+    /* min-height: 45px; */
+    /* border: dotted 3px #002a80; */
+    position: relative;
+    border-radius: 25px;
+    background-color: gainsboro;
+}
+
+#explorerMainArea .ul-drop
+{
+    list-style-type: none;
+}
+
+#explorerMainArea .drop-zone-label {
+    font-size: 2em;
+    color: #999999;
+    z-index: -1;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+
+
+#explorerMainArea .report-selected-btn {
+    background-color: #72A230;
+}
+
+#explorerMainArea .report-type-button {
+    border-radius: 40px;
+    height: 45px;
+    width: 45px;
+    padding: 8px 9px;
+    border: 1px solid #999;
+}
+
+#explorerMainArea .report-type-button img {
+    width: 25px;
+    height: 25px;
+}
+
+
+#explorerMainArea .column-box {
+    width: auto;
+    min-height: 30px;
+    border: solid 1px #fff;
+    margin: 4px;
+    padding: 2px;
+    z-index: 0;
+    background-color: #72a230;
+    /*font-weight: bold;*/
+    float:left;
+    cursor: move;
+        border-radius: 25px;
+    color: white;
+    padding-left: 10px;
+}
+
+#explorerMainArea .column-box.hidden-column {
+    background-color: #ccc;
+    color: #999;
+}
+
+#explorerMainArea .chart-series-button {
+    border-radius: 25px;
+    width: 25px;
+    padding: 3px;
+    margin-left: 5px;
+    background-color: #fff;
+    color: #72a230;
+}
+
+#explorerMainArea .order-box  {
+    background-color: #999999;
+    color: #000000;
+}
+
+#explorerMainArea .column-box-close-btn {
+    background-color: #94C255;
+    color: #72a230;
+    padding: 6px;
+    border-radius: 25px;
+    margin-left: 2px;
+    width: 25px;
+    text-align: center;
+}
+
+#explorerMainArea .column-box-agg-btn {
+    background-color:white;
+    color: #72a230;
+    padding: 6px;
+    border-radius: 25px;
+    margin-left: 2px;
+    width: 25px;
+    text-align: center;
+
+}
+
+#explorerMainArea .order-box-close-btn {
+    background-color: #cccccc;
+    color: #999999;
+    padding: 5px;
+    border-radius: 25px;
+    margin-left: 5px;
+}

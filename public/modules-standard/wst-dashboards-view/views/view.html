@@ -1,0 +1,37 @@
+<div class="alert" ng-if="showNotDashFound" ng-i18next="Dashboard not found">
+
+</div>
+
+<div ng-if="!showNotDashFound" class="dash-view-header" >
+    <div class="dash-view-header-title">
+        <h3>
+            <a ng-show="!selectedDash.favourite" ng-click="addDashToFavourites(selectedDash)" class="hand-cursor"><i class="fa fa-star-o"></i></a>
+            <a ng-show="selectedDash.favourite" ng-click="removeDashFromFavourites(selectedDash)" class="hand-cursor"><i class="fa fa-star"></i></a>
+            {{selectedDash.dashboardName}}
+        </h3>
+    </div>
+    <div class="dash-view-header-buttons">
+        <!--<i ng-show="fromCache">from cache</i>-->
+
+        <a ng-if="selectedDash && selectedDash.owner == user._id" href="/#/dashboards/designer/edit/{{selectedDash._id}}"  class="btn btn-success pull-right" style="margin-right: 5px" ng-i18next="Edit dashboard"></a>
+
+        <li class="dropdown properties-menu" ng-if="selectedDash && selectedDash.owner == user._id">
+                    <a href="" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span>
+                            <i class="fa fa-ellipsis-v"></i>
+                        </span>
+                    </a>
+
+                    <ul class="dropdown-menu">
+                        <wst-share-button doc="selectedDash" doc-type="'dashboard'" doc-id="selectedDash._id" ng-if="selectedDash && selectedDash.owner == user._id"></wst-share-button>
+                        <wst-publish-button ng-if="selectedDash && selectedDash.owner == user._id" object="selectedDash" object-type="'dashboard'" object-id="selectedDash._id" object-label="selectedDash.dashboardName" object-parent-folder="selectedDash.parentFolder"  object-is-public="selectedDash.isPublic"></wst-publish-button>
+                    </ul>
+		      </li>
+
+    </div>
+
+</div>
+
+<wst-dashboard-prompts-block dashboard="selectedDash"></wst-dashboard-prompts-block>
+
+<dash-widget-container ng-if="!showNotDashFound" dashboard="selectedDash" designer-mode="false"></dash-widget-container>

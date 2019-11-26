@@ -1,0 +1,149 @@
+#designerSideMenu {
+    position: absolute;
+    top: 45px;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    width: 300px;
+    box-sizing: border-box;
+    padding: 15px 30px 15px 100px;
+    color: #fff;
+    background: #252627;
+}
+
+
+#designerSideMenu input {
+    background-color: #272c33;
+    border: 0px;
+    color: white;
+}
+
+#designerSideMenu v-pane-header {
+    background-color: #272c33;
+    color: #8da8b8;
+    border-radius: 3px;
+    width: 100%;
+    height: 30px;
+    font-size: 12px;
+    padding: 5px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    font-weight: 500;
+    line-height: 20px;
+    border: 0px !important;
+    margin-bottom: 10px;
+}
+
+#designerSideMenu>menu {
+    position: absolute;
+    left: 0;
+    top: 40px;
+    bottom: 0;
+    z-index: 11;
+    width: 35px;
+    list-style: none;
+    text-align: center;
+    background: #72A230;
+}
+
+#designerSideMenu .object-panel-header {
+    height: 40px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    /* padding: 5px; */
+    right: 0px;
+    background-color: #272c33;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 100;
+}
+
+#designerSideMenu .object-panel-header-inner {
+    height: 40px;
+    position: absolute;
+    top: 0px;
+    left: 40px;
+    right: 0px;
+    background-color: #3f4652;
+    color: #ffffff;
+    padding: 5px;
+}
+
+#designerSideMenu li.search {
+    margin: 0;
+    border: 0 none #fff;
+    padding: 0;
+}
+
+#designerSideMenu>menu li {
+    font-size: 70%;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+#designerSideMenu>menu a {
+    display: block;
+    width: 35px;
+    height: 120px;
+    /* padding-top: 41px; */
+    box-sizing: border-box;
+    /* background-image: url(https://d28pzkwbso7p1u.cloudfront.net/ndDesigner/images/catalog/icon_tabs_search.png); */
+    background-repeat: no-repeat;
+    background-size: 20px 20px;
+    background-position: 50% 19px;
+    color: #fff;
+    text-decoration: none;
+    transition: all .15s linear,opacity 0s linear;
+}
+
+#designerSideMenu .objectPanel-menu-label {
+    transform: rotate(-90deg);
+    width: 120px;
+    /* height: 100px; */
+    left: -40px;
+    position: relative;
+    top: 40px;
+    right: 0px;
+    /* font-size: smaller; */
+    /*cursor: default;*/
+}
+
+#designerSideMenu .object-panel-header-icon {
+    width: 40px;
+    height: 100%;
+}
+
+#designerSideMenu .object-panel-header-icon i {
+    font-size: 22px;
+    margin-left: 10px;
+    margin-top: 8px;
+    cursor: pointer;
+}
+
+#designerSideMenu .object-panel-header-icon.active {
+    background-color: #3f4652;
+}
+
+#designerSideMenu>menu a:hover, #designerSideMenu>menu .on a {
+    color: #00d4db!important;
+    -webkit-transform: none;
+    transform: none;
+    background-color: #3f4652;
+
+}
+
+#designerSideMenu>.content {
+    position: absolute;
+    left: 35px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+    padding: 20px 18px 20px 10px;
+    text-align: left;
+    background-color: #3f4652;
+}

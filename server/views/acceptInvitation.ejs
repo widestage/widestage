@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html id="ng-app" ng-app="wice-login">
+<!--LOGIN-->
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title ng-bind="webApp.title"></title>
+
+    <base href="/">
+
+    <meta name="description" content="Accept invitation and complete registry" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="images/logo-image-small.png">
+
+    <!-- basic styles -->
+
+    <link rel="stylesheet" href="bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/themes/xwst/assets/css/fonts/fontawesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="noty/lib/noty.css" />
+
+    <!--[if IE 7]>
+    <link rel="stylesheet" href="css/font-awesome-ie7.min.css" />
+    <![endif]-->
+
+    <!-- page specific plugin styles -->
+
+    <!-- fonts -->
+
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
+
+    <link href="/themes/xwst/assets/css/xwst-core.css" rel="stylesheet" />
+    <link href="/themes/xwst/assets/css/xwst-components.css" rel="stylesheet" />
+    <link href="/themes/xwst/assets/css/xwst-forms.css" rel="stylesheet" />
+    <link href="/themes/xwst/assets/css/xwst-skins.css" rel="stylesheet" />
+
+    
+    
+</head>
+
+<body class="page-body login-page login-light" ng-controller="acceptInviteCtrl" style="padding-top:50px">
+
+<data id="host" value="<%- host %>"/>
+
+<div class="login-container">
+    <div class="row">
+        <div class="col-sm-6">
+
+            <div class="login-logo"  id="login-logo-box"> 
+                <img src="themes/xwst/assets/images/custom/logo.png">
+            </div>
+
+        </div>
+        <div class="col-sm-6">
+            <div id="passwordLengthError" class="errors-container alert alert-danger" style="padding: 10px;display: none;">
+                <span ng-i18next="Password must be at least 8 characters length"></span>
+            </div>
+            <div id="passwordMatchError" class="errors-container alert alert-danger" style="padding: 10px;display: none;">
+                <span ng-i18next="Passwords do not match"></span>
+            </div>
+
+            <div id="loginBox">
+                <form method="POST" role="form" id="acceptInvitationForm" class="login-form fade-in-effect in">
+                    <div class="login-header">
+                        <a class="logo">
+                            <h2 style="margin: 0px;" ng-i18next="Complete your registry"></h2>
+                        </a>
+                    </div>
+
+                    <div class="form-group">
+                        <label ng-i18next="Password"></label>
+                        <input type="password" class="form-control" name="password" ng-model="password" ng-enter="acceptInvitation()" ng-change="validateForm()">
+                    </div>
+
+                    <div class="form-group">
+                        <label ng-i18next="Repeat password"></label>
+                        <input type="password" class="form-control" name="repeatPassword" ng-model="repeatPassword"  ng-enter="acceptInvitation()" ng-change="validateForm()">
+                    </div>
+                    
+                    <span style="color:red" ng-bind="errorMessage" ng-if="errorMessage"></span>
+                    
+                    <input type="hidden" class="form-control" ng-init="hash='<%- hash %>'" ng-model="hash" name="hash" value="<%- hash %>">
+                    
+                    <div class="form-group">
+                        <button ng-click="acceptInvitation()" ng-disabled="!validateForm()" class="btn btn-primary btn-block text-left" >
+                            <i class="fa-lock"></i>
+                            <span ng-i18next="Register with password"></span>
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <div class="external-login">
+                            <a href="<%- domain %>/auth/google?host=<%- host %>" class="gplus" ng-i18next="Register with Google">
+                                
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="login-footer">
+                        <div class="info-links"><a href="#">ToS</a> -
+                            <a href="#">Privacy Policy</a></div>
+                    </div>
+                </form>
+
+                
+            </div>
+
+        </div>
+    </div>
+</div>
+
+    <!-- Scripts -->
+    
+    <script src="/jquery/dist/jquery.min.js"></script>
+    <script src="/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="/toastr/toastr.min.js"></script>
+
+    <script src="/angular/angular.min.js"></script>
+    <script src="/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="/angular-cookies/angular-cookies.min.js"></script>
+    <script src="/oclazyload/dist/ocLazyLoad.min.js"></script>
+    <script src="/angular-fullscreen/src/angular-fullscreen.js"></script>
+    <script src="/themes/xwst/assets/js/TweenMax.min.js"></script>
+    <script src="/themes/xwst/assets/js/joinable.js"></script>
+    <script src="/themes/xwst/assets/js/resizeable.js"></script>
+    <script src="angular-sanitize/angular-sanitize.min.js"></script>
+    	<!-- transalation ng-i18next -->
+	<script src="i18next/i18next.js"></script>
+	<script src="i18next-xhr-backend/i18nextXHRBackend.min.js"></script>
+	<script src="i18next-sprintf-postprocessor/i18nextSprintfPostProcessor.min.js"></script>	
+	<script src="ng-i18next/dist/ng-i18next.min.js"></script>
+	<script>
+		if (window.i18next) {
+			window.i18next
+				.use(window.i18nextXHRBackend)
+				.use(window.i18nextSprintfPostProcessor);
+		
+			window.i18next.use({
+				name: 'patrick',
+				type: 'postProcessor',
+				process: function (value, key, options) {
+					//https://www.youtube.com/watch?v=YSzOXtXm8p0
+					return 'No, this is Patrick!';
+				}
+			});
+		
+			window.i18next.init({
+				//lng: 'de', // If not given, i18n will detect the browser language.
+				fallbackLng: 'es', // Default is dev
+				backend: {
+					loadPath: 'locales/{{lng}}/translation.json'
+				}/*,
+				postProcess: 'patrick'*/
+			});
+		}
+	</script>
+
+
+    <!-- App -->
+
+    <script src="/themes/xwst/js/directives.js"></script>
+
+
+    <!-- JavaScripts initializations and stuff -->
+    <script src="/themes/xwst/js/xwst-custom.js"></script>
+
+    <script src="/libs-core/crypto/aes.js"></script>
+    <script src="authentication/login.js"></script>
+
+</body>
+
+</html>

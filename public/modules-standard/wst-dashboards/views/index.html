@@ -1,0 +1,81 @@
+
+
+<div class="container-fluid" id="parentIntro" intro-help ng-intro-method="showIntro" ng-intro-options="IntroOptions">
+
+  <div class="page-title"> <!--full-width-->
+    <div class="title-env">
+      <h1 class="title" ng-i18next="Dashboards"></h1>
+      <p class="description" ng-if="description"></p>
+    </div>
+    <div style="margin: 0px 20px;text-align: right;">
+      <div class="right-toolbar">
+        <div class="input-group input-group-minimal panel-search-input" style="margin-right: 10px;margin-top:3px;">
+            <input type="search" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="{{'Search' | i18next}}" autocomplete="off" ng-model="search" ng-enter="getDashboards({search: search})">
+                <span class="input-group-addon">
+                    <i class="fa fa-search hand-cursor" ng-click="getDashboards({search: search})"></i>
+                </span>
+        </div>
+        <a id="newDashBtn" ng-if="isGranted('Dashboards','create')" href="#/dashboards/designer/new/-" class="btn btn-success pull-right" tooltip="{{'Click here to create a new dashboard' | i18next}}" tooltip-placement="bottom" ng-i18next="New Dashboard" style="margin-right: 10px;"> </a>
+      </div>
+    </div>
+  </div>
+
+    <div class="col-md-12 no-padding" id="dashboardList" ng-init="getDashboards()">
+
+        <alert type="info" ng-show="items.length == 0">
+          <i class="fa fa-exclamation-triangle" style="font-size:24px"></i>
+          <span ng-i18next="No dashboards found"></span>
+        </alert>
+
+        <div class="panel panel-default" ng-show="items.length > 0">
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th style="text-align: right;width:50px" ng-i18next="Status"></th>
+                            <th ng-i18next="Dashboard Name"></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="dashboard in items" id="dashboardListItem">
+                          <td style="width:40px">
+                              <a id="dashboardListItemStatus" class="badge pull-right" ng-class="{'badge-success': dashboard.status == 'Active', 'badge-danger': dashboard.status != 'Active'}" ng-click="changeDashboardStatus(dashboard)" tooltip="Click here to change the status of the dashboard" tooltip-placement="left">{{dashboard.status}}</a>
+                          </td>
+                            <td>
+                                <a href="/#/dashboard/{{dashboard._id}}" tooltip="Click here to view/modify the dashboard" tooltip-placement="top">
+                                    <h4 id="dashboardListItemName" class="list-group-item-heading">{{dashboard.dashboardName}}</h4>
+                                    <small>{{dashboard.description}}</small>
+                                </a>
+                            </td>
+
+                            <td style="width: 44px;font-size: 15px;">
+                                <a ng-show="!dashboard.favourite" ng-click="addDashboardToFavourites(dashboard)" class="hand-cursor"><i class="fa fa-star-o"></i></a>
+                                <a ng-show="dashboard.favourite" ng-click="removeDashboardFromFavourites(dashboard)" class="hand-cursor"><i class="fa fa-star"></i></a>
+                            </td>
+                            <td class="align-right">
+                                <a id="dashboardListItemEditBtn" href="/#/dashboards/designer/edit/{{dashboard._id}}" class="btn btn-black btn-sm btn-icon icon-left" tooltip="Click here to modify this dashboard" tooltip-placement="bottom" ng-i18next="Designer">
+
+                                </a>
+
+                                <a id="dashboardListItemDeleteBtn" href="" class="btn btn-danger btn-sm btn-icon icon-left" ng-click="deleteDash(dashboard)" tooltip="Click here to delete this dashboard" tooltip-placement="bottom" ng-i18next="Delete">
+
+                                </a>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <nd-table-footer page="page" pages="pages" per-page="perPage" count="count" find="getDashboards"></nd-table-footer>
+
+
+        </div>
+
+    </div>
+
+</div>

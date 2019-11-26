@@ -1,0 +1,93 @@
+  <section id="explorerIndicatorProperties" class="layer scrollPane">
+    <table style="width:230px;">
+
+      <tr>
+        <td>
+          <label for="header_font_size" class="control-label" ng-i18next="Header font size"></label>
+        </td>
+        <td>
+          <input type="number" class="input-group form-control" ng-model="report.properties.verticalGrid.header_font_size"  ng-change="report.properties.verticalGrid.refresh()">
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <label for="header_font_color" class="control-label" ng-i18next="Header font color"></label>
+        </td>
+        <td>
+          <wst-color  ng-model="report.properties.verticalGrid.header_font_color" on-change-color="report.properties.verticalGrid.refresh()"></wst-color>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <label for="header_background_color" class="control-label" ng-i18next="Header background color"></label>
+        </td>
+        <td>
+          <wst-color  ng-model="report.properties.verticalGrid.header_background_color" on-change-color="report.properties.verticalGrid.refresh()"></wst-color>
+        </td>
+      </tr>
+
+
+      <tr>
+        <td>
+          <label for="row_height" class="control-label" ng-i18next="Row height"></label>
+        </td>
+        <td>
+          <input type="number" class="input-group form-control" ng-model="report.properties.verticalGrid.row_height"  ng-change="report.properties.verticalGrid.refresh()">
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <label for="row_font_size" class="control-label" ng-i18next="Data font size"></label>
+        </td>
+        <td>
+          <input type="number" class="input-group form-control" ng-model="report.properties.verticalGrid.row_font_size"  ng-change="report.properties.verticalGrid.refresh()">
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <label for="row_font_color" class="control-label" ng-i18next="Data font color"></label>
+        </td>
+        <td>
+          <wst-color  ng-model="report.properties.verticalGrid.row_font_color" on-change-color="report.properties.verticalGrid.refresh()"></wst-color>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <label for="row_font_color" class="control-label" ng-i18next="Data background color"></label>
+        </td>
+        <td>
+          <wst-color  ng-model="report.properties.verticalGrid.row_background_color" on-change-color="report.properties.verticalGrid.refresh()"></wst-color>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="row_bottom_line_height" class="control-label" ng-i18next="Row bottom line height"></label>
+        </td>
+        <td>
+          <input type="number" class="input-group form-control" min="0" ng-model="report.properties.verticalGrid.row_bottom_line_height"  ng-change="report.properties.verticalGrid.refresh()">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="row_bottom_line_color" class="control-label" ng-i18next="Row bottom line color"></label>
+        </td>
+        <td>
+          <wst-color  ng-model="report.properties.verticalGrid.row_bottom_line_color" on-change-color="report.properties.verticalGrid.refresh()"></wst-color>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="row_column_line_width" class="control-label" ng-i18next="column line width"></label>
+        </td>
+        <td>
+          <input type="number" class="input-group form-control" min="0" ng-model="report.properties.verticalGrid.row_column_line_width"  ng-change="report.properties.verticalGrid.refresh()">
+        </td>
+      </tr>
+
+
+  </table>

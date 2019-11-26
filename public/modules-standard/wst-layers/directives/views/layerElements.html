@@ -1,0 +1,57 @@
+<section id="layerElements" class="layer scrollPane">
+
+  <h4 ng-i18next="Layer elements"></h4>
+
+        <div   style=" padding-top:3px">
+              <a ng-click="addFolder()" class="btn btn-info btn-xs pull-right layer-add-new-folder-btn" ng-i18next="Add new folder"></a>
+        </div>
+        <perfect-scrollbar class="scroller" wheel-propagation="true" wheel-speed="10" min-scrollbar-length="20">
+
+
+            <div ui-tree id="layerElementsTree" >
+                <ol ui-tree-nodes ng-model="elements">
+                    <li ng-repeat="node in elements" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+                </ol>
+            </div>
+
+            <script type="text/ng-template" id="nodes_renderer.html" >
+                <div class="tree-node tree-node-content tree-node-folder schema-folder" ng-if="(node.elementRole == 'folder')  ">
+                  <span ui-tree-handle ng-if="!node.editing == true" class="fa" ng-class="{'fa-plus-square': collapsed,'fa-minus-square': !collapsed}" ng-click="toggle(this)" style="font-size: larger;    cursor: default;"></span><span ui-tree-handle ng-if="!node.editing == true" ng-click="toggle(this)" style="padding-left: 5px;font-size: larger;    cursor: default;">{{node.elementLabel}}</span>
+                  <span ng-if="node.editing == true" class=""><input type="text" ng-model="node.elementLabel" style="width:150px"></span>
+
+                  <div ng-if="!node.editing == true" class="schema-element-btn">
+                      <div class="btn btn-danger btn-xs delete-schema-element-btn" ng-click="deleteSchemaElement(node)" ng-i18next="Delete"></div>
+                      <div class="btn btn-info btn-xs edit-schema-element-btn" ng-click="node.editing = true; elementEditing = true;" ng-i18next="Edit"></div>
+                  </div>
+
+                  <div ng-if="node.editing == true" class="schema-element-btn show">
+                      <div class="btn btn-info btn-xs edit-schema-element-btn pull-right" ng-click="node.editing = false" style="cursor:hand" ng-i18next="Save"></div>
+                  </div>
+
+                </div>
+
+                <div class="tree-node tree-node-item schema-element" ng-if="node.elementRole != 'folder'">
+                  <i ui-tree-handle  class="fa fa-cube wst-main-color" ng-show="node.elementType != 'DATE' && node.elementType != 'DECIMAL' && node.elementType != 'INTEGER' && node.elementType != 'FLOAT' && (!node.defaultAggregation)" data-toggle="tooltip" data-placement="top" title="{{node.elementLabel}} (Dimmension)"></i>
+
+                  <i ui-tree-handle class="fa fa-square-root-alt wst-main-color" ng-show="(node.elementType == 'DECIMAL' || node.elementType == 'INTEGER' || node.elementType == 'FLOAT' || node.defaultAggregation)" data-toggle="tooltip" data-placement="top" title="{{node.elementLabel}} (Metric)"></i>
+
+                  <i ui-tree-handle class="fa fa-clock wst-main-color" ng-show="node.elementType == 'DATE'" data-toggle="tooltip" data-placement="top"></i>
+
+                  <span  ui-tree-handle  ng-if="!node.defaultAggregation">{{node.elementLabel}}</span>
+                  <span  ui-tree-handle ng-if="node.defaultAggregation">{{node.elementLabel +' ('+node.defaultAggregation+')'}}</span>
+
+                  <div class="schema-element-btn">
+                       <div class="btn btn-danger btn-xs delete-schema-element-btn" ng-click="deleteSchemaElement(node)" ng-i18next="Delete"></div>
+                       <div class="btn btn-info btn-xs edit-schema-element-btn" ng-click="editElement(node)" ng-i18next="Edit"></div>
+                   </div>
+
+
+                </div>
+
+                <ol ng-if="node.elements" ui-tree-nodes=""  ng-model="node.elements" ng-class="{hidden: collapsed}">
+                    <li ng-repeat="node in node.elements" ui-tree-node ng-include="'nodes_renderer.html'">
+                    </li>
+                </ol>
+            </script>
+      </perfect-scrollbar>
+</section>

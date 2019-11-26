@@ -1,0 +1,13 @@
+<div id="orderByPanel" ng-show="selectedReport.reportType != 'indicator' && selectedReport.reportType != 'gauge' && selectedReport.reportType != 'dxPivot'" class="container-fluid column-zone no-padding" drop="onDropOrder($data, $event, 'order')" drop-effect="copy" drop-accept="['json/custom-object','json/column']" drag-over="onDragOver($event)" drag-over-class="drag-over-accept">
+    <div class="drop-zone-label pull-right" ng-hide="query.order.length > 0">Drop here order by elements</div>
+    <ul class="ul-drop no-padding" ng-model="query.order" ui-sortable="sortableOptions" ng-model="foo">
+        <li class="column-box order-box" ng-repeat="field in query.order" >
+            <i class="fa fa-cube" ng-show="field.elementRole == 'dimension'"></i>
+            <i class="fa fa-list-ol" ng-show="field.elementRole == 'measure' "></i>
+            <span tooltip="Drag to left or right to change order weight in the query (the more at your left, the more weight in the query when ordering results)" tooltip-placement="left">{{field.objectLabel}}</span>
+            <i ng-show="field.sortType == -1" class="fa fa-chevron-down hand-cursor order-box-close-btn" ng-click="sortTypeClicked(field,1)" tooltip="Click here to order descendent using this field" tooltip-placement="left"></i>
+            <i ng-show="field.sortType == 1" class="fa fa-chevron-up hand-cursor order-box-close-btn" ng-click="sortTypeClicked(field,-1)" tooltip="Click here to order ascendent using this field" tooltip-placement="left"></i>
+            <i class="fa fa-times hand-cursor order-box-close-btn" ng-click="removeOrder(field)" tooltip="Click here to remove this field from the query" tooltip-placement="left"></i>
+        </li>
+    </ul>
+</div>

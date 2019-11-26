@@ -1,0 +1,24 @@
+<div id="explorerContainer" class="explorer-container">
+
+    <div class="explorer-header" ng-init="initLayers(); initForm()">
+
+        <div class="explorer-header-title">
+                <i class="fas fa-binoculars" style="margin-right:15px"></i>  <h3  ng-i18next="Explorer"></h3>
+        </div>
+
+        <div class="explorer-header-buttons">
+
+
+        </div>
+
+
+    </div>
+
+    <div class="explorer-body">
+
+        <wst-elements-panel report="report" query="query"></wst-elements-panel>
+        <wst-explorer-main-area report="report" query="query" id="explorerMainArea"></wst-explorer-main-area>
+
+    </div>
+
+</div>

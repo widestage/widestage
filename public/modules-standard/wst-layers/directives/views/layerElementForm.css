@@ -1,0 +1,15 @@
+#layerElementModal .panel-body {
+    background-color: #eee;
+    padding: 10px;
+    min-height: 250px;
+}
+
+#layerElementModal .modal-body {
+    background-color: #fff;
+
+}
+
+#layerElementModal .panel
+{
+  padding:0px;
+}

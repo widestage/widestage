@@ -1,0 +1,38 @@
+<blockquote class="blockquote blockquote-info" ng-show="count === 0">
+    <div class="container-fluid">
+        <div class="col-md-1" style="font-size: 3em;color: #40bbea;">
+            <i class="fa fa-info"></i>
+        </div>
+        <div class="col-md-11">
+            <p><strong ng-i18next="Info"></strong></p>
+            <p><small ng-i18next="No results found"></small></p>
+        </div>
+    </div>
+    
+</blockquote>
+
+<div class="row" style="margin-top: 10px;" ng-show="count > 0">
+
+    <div class="col-md-5 col-sm-12">
+
+        <span ng-show="count > 0">
+            <span>{{'Showing' | i18next}} <span ng-bind="from"></span> {{'to' | i18next}} <span ng-bind="to"></span> {{'of' | i18next}} <span ng-bind="count"></span> {{'entries' | i18next}}</span>
+        </span>
+        <span ng-show="count == 0" ng-i18next="No results found"></span>
+
+    </div>
+
+    <div class="col-md-7 col-sm-12">
+
+        <ul class="pagination pull-right" ng-show="pages > 1">
+            <li ng-class="{disabled:page==1}"><a ng-click="prevPage()" class="hand-cursor"><i class="fa fa-angle-left"></i></a></li>
+            <!--<li ng-repeat="n in [] | range:pages" ng-class="{active:page==$index+1}" ng-show="$index+1 < page+5 && $index+1 > page-5">-->
+            <li ng-repeat="n in getPagesArray(pages) track by $index" ng-class="{active:page==$index+1}" ng-show="($index+1 < top) && ($index+1 > bottom)">
+                <a ng-click="goToPage($index+1)" class="hand-cursor">{{$index+1}}</a>
+            </li>
+            <li ng-class="{disabled:page==pages}"><a ng-click="nextPage()" class="hand-cursor"><i class="fa fa-angle-right"></i></a></li>
+        </ul>
+
+    </div>
+
+</div>

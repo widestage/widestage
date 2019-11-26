@@ -1,0 +1,134 @@
+#explorerContainer .explorer-main-container {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+}
+
+#explorerContainer {
+    display: flex;
+    -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -ms-flex-align: stretch;
+    -webkit-align-items: stretch;
+    -moz-align-items: stretch;
+    align-items: stretch;
+    height: 100%;"
+}
+
+#explorerContainer  .explorer-header
+{
+    position: absolute;
+    top: 0px;
+    height: 45px;
+    background: #f6f6f7;
+    border-bottom: 1px solid #e4e5e6;
+    color: #3e3f40;
+    font-size: 24px;
+    font-weight: 100;
+    padding: 0 20px;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    align-items: center;
+    width: 100%;
+                 border-bottom: 2px solid #72A230;
+}
+
+#explorerContainer .explorer-header-title
+{
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flexbox;
+    display: flex;
+    width: 100%;
+}
+
+#explorerContainer .explorer-header-buttons
+{
+    position: relative;
+    z-index: 1004;
+    display: -webkit-flex;
+    display: -moz-flex;
+    padding-top: 10px;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    align-items: center;
+    -webkit-flex: 0 0 auto;
+    -moz-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+}
+
+#explorerContainer .explorer-body
+{
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flexbox;
+    -webkit-flex: 1 1 100%;
+    -moz-flex: 1 1 100%;
+    -ms-flex: 1 1 100%;
+    flex: 1 1 100%;
+    display: flex;
+}
+
+#explorerIndicatorProperties label[for]
+{
+  padding-right: 5px;
+    font-size: 11px;
+    color: #999;
+}
+
+#explorerIndicatorProperties .input-group
+{
+  width: 120px;
+margin-bottom: 5px;
+background-color: inherit;
+color: #999;
+font-size: 12px;
+
+}
+
+#explorerIndicatorProperties .form-control
+{
+background-color: inherit;
+color: #ccc;
+font-size: 12px;
+border: 1px solid #999;
+}
+
+#explorerIndicatorProperties  .input-group-addon
+{
+width:15px;
+background-color: inherit;
+color: #999;
+font-size: 12px;
+border: 1px solid #999;
+    border-left: 0px;
+}
+
+#explorerIndicatorProperties  .dropdown-menu
+{
+  float:right;
+}
+
+#explorerIndicatorProperties  .popover {
+    top: 0px !important;
+    right: 0px !important;
+}
+
+#explorerIndicatorProperties  .form-control-td select {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    width: 120px;
+}

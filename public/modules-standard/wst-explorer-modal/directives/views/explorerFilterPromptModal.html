@@ -1,0 +1,53 @@
+<div class="row" id="explorerFilterPromptModal">
+  <div class="panel panel-default">
+            <div class="panel-heading">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
+              <h4 class="modal-title" ng-i18next="Runtime filter properties"></h4>
+            </div>
+
+          <div class="panel-body" ng-init="tabbed_panel_active = 1">
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="field-3" class="control-label"  ng-i18next="Runtime Filter Label"></label>
+
+                            <input type="text" class="form-control" id="field-3"  ng-model="selectedFilter.promptTitle">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="field-3" class="control-label"></label>
+                            <div class="checkbox popover-primary ng-scope" popover-trigger="mouseenter" popover-placement="top" popover-title="Answer required" popover="Select if you want the user to enter an answer before executing the report.">
+                                <label>
+                                    <input type="checkbox" ng-model="selectedFilter.promptMandatory" ><span ng-i18next="Answer required (mandatory filter)"></span>
+
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" ng-model="selectedFilter.promptAllowMultipleSelection" ><span ng-i18next="Allow Multiple selection"></span>
+
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                                <div class="form-group no-margin">
+                                    <label for="field-7" class="control-label" ng-i18next="Filter Instructions" ></label>
+                                    <textarea ng-model="selectedFilter.promptInstructions" class="form-control autogrow" id="field-7"  style="overflow: hidden; word-wrap: break-word; resize: horizontal; height: 50px;"></textarea>
+                                </div>
+                    </div>
+                </div>
+          </div>
+
+          <div class="panel-footer ng-scope">
+            <button type="button" class="btn btn-white" data-dismiss="modal" ng-click="modalOptions.close()" ng-i18next="Close"></button>
+            <button ng-show="selectedFilter.filterPrompt == true" type="button" class="btn btn-danger"  ng-click="setFilterPrompt()" ng-i18next="Deactivate Filter"></button>
+            <button ng-show="selectedFilter.filterPrompt == false" type="button" class="btn btn-info"  ng-click="setFilterPrompt()"  ng-i18next="Activate Filter"></button>
+          </div>
+
+  </div>
+</div>

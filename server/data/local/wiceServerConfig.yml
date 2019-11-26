@@ -1,0 +1,74 @@
+{
+   "appName": "WideStage",
+   "appDescription":"Business Intelligence suite",
+   "appURL":"http://widestage.com",
+   "supportURL":"http://support.widestage.com",
+   "appSlogan": "The light weight and powerful Business Intelligence suite",
+   "port":8089,
+   "db_type":"mongoDB",
+   "mongoPort":27017,
+   "sessionSecret": "this is the session secret",
+   "authentication": true,
+   "localAuth":true,
+   "enableGoogleAuth":true,
+   "microsoftAuth":false,
+   "facebookAuth":false,
+   "githubAuth":false,
+   "slackAuth":false,
+   "ldapAuth":false,
+   "azureAuth":false,
+   "mongoServer":"34.254.252.126",
+   "mongoDatabase":"widestageDev",
+   "db":"mongodb://localhost:27017/widestageLocalDev",
+   "usersSchemaName": "users",
+   "uploadStorageType":"local",
+   "trackMissingTranslations":true,
+   "mailerService":"sendmail",
+   "mailersecureConnection":true,
+   "mailerport":587,
+   "settingsItemsPerPage":10,
+   "settingsDefaultRecordsPerPage":500,
+   "host":"http://ice-dev.walirian.com:80",
+   "adminEmail":"hermes@hermes",
+   "adminPass":"Walirian?9",
+   "multipleSubdomains":false,
+   "theme":"xwst",
+   "nedb_path":"/data",
+   "googleCloudMessagingKey": 'YOURGOOGLEMESSAGEKEYHERE',
+   "drill":{
+      "host":"http://localhost:8047"
+   },
+   "crypto":{
+      "enabled":false,
+      "secret":"SecretPassphrase"
+   },
+   "mailer": {
+            service: 'SMTP',
+            host: 'smtp.sparkpostmail.com',
+            secureConnection: true,
+            port: 587,
+            auth: {
+                user: 'SMTP_Injection',
+                pass: '5a7a72c79317bb9a8cf490e6d44981f15b4596f1'
+            },
+            from: 'no_reply@widestage.net'
+   },
+   "amazon":{
+            accessKeyId: "YOURAMAZONKEY",
+            secretAccessKey: "YOURAMAZONSECRETACCESSKEY",
+            region: "YOURREGION",
+            bucket: "YOURBUCKET",
+            folder: "YOURFOLDER"
+   },
+   "google":{
+            "clientID": "463281618964-m88ulbgehrre5gf86uvnefhbtdom82qg.apps.googleusercontent.com",
+            "clientSecret": "eO2q5_24aIiFke3vHASTfqus",
+            "callbackURL": "http://oauth.tdiscoverer.net/auth/google/callback"
+   },
+   "pagination":{
+      "itemsPerPage":10
+   },
+   "query":{
+      "defaultRecordsPerPage":500
+   }
+}

@@ -1,0 +1,38 @@
+<div class="container-fluid" >
+
+<wst-explorer-drop-area report="selectedReport" ></wst-explorer-drop-area>
+
+
+
+<!--choose a widget to see your data-->
+<div ng-if="showReportTypes" id="reportType" class="container-fluid" ng-hide="queryID" style="width:100%">
+    <!-- TYPE OF REPORT SELECTION -->
+    <a id="reportTypeGrid" data-toggle="tooltip" data-placement="top" title="Data grid" class="btn report-type-button" ng-class="{'report-selected-btn': selectedReport.reportType == 'grid', 'report-unselected-btn': selectedReport.reportType != 'grid'}" ng-click="changeReportType('grid')"><img src="themes/xwst/assets/images/grid.png"></a>
+    <a id="reportTypeVerticalGrid" data-toggle="tooltip" data-placement="top" title="Vertical data grid" class="btn report-type-button" ng-class="{'report-selected-btn': selectedReport.reportType == 'vertical-grid', 'report-unselected-btn': selectedReport.reportType != 'vertical-grid'}" ng-click="changeReportType('vertical-grid')"><img src="themes/xwst/assets/images/vertical_grid.png"></a>
+    <a id="reportTypeChartLine" data-toggle="tooltip" data-placement="top" title="Line and Bar chart" class="btn report-type-button" ng-class="{'report-selected-btn': selectedReport.reportType == 'chart-line', 'report-unselected-btn': selectedReport.reportType != 'chart-line'}" ng-click="changeReportType('chart-line')"><img src="themes/xwst/assets/images/chart_line.png"></a>
+    <a id="reportTypeChartDonut" data-toggle="tooltip" data-placement="top" title="Donut and pie chart" class="btn report-type-button" ng-class="{'report-selected-btn': selectedReport.reportType == 'chart-donut', 'report-unselected-btn': selectedReport.reportType != 'chart-donut'}" ng-click="changeReportType('chart-donut')"><img src="themes/xwst/assets/images/chart_donut.png"></a>
+    <a id="reportTypeIndicator" data-toggle="tooltip" data-placement="top" title="HTML Indicator Panel" class="btn report-type-button" ng-class="{'report-selected-btn': selectedReport.reportType == 'indicator', 'report-unselected-btn': selectedReport.reportType != 'indicator'}" ng-click="changeReportType('indicator')"><img src="themes/xwst/assets/images/indicator.png"></a>
+    <a id="reportTypeGauge" data-toggle="tooltip" data-placement="top" title="Gauge chart" class="btn report-type-button" ng-class="{'report-selected-btn': selectedReport.reportType == 'gauge', 'report-unselected-btn': selectedReport.reportType != 'gauge'}" ng-click="changeReportType('gauge')"><img src="themes/xwst/assets/images/gauge.png"></a>
+<!--
+    <a id="reportTypePivot" data-toggle="tooltip" data-placement="top" title="Pivot grid" class="btn report-type-button" ng-class="{'report-selected-btn': selectedReport.reportType == 'dxPivot', 'report-unselected-btn': selectedReport.reportType != 'dxPivot'}" ng-click="changeReportType('dxPivot')"><img src="themes/xwst/assets/images/pivot.png"></a>
+    <a id="reportTypeDxGrid" data-toggle="tooltip" data-placement="top" title="Extended data grid" class="btn report-type-button" ng-class="{'report-selected-btn': selectedReport.reportType == 'dxGrid', 'report-unselected-btn': selectedReport.reportType != 'dxGrid'}" ng-click="changeReportType('dxGrid')"><img src="themes/xwst/assets/images/grid.png"></a>
+-->
+</div>
+
+<div  ng-if="selectedReport.query.columns.length > 0" class="container-fluid branded-border-panel" style="width:100%;margin-bottom:10px">
+    <h4 class="pull-right" ng-i18next="Query results"></h4>
+</div>
+
+<div class="container-fluid" ng-if="gettingData == true">
+    <h3><img src="themes/xwst/assets/images/loader.gif" width="32px" height="32px" ng-i18next="Getting data..."></h3>
+</div>
+
+<div ng-include src="promptsBlock" class=" prompts-block"></div>
+
+<wst-grid ng-if="selectedReport.reportType == 'grid'" report="selectedReport" style="min-height:200px;position:relative;width:100%;height:100%">  </wst-grid>
+<wst-vertical-grid ng-if="selectedReport.reportType == 'vertical-grid'" report="selectedReport" style="min-height:200px;position:relative;width:100%;height:100%">  </wst-vertical-grid>
+<wst-indicator ng-if="selectedReport.reportType == 'indicator'" report="selectedReport" style="min-height:200px;position:relative;width:100%;height:100%">  </wst-indicator>
+
+
+<wst-chart ng-if="selectedReport.reportType == 'chart-line' || selectedReport.reportType == 'chart-donut' || selectedReport.reportType == 'gauge'" report="selectedReport" style="min-height:200px;position:relative;width:100%;height:100%"></wst-chart>
+</div>

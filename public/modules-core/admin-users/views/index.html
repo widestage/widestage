@@ -1,0 +1,69 @@
+
+<div class="container-fluid" ng-init="getUsers(1,'',['email','lastName','status'])">
+
+  <div class="page-title"> <!--full-width-->
+  	<div class="title-env">
+  		<h1 class="title" ng-i18next="Users"></h1>
+  		<p class="description" ng-if="description"></p>
+  	</div>
+  	<div style="margin: 0px 20px;text-align: right;">
+      <div class="right-toolbar">
+          <a ng-click="newUser()" class="btn btn-success pull-right" ng-i18next="New User"></a>
+          <a ng-click="inviteUser()" class="btn btn-info pull-right" ng-i18next="Invite User" style="margin-right:5px"></a>
+      </div>
+  	</div>
+  </div>
+
+    <div class="col-md-12">
+
+        <alert type="info" ng-show="users.length == 0">
+          <i class="fa fa-exclamation-triangle" style="font-size:24px"></i>
+          <span ng-i18next="No users found"></span>
+        </alert>
+
+        <div class="panel panel-default" ng-show="users.length > 0">
+            <div class="panel-heading">
+
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                          <th style="text-align:right" ng-i18next="Status"></th>
+                            <th ng-i18next="Username"></th>
+
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="user in users">
+                          <td style="width:50px">
+                              <a ng-if="!user.isSuperAdmin" class="badge pull-right" ng-class="{'badge-success': user.status == 'Active', 'badge-danger': user.status == 'Not active'}" ng-click="changeUserStatus(user)" ng-i18next="{{user.status}}"></a>
+                                <span ng-if="user.isSuperAdmin" class="badge pull-right badge-info">SUPERADMIN</span>
+                          </td>
+                            <td>
+                                <a ng-click="seeUser(user)" style="cursor:pointer">
+                                    <h4 class="list-group-item-heading" ng-bind="user.email"></h4>
+                                </a>
+                                <small class="list-group-item-text" ng-bind="user.firstName"></small>  <small class="list-group-item-text" ng-bind="user.lastName"></small>
+                            </td>
+
+
+                            <td class="align-right">
+                                <a ng-if="!user.isSuperAdmin" id="userEditBtn" ng-click="editUser(user)" class="btn btn-black btn-sm btn-icon icon-left" tooltip="Click here to modify this user" tooltip-placement="bottom" ng-i18next="Edit"></a>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <nd-table-footer page="page" pages="pages" per-page="perPage" count="count" find="getUsersParams"></nd-table-footer>
+
+        </div>
+
+    </div>
+
+</div>

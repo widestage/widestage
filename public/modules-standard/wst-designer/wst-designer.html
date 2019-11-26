@@ -1,0 +1,75 @@
+<div class="explorer-main-container" >
+
+    <div class="explorer-container">
+
+      <!--  <div class="explorer-header">
+            <div class="explorer-header-title">
+                <h3 class="pull-left" editable-text="_Layer.name"></h3>
+            </div>
+            <div class="explorer-header-buttons">
+
+            </div>
+        </div>-->
+
+
+        <div class="explorer-body" ng-init="view()"   bs-loading-overlay bs-loading-overlay-reference-id="layerView" style="margin-top:40px;background-position: 40px -1px;background-image: url(&quot;data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzQiIGhlaWdodD0iMzQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSIzNCIgaGVpZ2h0PSIzNCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDguNSBMIDM0IDguNSBNIDguNSAwIEwgOC41IDM0IE0gMCAxNyBMIDM0IDE3IE0gMTcgMCBMIDE3IDM0IE0gMCAyNS41IEwgMzQgMjUuNSBNIDI1LjUgMCBMIDI1LjUgMzQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2UwZTBlMCIgb3BhY2l0eT0iMC4yIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNIDM0IDAgTCAwIDAgMCAzNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZTBlMGUwIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=&quot;);
+            ">
+
+                  <!-- SIDEBAR -->
+                  <section id="designerSideMenu" data-num-cols="4" class="designerSideMenu">
+
+                      <div class="object-panel-header" >
+                              <div class="object-panel-header-icon" ng-if="properties.showProperties" ng-click="selectTab('properties')" ng-class="{'active': properties.selectedTab == 'properties'}">
+                                  <i class="fa fa-cog  hand-cursor" ng-click="selectTab('properties')"></i>
+                              </div>
+                              <div class="object-panel-header-icon" ng-if="!properties.showProperties" ></div>
+                              <div class="object-panel-header-inner">
+                                      <!--<i class="toggle-button fa-minus-circle"  ng-click="toggle();$event.stopPropagation()" role="button" tabindex="0" style="right: 5px;
+                      position: absolute;
+                      font-size: 20px;"></i>-->
+                              </div>
+
+                      </div>
+
+                      <menu>
+                        <li id="searchTabButton" ng-repeat="tab in properties.tabs" class="search hand-cursor" ng-class="{'on': properties.selectedTab == tab.ID}">
+                            <a  ng-click="selectTab(tab.ID)" class="hand-cursor">
+                                <div class="objectPanel-menu-label hand-cursor">{{tab.name}}</div>
+
+                            </a>
+                        </li>
+
+
+                      </menu>
+
+                      <section class="content" >
+                          <section id="propertiesTab" ng-if="properties.showProperties" class="results infinite ng-hide" ng-show="properties.selectedTab == 'properties'" style="padding:5px;">
+                            <perfect-scrollbar class="scroller" wheel-propagation="true" wheel-speed="10" min-scrollbar-length="20" style="height: 100%;width: 230px;">
+
+PROPERTIES
+                            </perfect-scrollbar>
+                          </section>
+
+                          <section ng-repeat="tab in properties.tabs" id="{{tab.ID}}" class="results infinite ng-hide" ng-show="properties.selectedTab == tab.ID" style="padding:5px;">
+{{tab.name}}
+                          </section>
+
+                      </section>
+                  </section>
+                  <!-- END OF SIDEBAR -->
+
+
+                  <div id="collections" class="canvas-parent" ng-click="selectedCanvas($event)" style="left: 300px">
+
+                      <wst-entity-diagram model="_Layer.model" on-select="onDiagramSelect" on-change="onDiagramChanged" on-element-icon-click="elementAdd" on-delete-object="onDeleteObject"></wst-entity-diagram>
+
+                  </div>
+
+
+        </div>
+
+
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+<div class="page-title" ng-init="getNotifications(1)">
+    <div class="title-env">
+        <h1 class="title" ng-i18next="My Notifications"></h1>
+    </div>
+</div>
+
+<blockquote id="no-notifications-info" class="blockquote blockquote-info" style="display: none;">
+    <p><strong ng-i18next="Info"></strong></p>
+    <p><small ng-i18next="There are no notifications"></small></p>
+</blockquote>
+
+<article id="timeline-item" class="timeline-entry" style="display: none;">
+    <div class="timeline-entry-inner">
+        <span class="timeline-time"><span></span></span>
+        <div class="timeline-icon timeline-bg-success"><i class="fa-paper-plane-o"></i></div>
+        <div class="timeline-label"><h2></h2>
+
+        </div>
+    </div>
+</article>
+
+<div id="timeline-container">
+
+</div>

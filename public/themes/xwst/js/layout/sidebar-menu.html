@@ -1,0 +1,77 @@
+<script type="text/ng-template" id="menu-item-link-tpl">
+	<i ng-if="item.icon" class="{{item.icon}}"></i>
+	<span class="title">{{item.title}}</span>			
+	<span ng-if="item.label" class="label label-{{item.label.classname}} pull-right" ng-class="{'hidden-collapsed': item.label.collapsedHide}">{{item.label.text}}</span>
+</script>
+
+<script type="text/ng-template" id="menu-items-tpl">
+	<li ng-repeat="item in menuItems" ng-class="{'opened': item.isOpen, 'active': item.isActive, 'has-sub': item.menuItems.length}">
+		<a href="#{{item.link}}" ng-include="'menu-item-link-tpl'"></a>
+		
+		<ul ng-if="item.menuItems.length" ng-init="subItems = item.menuItems" ng-include="'menu-items-recursive-tpl'"></ul>
+	</li>
+</script>
+
+<script type="text/ng-template" id="menu-items-recursive-tpl">
+	<li ng-repeat="item in subItems" ng-class="{'opened expanded': item.isOpen, 'active': item.isActive, 'has-sub': item.menuItems.length}">
+		<a href="#{{item.link}}" ng-include="'menu-item-link-tpl'"></a>
+		<ul ng-if="item.menuItems.length" ng-init="subItems = item.menuItems" ng-include="'menu-items-recursive-tpl'"></ul>
+	</li>
+</script>
+	
+<!--<ul id="main-menu" class="main-menu" ng-class="{'mobile-is-visible': layoutOptions.sidebar.isMenuOpenMobile}" ng-include="'menu-items-tpl'">
+</ul>-->
+
+
+<ul class="main-menu" ng-class="{'mobile-is-visible': layoutOptions.sidebar.isMenuOpenMobile}">
+	<li>
+		<a href="#/admin">
+			<span class="title">Dash</span>
+		</a>
+	</li>
+	<li>
+		<a href="#/q">
+			<span class="title">Query Editor</span>
+		</a>
+	</li>
+	<li>
+		<a href="#/queries">
+			<span class="title">Query history</span>
+		</a>
+	</li>
+	<li>
+		<a href="#/public-space">
+			<span class="title">Public space</span>			
+		</a>
+	</li>
+	<li>
+		<a href="#/layers">
+			<span class="title">Layers</span>			
+		</a>
+	</li>
+	<li>
+		<a href="#/data-sources">
+			<span class="title">Data sources</span>			
+		</a>
+	</li>
+	<li>
+		<a href="#/roles">
+			<span class="title">Roles</span>			
+		</a>
+	</li>
+	<li>
+		<a href="#/users">
+			<span class="title">Users</span>			
+		</a>
+	</li>
+	<li>
+		<a href="#/companies/setup">
+			<span class="title">Settings</span>
+		</a>
+	</li>
+	<li>
+		<a href="#/log">
+			<span class="title">Activity Log</span>
+		</a>
+	</li>
+</ul>

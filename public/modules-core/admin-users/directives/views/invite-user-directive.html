@@ -1,0 +1,25 @@
+
+
+<div class="page-content">
+
+                <div class="form-group">
+                    <label ng-i18next="Email to"></label>
+                    <input type="text" class="form-control" ng-model="newUser.email" placeholder="{{$i18next.t('Email')}}">
+                </div>
+                <div class="form-group">
+                    <label ng-i18next="Message Subject"></label>
+                    <input type="text" class="form-control" ng-model="newUser.messageSubject" placeholder="{{$i18next.t('Message subject')}}">
+                </div>
+                <div class="form-group">
+                    <label ng-i18next="Message Body"></label>
+                    <html-editor ng-model="newUser.messageBody" on-change="htmlChanged"></html-editor>
+                </div>
+
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn" 
+          ng-click="modalOptions.close()" ng-i18next="Cancel"></button>
+  <button class="btn btn-primary" 
+          ng-click="modalOptions.ok();" ng-disabled="(!newUser.email || !newUser.messageSubject || !newUser.messageBody)" ng-show="!readonly" ng-i18next="Invite"></button>
+</div>

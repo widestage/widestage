@@ -1,0 +1,93 @@
+
+
+<div class="container-fluid" id="parentIntro" intro-help ng-intro-method="showIntro" ng-intro-options="IntroOptions">
+
+  <div class="page-title"> <!--full-width-->
+    <div class="title-env">
+      <h1 class="title" ng-i18next="Layers"></h1>
+      <p class="description" ng-if="description"></p>
+    </div>
+    <div style="margin: 0px 20px;text-align: right;">
+      <div class="right-toolbar">
+        <a ng-if="isGranted('Layers','create')" id="newLayerBtn" ng-click="newLayer()" class="btn btn-success pull-right" tooltip="Click here to create a new layer" tooltip-placement="bottom" ng-i18next="New Layer"></a>
+      </div>
+    </div>
+  </div>
+
+    <div class="col-md-12" id="layerList" ng-init="getLayers(1,'',['name','status','description'])">
+
+        <alert type="info" ng-show="items.length == 0">
+          <i class="fa fa-exclamation-triangle" style="font-size:24px"></i>
+          <span ng-i18next="No layers found"></span>
+        </alert>
+
+        <div class="panel panel-default" ng-show="items.length > 0">
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th style="text-align: right;width:50px" ng-i18next="Status">Status</th>
+                            <th ng-i18next="Layer Name"></th>
+
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="layer in items" id="layerListItem">
+                            <td>
+                                <a id="layerListItemStatus" class="badge pull-right" ng-class="{'badge-success': layer.status == 'Active', 'badge-danger': layer.status == 'Not active'}" ng-click="changeLayerStatus(layer)" tooltip="Click here to change the status of the layer" tooltip-placement="left">{{layer.status}}</a>
+                            </td>
+                            <td>
+                                <a href="/#/layers/{{layer._id}}/designer" tooltip="Click here to view/modify the layer" tooltip-placement="top">
+                                    <h4 id="layerListItemName" class="list-group-item-heading">{{layer.name}}</h4>
+                                    <small>{{layer.description}}</small>
+                                </a>
+                            </td>
+
+
+                            <td class="align-right">
+                                <wst-statistics-button ng-if="isGranted('Layers','stats')"></wst-statistics-button>
+
+                                <a id="layerListItemEditBtn" href="/#/layers/{{layer._id}}/designer" class="btn btn-black btn-sm btn-icon icon-left" tooltip="Click here to modify this layer" tooltip-placement="bottom" ng-i18next="Designer">
+                                      <i class="fas fa-drafting-compass"></i>
+                                </a>
+
+                                <a id="layerListItemDeleteBtn" href="" class="btn btn-danger btn-sm btn-icon icon-left" ng-click="delete(layer)" tooltip="Click here to delete this layer" tooltip-placement="bottom" ng-i18next="Delete">
+
+                                </a>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <!--<pagination total-items="pager.pages.length" ng-model="pager.currentPage" max-size="5" class="pagination-sm" boundary-links="true"></pagination>-->
+
+            <ul ng-if="pager.pages.length > 1" class="pagination pagination-sm">
+                <li ng-class="{disabled:pager.currentPage === 1}">
+                    <a ng-click="getLayers(1,'',['name','status','description'])">First</a>
+                </li>
+                <li ng-class="{disabled:pager.currentPage === 1}">
+                    <a ng-click="getLayers(pager.currentPage - 1,'',['name','status','description'])">Previous</a>
+                </li>
+                <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                    <a ng-click="getLayers(page,'',['name','status','description'])">{{page}}</a>
+                </li>
+                <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                    <a ng-click="getLayers(pager.currentPage + 1,'',['name','status','description'])">Next</a>
+                </li>
+                <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                    <a ng-click="getLayers(pager.totalPages,'',['name','status','description'])">Last</a>
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div ng-include src="layerModal"></div>

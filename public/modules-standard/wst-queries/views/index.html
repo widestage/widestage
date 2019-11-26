@@ -1,0 +1,93 @@
+<div id="wstQuery" class="explorer-main-container">
+
+    <div class="explorer-container">
+
+        <div class="explorer-header">
+            <div class="explorer-header-title">
+                Query editor
+            </div>
+            <div class="explorer-header-buttons">
+                <a  class="btn btn-default pull-right" ng-click="goBack()">Close</a>
+            </div>
+        </div>
+
+
+        <div class="explorer-body" ng-init="view()"   bs-loading-overlay bs-loading-overlay-reference-id="modelView" style="">
+
+        <div class="col-md-3">
+
+          <section id="objectPanel" data-num-cols="4" ng-init="tabs.selected = 'elements'" class="catalogSidebar">
+
+              <div class="object-panel-header">
+                      <div class="object-panel-header-icon" ng-click="tabs.selected = 'properties'" ng-class="{'active': tabs.selected == 'properties'}">
+                          <i class="fa fa-cog" ng-click="tabs.selected = 'properties'"></i>
+                      </div>
+                      <div class="object-panel-header-inner">
+                              <!--<i class="toggle-button fa-minus-circle"  ng-click="toggle();$event.stopPropagation()" role="button" tabindex="0" style="right: 5px;
+              position: absolute;
+              font-size: 20px;"></i>-->
+                      </div>
+
+              </div>
+
+              <menu>
+                  <li id="searchTabButton" class="search hand-cursor" ng-class="{'on': tabs.selected == 'elements'}">
+                      <a  ng-click="tabs.selected = 'elements'">
+                          <div class="objectPanel-menu-label" ng-i18next="Elements" ></div>
+
+                      </a>
+                  </li>
+                  <li id="sourcesTabButton" class="search hand-cursor" ng-class="{'on': tabs.selected == 'sources'}">
+                      <a  ng-click="tabs.selected = 'sources'">
+
+                          <div class="objectPanel-menu-label"  ng-i18next="Connections"></div>
+                      </a>
+                  </li>
+                  <li id="queriesTabButton" class="search hand-cursor" ng-class="{'on': tabs.selected == 'queries'}">
+                      <a  ng-click="tabs.selected = 'queries'">
+                          <div class="objectPanel-menu-label"  ng-i18next="Queries"></div>
+                      </a>
+                  </li>
+              </menu>
+
+              <section class="content" >
+                  <section id="propertiesTab" class="results infinite ng-hide" ng-show="tabs.selected == 'properties'" style="padding:5px;">
+
+                    <perfect-scrollbar class="scroller" wheel-propagation="true" wheel-speed="10" min-scrollbar-length="20" style="height: 100%;width: 230px;">
+                      <object-properties object-type="selectedItem" object="theSelectedElement" on-delete="deleteObject()" on-add-element-to-layer="addElementToLayer"  on-remove-element-from-layer="removeElementFromLayer" on-change="changeObject" element-types="elementTypes" number-default-aggregation="numberDefaultAggregation" string-default-aggregation="stringDefaultAggregation"></object-properties>
+                    </perfect-scrollbar>
+
+                  </section>
+
+                  <section id="elementsTab" class="results infinite layer-elements ng-hide " ng-show="tabs.selected == 'elements'">
+                      <layer-elements layer="layer"></layer-elements>
+                  </section>
+
+
+
+
+          <section id="sourcesTab" class="results infinite ng-hide" ng-show="tabs.selected == 'sources'">
+              <section class="layer scrollPane">
+                  <connections-tree layer-datasource-id="_Layer.model.datasourceID" on-added-dataset="onAddedDatasetToLayer"></connections-tree>
+              </section>
+          </section>
+          <section id="queriesTab" class="results infinite ng-hide" ng-show="tabs.selected == 'queries'" style="padding:5px;">
+
+              <section class="layer scrollPane">
+                  <a ng-click="addSQL()" class="btn btn-info pull-right" style="margin-left: 5px;margin-right: 5px;">Add new SQL</a>
+                  <div ng-if="collection.sql" ng-repeat="collection in _Layer.params.schema">{{collection.collectionName}}</div>
+              </section>
+          </section>
+              </section>
+          </section>
+
+
+
+
+        </div>
+<div class="col-md-9">
+          <query-editor></query-editor>
+          </div>
+        </div>
+    </div>
+</div>

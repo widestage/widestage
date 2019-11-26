@@ -1,0 +1,84 @@
+
+<div class="container-fluid" ng-init="getRoles(1,'',['name','description'])">
+
+  <div class="page-title"> <!--full-width-->
+  	<div class="title-env">
+  		<h1 class="title" ng-i18next="Roles"></h1>
+  		<p class="description" ng-if="description">{{description}}</p>
+  	</div>
+  	<div style="margin: 0px 20px;text-align: right;">
+      <div class="right-toolbar">
+          <a ng-click="newRole()" class="btn btn-success pull-right" ng-i18next="New Role"></a>
+      </div>
+  	</div>
+  </div>
+
+    <div class="col-md-12">
+
+        <alert type="info" ng-show="roles.length == 0">
+            <i class="fa fa-exclamation-triangle" style="font-size:24px"></i>
+            <span ng-i18next="there are no roles defined yet"></span>
+        </alert>
+
+        <div class="panel panel-default" ng-show="roles.length > 0">
+            <div class="panel-heading">
+
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Role name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="role in roles">
+                            <td>
+
+                                    <h4 class="list-group-item-heading" ng-bind="role.name"></h4>
+
+                            </td>
+
+                            <td class="align-right">
+                              <!--
+                                <a id="roleUsersBtn" href="/#/role/users/{{role._id}}" class="btn btn-blue btn-sm btn-icon icon-left" tooltip="Click here to see users with this role" tooltip-placement="bottom" ng-i18next="Users"></a>
+                              -->
+                              <a id="roleEditBtn" ng-click="editRole(role)" class="btn btn-black btn-sm btn-icon icon-left" tooltip="Click here to edit this role" tooltip-placement="bottom" ng-i18next="Edit"></a>
+                              <a id="roleDeleteBtn" ng-click="deleteRoles(role)" class="btn btn-danger btn-sm btn-icon icon-left" tooltip="Click here to delete this role" tooltip-placement="bottom" ng-i18next="Delete"></a>
+
+                                <a id="rolePermissionsBtn" ng-click="rolePermissions(role._id)" class="btn btn-info btn-sm btn-icon icon-left" tooltip="Click here to see permissions for this role" tooltip-placement="bottom" ng-i18next="Permissions"></a>
+
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <!--<pagination total-items="pager.pages.length" ng-model="pager.currentPage" max-size="5" class="pagination-sm" boundary-links="true"></pagination>-->
+
+             <ul ng-if="pager.pages.length > 1" class="pagination">
+                <li ng-class="{disabled:pager.currentPage === 1}">
+                    <a ng-click="getRoles(1,'',['name'])" ng-i18next="First"></a>
+                </li>
+                <li ng-class="{disabled:pager.currentPage === 1}">
+                    <a ng-click="getRoles(pager.currentPage - 1,'',['name'])" ng-i18next="Previous"></a>
+                </li>
+                <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                    <a ng-click="getRoles(page,'',['name'])">{{page}}</a>
+                </li>
+                <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                    <a ng-click="getRoles(pager.currentPage + 1,'',['name'])" ng-i18next="Next"></a>
+                </li>
+                <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                    <a ng-click="getRoles(pager.totalPages,'',['name'])" ng-i18next="Last"></a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+</div>

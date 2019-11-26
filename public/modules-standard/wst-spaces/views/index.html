@@ -1,0 +1,97 @@
+<div class="container-fluid" id="parentIntro" intro-help ng-intro-method="showIntro" ng-intro-options="IntroOptions">
+
+    <div class="col-md-12" ng-init="initIndex()">
+
+        <script type="text/ng-template" id="nodes_renderer.html">
+		    <div id="publicSpaceItem" ui-tree-handle class="tree-node tree-node-content uk-nestable-item spaces-tree">
+		    	<div class="uk-nestable-handle"></div>
+	    		<!--<div data-nestable-action="toggle"></div>-->
+
+		        <a ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="toggle(this)" style="padding: 5px;">
+		        <span class="fa" ng-class="{
+		          'fa-plus-square-o': collapsed,
+		          'fa-minus-square-o': !collapsed
+		        }"></span></a>
+
+		        <div class="list-label">
+		        	<span ng-if="!node.editing" ng-dblclick="node.editing = true">{{node.title}}</span>
+		        	<span ng-if="node.shared" class="badge badge-info published-tag" style="position: absolute;right: 150px;top: 7px;" ng-i18next="shared"></span>
+		        </div>
+
+		         <span ng-if="node.editing">
+		            <input id="node{{node.id}}" type="text" ng-model="node.title" style="height: 25px; width: 150px; border: 1px dotted;" tooltip="Type here the new name of the folder" tooltip-placement="bottom"/>
+		            <a class=" btn btn-white btn-xs btn-round" data-nodrag ng-click="node.editing = false" tooltip="Click here to save the name of the folder and to get out of the edit mode" tooltip-placement="left" style="float: right;padding: 5px;">
+		                <span class="fa fa-save"></span>
+		            </a>
+		        </span>
+		        <div class="pull-right spaces-tree-btns" ng-if="!node.editing" style="padding-top: 5px;">
+		            <a id="publicSpaceItemEdit" class=" btn btn-danger-white btn-sm btn-round" data-nodrag ng-click="editFolder(node)" tooltip="Click here to change the name of the folder" tooltip-placement="bottom">
+		                <span class="fa fa-edit"></span>
+		            </a>
+		            <a id="publicSpaceItemEdit" class=" btn btn-danger-white btn-sm btn-round" data-nodrag ng-click="setPermissions(node)" tooltip="Click here to setup permissions for this folder" tooltip-placement="bottom">
+		                <span class="fa fa-key"></span>
+		            </a>
+		            <!--<a id="publicSpaceItemShare" class=" btn btn-danger-white btn-xs btn-round" data-nodrag ng-click="shareSpace(node)" tooltip="Click here to share this folder" tooltip-placement="bottom">
+		                <span class="fa fa-share"></span>
+		            </a>-->
+		            <a id="publicSpaceItemRemove" class=" btn btn-danger-white btn-xs btn-round" data-nodrag ng-click="remove(this)" tooltip="Click here to remove this folder (will remove all children folders)" tooltip-placement="bottom">
+		                <span class="fa fa-remove"></span>
+		            </a>
+		            <a id="publicSpaceItemAdd" class=" btn btn-success-white btn-xs btn-round" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;" tooltip="Click here to add a new subfolder inside this" tooltip-placement="left">
+		                <span class="fa fa-plus"></span>
+		            </a>
+		        </div>
+
+		    </div>
+		    <ul ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+		        <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'">
+		        </li>
+		    </ul>
+		</script>
+
+        <page-title ng-if="layoutOptions.pageTitles" title="Public space">
+
+            <div class="right-toolbar">
+
+                <a id="publicSpaceSaveBtn" class="btn btn-success pull-right save-button" ng-click="save()" tooltip="Click here to save changes to the public space" tooltip-placement="bottom"><i class="fa fa-save"></i> Save</a>
+
+                <a class="btn btn-info pull-right" ng-click="showIntro()" style="margin-right:3px;" tooltip="Click here to conduct the guided tour for the public space" tooltip-placement="bottom"><i class="fa fa-question-circle"></i></a>
+            </div>
+
+        </page-title>
+
+
+		<!--<div id="publicSpaceArea" ui-tree id="tree-root">
+		    <ol ui-tree-nodes ng-model="data">
+		        <li ng-repeat="node in data" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+		    </ol>
+		</div>-->
+
+		<div class="panel panel-default">
+            			<div class="panel-heading">
+                    <div class="title-env">
+                      <h2 class="title" ng-i18next="Public space"></h2>
+
+                    </div>
+
+                              <div class="right-toolbar">
+                                              <a id="publicSpaceNewFolderBtn" class="btn btn-success pull-right" ng-click="newSubItem(this)" tooltip="Click here to add a new folder to the public space" tooltip-placement="bottom">Add folder</a>
+                              </div>
+                  </div>
+			<div class="panel-body">
+
+				<div id="publicSpaceArea" ui-tree id="tree-root">
+					<ul ui-tree-nodes ng-model="space.spaceDefinition.folders" class="uk-nestable">
+					    <li ng-repeat="node in space.spaceDefinition.folders" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+					</ul>
+				</div>
+
+		  	</div>
+
+		</div>
+
+    </div>
+
+</div>
+
+<div ng-include src="shareModal"></div>

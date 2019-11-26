@@ -1,0 +1,63 @@
+<div class="row" ng-init="getStatistics()">
+    
+    <div class="col-md-12">
+        
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">DataSource {{_DataSource.name}} Statistics</h3>
+                <div class="panel-options">
+                    <a href="" data-toggle="panel">
+                        <span class="collapse-icon">–</span>
+                        <span class="expand-icon">+</span>
+                    </a>
+                    <!--<a href="" data-toggle="remove">
+                        ×
+                    </a>-->
+                </div>
+            </div>
+            <div class="panel-body">
+    
+                <ul class="list-group list-group-minimal">
+                    <li class="list-group-item">
+                        <span class="badge badge-roundless badge-primary" ng-bind="_DataSource.totalUsage | bytes"></span>
+                        Total usage
+                        <div class="progress progress-bar-default" ng-show="_DataSource.limitUsage" style="margin: 0px;margin-top: 10px;">
+                            <div class="progress-bar" role="progressbar" 
+                            ng-style="{width: (_DataSource.totalUsage/_DataSource.usageLimit)*100+'%'}"></div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge badge-roundless badge-blue" ng-bind="(_DataSource.numberOfExecutions) ? _DataSource.numberOfExecutions : 0"></span>
+                        Number of executions
+                        <div class="progress progress-bar-blue" ng-show="_DataSource.limitExecutions" style="margin: 0px;margin-top: 10px;">
+                            <div class="progress-bar" role="progressbar" 
+                            ng-style="{width: (_DataSource.numberOfExecutions/_DataSource.limitOfExecutions)*100+'%'}"></div>
+                        </div>
+                    </li>
+                </ul>
+
+                <accordion close-others="true">
+                    <accordion-group ng-repeat="(year, yearObj) in _DataSource.usageStatistics">
+                        <accordion-heading>{{year}}</accordion-heading>
+                        <ul class="list-group list-group-minimal">
+                            <li class="list-group-item" ng-repeat="(month, monthObj) in yearObj">
+                                Month: {{month}}
+                                <p>
+                                    Total usage
+                                    <span class="badge badge-roundless badge-primary pull-right">{{monthObj.totalUsage}}</span> 
+                                </p>
+                                <p>
+                                    Number of executions
+                                    <span class="badge badge-roundless badge-blue pull-right">{{monthObj.numberOfExecutions}}</span>
+                                </p>
+                            </li>
+                        </ul>
+                    </accordion-group>
+                </accordion>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>

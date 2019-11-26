@@ -1,0 +1,28 @@
+<div>
+    <md-input-container>
+        <label>Add message</label>
+        <input ng-model="message.input">
+    </md-input-container>
+    <md-button ng-click="add()" class="md-warn">Send</md-button>
+
+    <md-toolbar layout="row" class="md-hue-3">
+        <div class="md-toolbar-tools">
+            <span>Normal</span>
+        </div>
+    </md-toolbar>
+
+    <md-content>
+        <md-list flex>
+            <md-subheader class="md-no-sticky">Updated List</md-subheader>
+            <md-list-item class="md-3-line" ng-repeat="item in array" ng-click="null">
+
+                <div class="md-list-item-text" layout="column">
+                    <h3>{{ item.data.input }}</h3>
+                    <h3>{{ item.date | date:'medium'}}</h3>
+
+                </div>
+            </md-list-item>
+            <md-divider></md-divider>
+        </md-list>
+    </md-content>
+</div>

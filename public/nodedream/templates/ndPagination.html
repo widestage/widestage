@@ -1,7 +1,0 @@
-<ul class="pagination pull-right" ng-show="pages > 1">
-    <li ng-class="{disabled:page==1}"><a ng-click="find({page: Number(page)-1})" class="hand-cursor">&laquo;</a></li>
-    <li ng-repeat="n in [] | range:pages" ng-class="{active:page==$index+1}" ng-show="$index+1 < Number(page)+5 && $index+1 > Number(page)-5">
-        <a ng-click="find({page: {{$index+1}}})" class="hand-cursor">{{$index+1}}</a>
-    </li>
-    <li ng-class="{disabled:page==pages}"><a ng-click="find({page: Number(page)+1})" class="hand-cursor">&raquo;</a></li>
-</ul>

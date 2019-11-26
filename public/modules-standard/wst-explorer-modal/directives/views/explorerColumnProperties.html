@@ -1,0 +1,204 @@
+<section id="explorerIndicatorProperties" class="layer scrollPane">
+
+    <h4>
+      <i ng-if="column.elementRole == 'measure'" class="fa fa-list-ol" style="font-size:34px;color:green"></i>
+      <i ng-if="column.elementRole == 'dimension'" class="fa fa-cube" style="font-size:34px;color:green"></i>
+      {{column.elementLabel}}</h4>
+    <br>
+    <h5>{{column.elementType}}</h5>
+    <br>
+    <input class="iswitch iswitch-secondary" type="checkbox" ng-model="column.hidden" ng-change="hiddenChanged()"><span ng-i18next="Hidden"></span>
+    <br>
+    <br>
+    <div class="form-group">
+        <label for="aggregation" class="control-label" ng-i18next="Aggregation"></label>
+        <select id="aggregation" ng-if="(column.elementType == 'DECIMAL' || column.elementType == 'INTEGER' || column.elementType == 'FLOAT') " class="form-control ng-pristine ng-untouched ng-valid ng-not-empty" ng-model="column.aggregation" ng-options="obj.value as obj.name for obj in fieldsAggregations.number" ng-change="aggChanged(column)"></select>
+        <select id="aggregation" ng-if="(column.elementType != 'DECIMAL' && column.elementType != 'INTEGER' && column.elementType != 'FLOAT' && column.elementType != 'DATE') " class="form-control ng-pristine ng-untouched ng-valid ng-not-empty" ng-model="column.aggregation" ng-options="obj.value as obj.name for obj in fieldsAggregations.string" ng-change="aggChanged(column)"></select>
+        <select id="aggregation" ng-if="(column.elementType == 'DATE') " class="form-control ng-pristine ng-untouched ng-valid ng-not-empty" ng-model="column.aggregation" ng-options="obj.value as obj.name for obj in fieldsAggregations.date" ng-change="aggChanged(column)"></select>
+
+    </div>
+
+    <div class="form-group" ng-if="(column.elementRole == 'measure' && (report.reportType == 'chart-line' || report.reportType == 'chart-donut'))">
+        <label for="seriesType" class="control-label" ng-i18next="Data series type"></label>
+        <table style="width:200px;border:1px solid #ccc;    margin-top: 5px;padding: 5px;background-color: #fff;">
+          <tr style="height: 32px;border-bottom: 1px solid #fff;margin-top: 5px;">
+            <td style="width:150px;padding: 5px; color: #000;">{{column.type || lineStr}}</td>
+            <td >
+              <div class="btn-group"  dropdown="" style="margin-left: 0px">
+                <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="width: 45px; margin-bottom:0px;">
+
+                              <img ng-if="column.type == 'spline'"  src="themes/xwst/assets/images/spline.png"/>
+                              <i ng-if="column.type == 'bar'" class="fa fa-chart-bar"></i>
+                              <i ng-if="column.type == 'area'" class="fa fa-chart-area"></i>
+                              <i ng-if="column.type == 'line' || !column.type " class="fa fa-chart-line"></i>
+
+                              <img ng-if="column.type == 'area-spline'"  src="themes/xwst/assets/images/area-spline.png"/>
+                              <img ng-if="column.type == 'scatter'"  src="themes/xwst/assets/images/scatter.png"/>
+                              <img ng-if="column.type == 'pie'"  src="themes/xwst/assets/images/pie.png"/>
+                              <img  ng-if="column.type == 'donut'" src="themes/xwst/assets/images/donut.png"/>
+
+
+                                <span class="caret"></span>
+                </button>
+                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu5" style="z-index:100" >
+                                      <li ng-if="report.reportType == 'chart-line'"><a ng-click="changeChartColumnType(column,'spline')"><img  src="themes/xwst/assets/images/spline.png"/> spline</a></li>
+                                      <li ng-if="report.reportType == 'chart-line'"><a ng-click="changeChartColumnType(column,'bar')"><i class="fa fa-chart-bar"></i> Bar</a></li>
+                                      <li ng-if="report.reportType == 'chart-line'"><a ng-click="changeChartColumnType(column,'area')"><i class="fa fa-chart-area"></i> Area</a></li>
+                                      <li ng-if="report.reportType == 'chart-line'"><a ng-click="changeChartColumnType(column,'line')"><i class="fa fa-chart-line"></i> Line</a></li>
+                                      <li ng-if="report.reportType == 'chart-line'"><a ng-click="changeChartColumnType(column,'area-spline')"><img  src="themes/xwst/assets/images/area-spline.png"/> Area spline</a></li>
+                                      <li ng-if="report.reportType == 'chart-line'"><a ng-click="changeChartColumnType(column,'scatter')"><img  src="themes/xwst/assets/images/scatter.png"/> Scatter</a></li>
+                                      <li ng-if="report.reportType == 'chart-donut' || report.reportType == 'chart-pie'"><a ng-click="changeChartSectorType('pie')"><img  src="themes/xwst/assets/images/pie.png"/> Pie</a></li>
+                                      <li ng-if="report.reportType == 'chart-donut' || report.reportType == 'chart-pie'"><a ng-click="changeChartSectorType('donut')"><img  src="themes/xwst/assets/images/donut.png"/> Donut</a></li>
+                                  </ul>
+              </div>
+
+            </td>
+            <td>
+                <wst-color-small side="right" ng-model="column.color" on-change-color="report.properties.chart.refresh()"> </wst-color-small>
+            </td>
+          </tr>
+        </table>
+    </div>
+
+
+    <div ng-if="report.reportType == 'grid'">
+      <table style="width:230px;">
+
+        <tr>
+          <td>
+            <label for="background_color" class="control-label" ng-i18next="Background color"></label>
+          </td>
+          <td>
+            <wst-color ng-model="column.columnStyle.backgroundColor"  on-change-color="report.properties.grid.refresh()"></wst-color>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <label for="font_size" class="control-label" ng-i18next="Font size"></label>
+          </td>
+          <td>
+            <input type="number" class="input-group form-control" ng-model="column.columnStyle.fontSize"  ng-change="report.properties.grid.refresh()">
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <label for="font_color" class="control-label" ng-i18next="Font color"></label>
+          </td>
+          <td>
+            <wst-color  ng-model="column.columnStyle.fontColor" on-change-color="report.properties.grid.refresh()"></wst-color>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <label for="font_color" class="control-label" ng-i18next="Font style"></label>
+          </td>
+          <td class="form-control-td">
+            <select id="fontStyle" class="form-control" ng-model="column.columnStyle.fontStyle" ng-options="obj.value as obj.name for obj in fontStyles" ng-change="report.properties.grid.refresh()"></select>
+
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <label for="font_color" class="control-label" ng-i18next="Font weight"></label>
+          </td>
+          <td class="form-control-td">
+            <select id="fontWeight" class="form-control" ng-model="column.columnStyle.fontWeight" ng-options="obj.value as obj.name for obj in fontWeights" ng-change="report.properties.grid.refresh()"></select>
+
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="font_color" class="control-label" ng-i18next="Align"></label>
+          </td>
+          <td  class="form-control-td">
+            <select id="align" class="form-control" ng-model="column.columnStyle.align" ng-options="obj.value as obj.name for obj in textAligns" ng-change="report.properties.grid.refresh()"></select>
+
+          </td>
+        </tr>
+        <tr ng-if="column.elementType === 'DECIMAL' || column.elementType === 'INTEGER' || column.elementType === 'FLOAT'">
+          <td>
+            <label for="font_color" class="control-label" ng-i18next="Sum Column"></label>
+          </td>
+          <td >
+            <input class="iswitch iswitch-secondary form-control" type="checkbox" ng-model="column.operationSum" ng-change="report.properties.grid.refresh()">
+
+          </td>
+        </tr>
+        <tr ng-if="column.elementType === 'DECIMAL' || column.elementType === 'INTEGER' || column.elementType === 'FLOAT'">
+          <td>
+            <label for="font_color" class="control-label" ng-i18next="Avg Column"></label>
+          </td>
+          <td>
+            <input class="iswitch iswitch-secondary form-control" type="checkbox" ng-model="column.operationAvg" ng-change="report.properties.grid.refresh()">
+
+          </td>
+        </tr>
+        <tr ng-if="column.elementType === 'DECIMAL' || column.elementType === 'INTEGER' || column.elementType === 'FLOAT'">
+          <td>
+            <label for="font_color" class="control-label" ng-i18next="Count Column"></label>
+          </td>
+          <td>
+            <input class="iswitch iswitch-secondary form-control" type="checkbox" ng-model="column.operationCount" ng-change="report.properties.grid.refresh()">
+
+          </td>
+        </tr>
+        <tr ng-if="column.elementType === 'DECIMAL' || column.elementType === 'INTEGER' || column.elementType === 'FLOAT'">
+          <td>
+            <label for="font_color" class="control-label" ng-i18next="Min Column"></label>
+          </td>
+          <td>
+            <input class="iswitch iswitch-secondary form-control" type="checkbox" ng-model="column.operationMin" ng-change="report.properties.grid.refresh()">
+
+          </td>
+        </tr>
+        <tr ng-if="column.elementType === 'DECIMAL' || column.elementType === 'INTEGER' || column.elementType === 'FLOAT'">
+          <td>
+            <label for="font_color" class="control-label" ng-i18next="Max Column"></label>
+          </td>
+          <td>
+            <input class="iswitch iswitch-secondary form-control" type="checkbox" ng-model="column.operationMax" ng-change="report.properties.grid.refresh()">
+
+          </td>
+        </tr>
+
+        </table>
+    </div>
+<!--
+    columns[columnIndex].operationSum === true)
+    {
+        htmlCode += '<div  style=""><span class="calculus-label">SUM:</span><span class="calculus-value"> '+numeral(calculateSumForColumn(columnIndex,elementName)).format('0,0.00')+'</span> </div>';
+    }
+
+    if (columns[columnIndex].operationAvg === true)
+    {
+        htmlCode += '<div  style=""><span class="calculus-label">AVG:</span><span class="calculus-value"> '+numeral(calculateAvgForColumn(columnIndex,elementName)).format('0,0.00')+'</span> </div>';
+    }
+
+    if (columns[columnIndex].operationCount === true)
+    {
+        htmlCode += '<div  style=""><span class="calculus-label">COUNT:</span><span class="calculus-value"> '+numeral(calculateCountForColumn(columnIndex,elementName)).format('0,0.00')+'</span> </div>';
+    }
+
+    if (columns[columnIndex].operationMin === true)
+    {
+        htmlCode += '<div  style=""><span class="calculus-label">MIN:</span><span class="calculus-value"> '+numeral(calculateMinimumForColumn(columnIndex,elementName)).format('0,0.00')+'</span> </div>';
+    }
+    if (columns[columnIndex].operationMax
+    -->
+    <!--
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu4" >
+        <li ng-repeat="variable in stringVariables">
+            <a ng-click="column.variable = variable.value;column.variableLabel = variable.label;processStructure();">{{variable.label}}</a>
+        </li>
+    </ul>
+
+    <button class="btn " ng-class="{'btn-info': column.link, 'btn-dark': !column.link}" ng-click="setLinkForColumn(column)"><i class="fa fa-link"></i></button>
+    -->
+
+
+
+</section>

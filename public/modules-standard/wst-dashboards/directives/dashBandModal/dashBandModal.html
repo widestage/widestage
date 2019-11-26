@@ -1,0 +1,26 @@
+<div class="row" id="layerElementModal">
+  <div class="panel panel-default">
+            <div class="panel-heading">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
+              <h4 class="modal-title" ng-i18next="Add dashboard band"></h4>
+            </div>
+
+          <div class="panel-body" ng-init="tabbed_panel_active = 1">
+
+            <div class="list-group list-group-minimal scroll-list-container"  style="height: 250px;">
+              <span ng-click="addBand(bandType)" class="list-group-item scroll-list-container-item-remove" ng-repeat="bandType in bandTypes">
+                {{bandType.name}}
+
+                <img src="{{bandType.imageUrl}}">
+              </span>
+
+            </div>
+
+          </div>
+
+          <div class="panel-footer ng-scope">
+              <button type="button" class="btn btn-white pull-right" data-dismiss="modal" ng-click="modalOptions.close()" ng-i18next="Close"></button>
+              <button type="button" class="btn btn-info  pull-right"  ng-click="modalOptions.ok()" ng-i18next="Apply"></button>
+          </div>
+    </div>
+</div>

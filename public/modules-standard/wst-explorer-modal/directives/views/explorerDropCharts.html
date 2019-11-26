@@ -1,0 +1,70 @@
+<!--dimensions for charts -->
+
+<div ng-if="selectedReport.reportType == 'chart-bar' || selectedReport.reportType == 'chart-area' || selectedReport.reportType == 'chart-line' || selectedReport.reportType == 'chart-donut' || selectedReport.reportType == 'chart-pie'" class="container-fluid column-zone no-padding" drop="onDropOnDims($data, $event, 'column')" drop-effect="copy" drop-accept="['json/custom-object','json/column']" drag-over="onDragOver($event)" drag-over-class="drag-over-accept">
+    <div class="drop-zone-label pull-right" ng-hide="selectedReport.properties.xkeys.length > 0">Drop here the dimension field</div>
+    <ul class="ul-drop no-padding" ng-model="selectedReport.properties.xkeys" ui-sortable="sortableOptions">
+        <li class="column-box" ng-repeat="xkey in selectedReport.properties.xkeys">
+            <div class="dropdown">
+                <i class="fa fa-cube" ng-show="xkey.elementRole == 'dimension'"></i>
+                <i class="fa fa-list-ol" ng-show="xkey.elementRole == 'measure' "></i>
+                {{xkey.objectLabel}}
+                <i class="fa fa-times hand-cursor  column-box-close-btn" ng-click="remove(xkey,'xkey')" tooltip="Click here to remove this dimension from the results" tooltip-placement="left"></i>
+            </div>
+
+        </li>
+    </ul>
+</div>
+
+<!--metrics for charts -->
+<div ng-if="selectedReport.reportType == 'chart-bar' || selectedReport.reportType == 'chart-area' || selectedReport.reportType == 'chart-line' || selectedReport.reportType == 'chart-donut' || selectedReport.reportType == 'chart-pie' || selectedReport.reportType == 'indicator' || selectedReport.reportType == 'gauge'" class="container-fluid column-zone no-padding" drop="onDropOnMetrics($data, $event, 'column')" drop-effect="copy" drop-accept="['json/custom-object','json/column']" drag-over="onDragOver($event)" drag-over-class="drag-over-accept">
+    <div class="drop-zone-label pull-right" ng-hide="selectedReport.properties.ykeys.length > 0">Drop here your metrics</div>
+    <ul class="ul-drop no-padding" ng-model="selectedReport.properties.ykeys" ui-sortable="sortableOptions">
+        <li class="column-box" ng-repeat="ykey in selectedReport.properties.ykeys">
+            <div class="dropdown">
+                <i class="fa fa-cube" ng-show="ykey.elementRole == 'dimension'"></i>
+                <i class="fa fa-list-ol" ng-show="ykey.elementRole == 'measure' "></i>
+                {{ykey.objectLabel}}
+
+                <div class="btn-group" dropdown="">
+                             <i class="fa-caret-down  hand-cursor  column-box-agg-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                <ul ng-if="(ykey.elementType == 'DECIMAL' || ykey.elementType == 'INTEGER' || ykey.elementType == 'FLOAT')" class="dropdown-menu" aria-labelledby="dropdownMenu5" >
+                                        <li ng-repeat="variable in fieldsAggregations.number">
+                                            <a ng-click="aggregationChoosed(ykey,variable)">{{variable.name}}</a>
+                                        </li>
+                                    <li class="divider"></li>
+                                    <li ng-if="selectedReport.reportType == 'chart-line'"><a ng-click="changeChartColumnType(ykey,'spline')"><img  src="themes/xwst/assets/images/spline.png"/> spline</a></li>
+                                    <li ng-if="selectedReport.reportType == 'chart-line'"><a ng-click="changeChartColumnType(ykey,'bar')"><i class="fa fa-bar-chart"></i> Bar</a></li>
+                                    <li ng-if="selectedReport.reportType == 'chart-line'"><a ng-click="changeChartColumnType(ykey,'area')"><i class="fa fa-area-chart"></i> Area</a></li>
+                                    <li ng-if="selectedReport.reportType == 'chart-line'"><a ng-click="changeChartColumnType(ykey,'line')"><i class="fa fa-line-chart"></i> Line</a></li>
+                                    <li ng-if="selectedReport.reportType == 'chart-line'"><a ng-click="changeChartColumnType(ykey,'area-spline')"><img  src="themes/xwst/assets/images/area-spline.png"/> Area spline</a></li>
+                                    <li ng-if="selectedReport.reportType == 'chart-line'"><a ng-click="changeChartColumnType(ykey,'scatter')"><img  src="themes/xwst/assets/images/scatter.png"/> Scatter</a></li>
+                                    <li ng-if="selectedReport.reportType == 'chart-donut' || selectedReport.reportType == 'chart-pie'"><a ng-click="changeChartSectorType('pie')"><img  src="themes/xwst/assets/images/pie.png"/> Pie</a></li>
+                                    <li ng-if="selectedReport.reportType == 'chart-donut' || selectedReport.reportType == 'chart-pie'"><a ng-click="changeChartSectorType('donut')"><img  src="themes/xwst/assets/images/donut.png"/> Donut</a></li>
+                                     <li class="divider"></li>
+                                    <!--color-->
+
+                                </ul>
+                </div>
+                <!--
+                <a ng-if="selectedReport.reportType == 'chart-line'" class="btn chart-series-button" ng-click="changeChartColumnType(ykey)" tooltip="Click here to change the type of visualization for this metric" tooltip-placement="bottom">
+                    <img ng-if="ykey.type == 'line' || ykey.type == undefined" src="images/spline.png"/>
+                    <i ng-if="ykey.type == 'spline'" class="fa fa-bar-chart"></i>
+                    <i ng-if="ykey.type == 'bar'" class="fa fa-area-chart"></i>
+                    <i ng-if="ykey.type == 'scatter'" class="fa fa-line-chart"></i>
+                    <img ng-if="ykey.type == 'area'" src="images/area-spline.png"/>
+                    <img ng-if="ykey.type == 'area-spline'" src="images/scatter.png"/>
+                </a>
+
+                <a ng-if="selectedReport.reportType == 'chart-donut' || selectedReport.reportType == 'chart-pie'" class="btn chart-series-button" ng-click="changeChartSectorType()" tooltip="Click here to change the type of visualization for this metric" tooltip-placement="bottom">
+                    <img ng-if="selectedReport.reportType == 'chart-donut'" src="images/pie.png"/>
+                    <img ng-if="selectedReport.reportType == 'chart-pie'" src="images/donut.png"/>
+                </a>-->
+                <i class="fa fa-times hand-cursor  column-box-close-btn" ng-click="remove(ykey,'ykey')" tooltip="Click here to remove this metric from the results" tooltip-placement="left" style="padding: 6px;margin-left: 2px;"></i>
+            </div>
+
+
+
+        </li>
+    </ul>
+    <div class="dropAlert" ng-show="onlyNumericValuesAlert == true"> <i class="fa fa-exclamation-triangle"></i> Only numeric values are allowed here !</div>
+</div>

@@ -1,0 +1,1 @@
+https://docs.aws.amazon.com/athena/latest/ug/connect-with-jdbc.html

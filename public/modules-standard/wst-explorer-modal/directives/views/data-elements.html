@@ -1,0 +1,94 @@
+<section id="explorerLayerElements" class="layer scrollPane">
+
+  <div id="selectLayerContainer" class="container-fluid" ng-if="!layerIsNotActive" >
+      <span ng-i18next="Choose a layer"></span>
+      <select id="selectLayer" ng-disabled="query.columns.length > 0 || query.order.length > 0 || query.groupFilters.length > 0" class="form-control" ng-model="selectedLayerID" ng-options="obj._id as obj.name for obj in layers"
+                                              ng-change="changeLayer(selectedLayerID)"></select>
+  </div>
+  <div class="alert alert-danger" ng-if="layerIsNotActive" >
+      <span ng-i18next="The report layer is not active"></span>
+  </div>
+
+  <div ng-if="!layers" class="alert alert-danger">
+      <strong ng-i18next="No active layers"></strong>
+  </div>
+
+        <perfect-scrollbar class="scroller" wheel-propagation="true" wheel-speed="10" min-scrollbar-length="20">
+
+
+            <div ui-tree data-nodrop-enabled id="explorerLayerElementsTree" >
+                <ol ui-tree-nodes data-nodrop-enabled ng-model="elements">
+                    <li ng-repeat="node in elements" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+                </ol>
+            </div>
+
+            <script type="text/ng-template" id="nodes_renderer.html" >
+                <div data-nodrag class="tree-node tree-node-content tree-node-folder schema-folder" ng-if="(node.elementRole == 'folder')  ">
+                  <span data-nodrag  ng-if="!node.editing == true" class="fa" ng-class="{'fa-plus-square': collapsed,'fa-minus-square': !collapsed}" ng-click="toggle(this)" style="font-size: larger;    cursor: default;"></span><span data-nodrag ng-if="!node.editing == true" ng-click="toggle(this)" style="padding-left: 5px;font-size: larger;    cursor: default;">{{node.elementLabel}}</span>
+
+                </div>
+
+                <div class="tree-node tree-node-item schema-element" ng-if="node.elementRole != 'folder'">
+                  <i   class="fa fa-cube wst-main-color" ng-class="{'element-disabled': node.enabled == false}" ng-show="node.elementType != 'DATE' && node.elementType != 'DECIMAL' && node.elementType != 'INTEGER' && node.elementType != 'FLOAT' && (!node.defaultAggregation)" data-toggle="tooltip" data-placement="top" title="{{node.elementLabel}} (Dimmension)"></i>
+
+                  <i  class="fa fa-square-root-alt wst-main-color" ng-class="{'element-disabled': node.enabled == false}" ng-show="(node.elementType == 'DECIMAL' || node.elementType == 'INTEGER' || node.elementType == 'FLOAT' || node.defaultAggregation)" data-toggle="tooltip" data-placement="top" title="{{node.elementLabel}} (Metric)"></i>
+
+                  <i  class="fa fa-clock wst-main-color" ng-class="{'element-disabled': node.enabled == false}" ng-show="node.elementType == 'DATE'" data-toggle="tooltip" data-placement="top"></i>
+
+                  <a id="ELEMENT_{{node.elementID}}" ng-if="(!node.defaultAggregation  || node.defaultAggregation == 'raw' || node.defaultAggregation == 'none') && node.enabled != false" ng-click="addColumn(node)" draggable="true" effect-allowed="copy" draggable-type="custom-object"
+                     draggable-data="{
+                          elementName: node.elementName,
+                          objectLabel: node.elementLabel,
+                          datasourceID:node.datasourceID,
+                          id:node.id,
+                          elementLabel:node.elementLabel,
+                          collectionID:node.collectionID,
+                          collectionName: node.collectionName,
+                          collectionSchema: node.collectionSchema,
+                          collectionType: node.collectionType,
+                          collectionSQL: node.collectionSQL,
+                          elementID: node.elementID,
+                          elementType: node.elementType,
+                          elementRole: node.elementRole,
+                          layerID: selectedLayerID,
+                          filterType: 'equal',
+                          filterPrompt: false,
+                          filterTypeLabel:'equal',
+                          format:node.format,
+                          values:node.values}">{{node.elementLabel}}</a>
+
+                  <a ng-if="node.defaultAggregation && node.defaultAggregation != 'none' && node.defaultAggregation != 'raw' && node.enabled != false" ng-click="addColumn(node)" draggable="true" effect-allowed="copy" draggable-type="custom-object"
+                     draggable-data="{
+                          elementName: node.elementName,
+                          objectLabel: node.elementLabel+' ('+node.defaultAggregation+')',
+                          datasourceID:node.datasourceID,
+                          collectionID:node.collectionID,
+                          collectionID:node.collectionID,
+                          collectionName: node.collectionName,
+                          collectionSchema: node.collectionSchema,
+                          collectionType: node.collectionType,
+                          collectionSQL: node.collectionSQL,
+                          id:node.id,
+                          elementLabel:node.elementLabel,
+                          elementID: node.elementID,
+                          elementType: node.elementType,
+                          elementRole: node.elementRole,
+                          layerID: selectedLayer._id,
+                          filterType: 'equal',
+                          filterPrompt: false,
+                          filterTypeLabel:'equal',
+                          format:node.format,
+                          values:node.values,
+                          aggregation: node.defaultAggregation}">{{node.elementLabel +' ('+node.defaultAggregation+')'}}</a>
+
+                  <span class="element-disabled" ng-if="(node.elementRole == 'dimension' || node.elementRole == 'measure') && node.enabled == false" >{{node.elementLabel}}</span>
+
+                </div>
+
+                <ol ng-if="node.elements" data-nodrop-enabled ui-tree-nodes=""  ng-model="node.elements" ng-class="{hidden: collapsed}">
+                    <li ng-repeat="node in node.elements" data-nodrop-enabled ui-tree-node ng-include="'nodes_renderer.html'">
+                    </li>
+                </ol>
+            </script>
+      </perfect-scrollbar>
+</section>

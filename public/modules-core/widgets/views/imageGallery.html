@@ -1,0 +1,56 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title" ng-i18next="Image gallery"></h3>
+  </div>
+  <div class="panel-body">
+    <uib-tabset active="active">
+          <uib-tab index="0" heading="{{getTranslation('My Images')}}">
+                <nd-drop-zone url="/api/images/user/upload" success="fileLoaded"></nd-drop-zone>
+
+                <p id="extensionMSG" style="color: red;"></p>
+
+                <ul id="file-list" class="ace-thumbnails files-modal-list">
+
+                    <li ng-repeat="file in myImages">
+                        <a class="hand-cursor file-selection" ng-click="onFileSelected(file)">
+                            <span ng-show="file.loaded" class="label label-success dz-label" style="">success</span>
+
+                            <img class="dz-image" alt="{{file.description}}" ng-src="{{file.url}}" />
+                        </a>
+                    </li>
+
+                </ul>
+
+          </uib-tab>
+          <uib-tab index="1" heading="{{getTranslation('Catalog')}}">
+              <ul id="file-list" class="ace-thumbnails files-modal-list">
+                  <li ng-repeat="file in catalogImages">
+                      <a class="hand-cursor file-selection" ng-click="onFileSelected(file)">
+                          <img class="dz-image" ng-src="{{file.thumb}}" />
+                      </a>
+                  </li>
+              </ul>
+
+          </uib-tab>
+          <uib-tab index="2" heading="{{getTranslation('Search')}}">
+                <input type="text" ng-model="onlineSearchTerm" ng-enter="searchOnline(onlineSearchTerm)"
+                    style="width: 100%;height: 30px;font-size: 15px;" placeholder="{{getTranslation('Search')}}...">
+
+                <ul id="file-list" class="ace-thumbnails files-modal-list">
+
+                    <li ng-repeat="file in onlineImages">
+                        <a class="hand-cursor file-selection" ng-click="onFileSelected(file)">
+                            <img class="dz-image" ng-src="{{file.thumb}}" />
+                        </a>
+                    </li>
+
+                </ul>
+
+          </uib-tab>
+  </uib-tabset>
+  </div>
+  <div class="panel-footer">
+    <button type="button" class="btn btn-white" data-dismiss="modal" ng-click="modalOptions.close()" ng-i18next="Close"></button>
+
+  </div>
+</div>

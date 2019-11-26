@@ -1,0 +1,14 @@
+<div  id="columnsPanel"  class="container-fluid column-zone no-padding" drop="onDrop($data, $event, 'column')" drop-effect="copy" drop-accept="['json/custom-object','json/column']" drag-over="onDragOver($event)" drag-over-class="drag-over-accept">
+    <div class="drop-zone-label pull-right" ng-hide="query.columns.length > 0" ng-i18next="Drop here your columns"></div>
+    <ul class="ul-drop no-padding" ng-model="query.columns" ui-sortable="sortableOptions">
+        <li class="column-box" ng-click="selectColumn(column)" ng-class="{'hidden-column': column.hidden}" ng-repeat="column in query.columns">
+
+            <div class="dropdown">
+                <i class="fa fa-cube" ng-show="column.elementRole == 'dimension'"></i>
+                <i class="fa fa-list-ol" ng-show="column.elementRole == 'measure' "></i>
+                <span tooltip="Drag to left or right to change column order in the results" tooltip-placement="left">{{column.objectLabel}}</span>
+                <i class="fa fa-times hand-cursor  column-box-close-btn" ng-click="remove(column)" tooltip="Click here to remove this column from the results" tooltip-placement="left"></i>
+            </div>
+        </li>
+    </ul>
+</div>
