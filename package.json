@@ -18,7 +18,7 @@
     "connect-redis": "^3.3.3",
     "cookie-parser": "^1.4.3",
     "cookie-session": "^2.0.0-beta.3",
-    "ejs": "^2.6.1",
+    "ejs": "^3.0.1",
     "email-templates": "^5.0.0",
     "exceljs": "^3.4.0",
     "express": "^4.16.3",
