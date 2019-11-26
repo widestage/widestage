@@ -26,7 +26,7 @@
     "facebook-ads-sdk": "^2.7.2",
     "jade": "~1.8.2",
     "jdbc": "^0.5.0",
-    "moment": "~2.10.6",
+    "moment": "~2.24.0",
     "mongodb": "~2.0.46",
     "mongoose": "^4.9.2",
     "mssql": "~3.1.2",
