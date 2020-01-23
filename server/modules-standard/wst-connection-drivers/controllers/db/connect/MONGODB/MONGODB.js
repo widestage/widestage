@@ -762,7 +762,7 @@ function processJoinedCollections(req,query,collections, dataSource, thereAreJoi
 
     sql.generateSQLForCollection(req,query,collection, dataSource,params, thereAreJoins, function(Querystring,elements){
 
-                connect(dataSource.params.connection, function (err, connect) {
+                connect(dataSource.params.connection, dataSource._id, function (err, connect) {
                     if (err) {
                         saveToLog(req, 'Error on MONGODB connection for data source' + err.message,'','ERROR','MONGODB', 102);
                         done({result: 0, msg: 'Connection Error: ' + err});
