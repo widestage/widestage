@@ -20,8 +20,6 @@ exports.connect = function(data,datasourceID, done) {
 };
 
 
-
-
 function connect(data,datasourceID, done)
 {
     var DB = this;
@@ -45,6 +43,7 @@ function connect(data,datasourceID, done)
 
         DB.conn = conn;
         DB.datasourceID = datasourceID;
+        DB.datasourceName = data.name;
 
         done(false, DB.conn);
     });
@@ -54,6 +53,11 @@ function connect(data,datasourceID, done)
 db.prototype.end = function() {
     end();
 };
+
+db.prototype.getDatasourceName = function()
+{
+    return datasourceName;
+}
 
 exports.end = function() {
     end();
@@ -263,6 +267,7 @@ exports.testConnection = function(req,data, setresult) {
                         setresult({result: 0, msg: 'Error testing connection: '+ err,code:'MY-001',actionCode:'INVALIDATEDTS'});
                         saveToLog(req,'Error testing connection: '+err, 200,'MY-001','',data.datasourceID);
                       /*  Connections.invalidateDatasource(req,data.datasourceID,'MY-001','INVALIDATEDTS','Error testing connection: '+ err,function(result){
+
                       });*/
             } else {
 
