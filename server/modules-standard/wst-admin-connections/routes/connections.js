@@ -11,5 +11,8 @@ module.exports = function (app) {
     app.get('/api/v3/admin/connections/:connectionID/schema/:schemaID/entities', isGranted('Connections','see'), Connections.getEntitiesForSchema);
     app.get('/api/v3/admin/connections/:connectionID/schema/:schemaID/entities/:entityID/attributes', isGranted('Connections','see'), Connections.getEntityFields);
     app.get('/api/v3/admin/connections/:connectionID/query/schema', isGranted('Connections','see'), Connections.getsqlQuerySchema);
-
+    app.get('/api/v3/admin/connections/:connectionID/reverse',isGranted('Connections','see'), Connections.getConnectionReverseEngineering);
+    app.get('/api/v3/admin/connections/:connectionID/layer',isGranted('Connections','see'), Connections.getConnectionLayerDefinition);
+    app.get('/api/v3/admin/connections/:connectionID/:schema/reverse',isGranted('Connections','see'), Connections.getReverseEngineering4Schema);
+    app.get('/api/v3/admin/connections/:connectionID/:schema/:entity/get-top-100',isGranted('Connections','see'), Connections.getTop100);
 }

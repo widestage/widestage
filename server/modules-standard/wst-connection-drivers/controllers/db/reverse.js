@@ -8,6 +8,7 @@ function processSchema(db,datasourceID,model,schemas,index,done)
         done();
         return;
     } else {
+        
         var schema = {
             schemaID: generateShortUID(),
             schema_name: schemas[index].table_schema,
@@ -17,8 +18,6 @@ function processSchema(db,datasourceID,model,schemas,index,done)
         };
 
         model.schemas.push(schema);
-
-
 
             var query = db.getTablesAndViews();
             db.internalQuery(query,  function (err, tables) {
@@ -136,6 +135,31 @@ exports.getReverseEngineering = function(datasourceID, data, setresult) {
 
 };
 
+exports.getReverseEngineering4Schema = function(datasourceID,schema, data, setresult) {
+
+    var dbController = require('./connect/'+data.type+'/'+data.type+'.js');
+
+    var db = new dbController.db();
+
+    db.connect(data,datasourceID, function(err, connection) {
+        if (err) {
+            setresult({result: 0, msg: 'Connection Error: ' + err});
+            return;
+        }
+        
+        var schemas = [];
+        var model = {schemas: schemas};
+
+        var schemaRows = [{table_schema:schema}];
+           processSchema(db,datasourceID,model,schemaRows,0,function(){
+                setresult({result: 1, items: model});
+                db.end();
+            });
+
+
+    });
+};
+
 
 exports.getSchemas = function(datasourceID, data, setresult) {
     var dbController = require('./connect/'+data.type+'/'+data.type+'.js');
@@ -160,7 +184,6 @@ exports.getSchemas = function(datasourceID, data, setresult) {
             }
             db.end();
         });
-
     });
 };
 
@@ -184,6 +207,15 @@ exports.getTablesAndViews = function(datasourceID, data, setresult) {
             {
                 setresult({result: 0, msg: 'Error getting database tables and views : '+err});
             } else {
+                for (var r in result.rows)
+                {
+                    result.rows[r].datasourceID = datasourceID;
+                    result.rows[r].datasourceName = data.name;
+                    var key = data.name.replace(/\s+/g, '-').toLowerCase();
+                    key = key.replace(/[^a-zA-Z]/g, "");
+                    result.rows[r].entityID = key+'.'+result.rows[r].table_schema+'.'+result.rows[r].table_name;
+                    result.rows[r].lineage = key+'.'+result.rows[r].table_schema+'.'+result.rows[r].table_name;
+                }
                 setresult({result: 1, items: result.rows});
             }
             db.end();
@@ -211,6 +243,15 @@ exports.getTablesAndViewsForSchema = function(datasourceID,schemaName, data, set
             {
                 setresult({result: 0, msg: 'Error getting database tables and views : '+err});
             } else {
+                for (var r in result.rows)
+                {
+                    result.rows[r].datasourceID = datasourceID;
+                    result.rows[r].datasourceName = data.name;
+                    var key = data.name.replace(/\s+/g, '-').toLowerCase();
+                    key = key.replace(/[^a-zA-Z]/g, "");
+                    result.rows[r].entityID = key+'.'+result.rows[r].table_schema+'.'+result.rows[r].table_name;
+                    result.rows[r].lineage = key+'.'+result.rows[r].table_schema+'.'+result.rows[r].table_name;
+                }
                 setresult({result: 1, items: result.rows});
             }
             db.end();
@@ -226,6 +267,8 @@ function getEntityFields(db,tableSchema, tableName, done)
     var query = db.getEntityFieldsSQL(tableSchema, tableName);
 
     var fields = [];
+
+    var datasourceName =  db.getDatasourceName();
 
     db.internalQuery(query, function(err, result) {
         if (err)
@@ -247,6 +290,12 @@ function getEntityFields(db,tableSchema, tableName, done)
                         fields[f].isPK = false;
                         fields[f].attributeID = generateShortUID();
                         fields[f].name = fields[f].column_name;
+                        fields[f].datasourceName = datasourceName;
+
+                        var key = fields[f].datasourceName.replace(/\s+/g, '-').toLowerCase();
+                        key = key.replace(/[^a-zA-Z]/g, "");
+                        fields[f].lineage = key+'.'+fields[f].table_schema+'.'+fields[f].table_name+'.'+fields[f].column_name;
+                
 
                         if (fields[f].is_nullable == 'YES')
                             fields[f].required = false;
@@ -343,6 +392,7 @@ exports.getEntityFields = function(datasourceID,tableSchema, tableName, data, se
 
         getEntityFields(db,tableSchema, tableName, function(fields)
             {
+                
                 setresult(fields);
                 db.end();
             });

@@ -37,7 +37,7 @@ exports.runQuery = function(req, datasourceID,queryText, data, setresult) {
 
 exports.getTop100 = function(req, datasourceID, table_name, data, setresult) {
 
-    var dbController = require('../db/connect/'+data.type+'.js');
+    var dbController = require('../db/connect/'+data.type+'/'+data.type+'.js');
 
     var db = new dbController.db();
 
@@ -78,17 +78,78 @@ function processDataSources(req,dataSources,layers, params,query, done, result, 
     var result = (result) ? result : [];
     var thereAreJoins = false;
 
-
     if (!dataSource || dataSource.datasourceID == undefined) {
         done(result);
         return;
     }
 
+    if (query.version == 2) //Ver March 2020
+    {
+        var DataSources = connection.model('Connections');
+        //TODO: if datasource is stopped
+        DataSources.findOne({ _id: dataSource.datasourceID}, {}, function (err, dts) {
+            if (dts) {
+                
+                var DBLquotes = '';
+                if (dts.quotedElementNames)
+                    DBLquotes = '"';
+                    
+            
+    
+                    sqlNamingConvention(dataSource,query,DBLquotes);
+
+                    for (var n in query.joins)
+                    {
+
+                        for (var j in dataSource.collections) {
+
+                            
+
+                            if (query.joins[n].sourceParentID == dataSource.collections[j].collectionID || query.joins[n].targetParentID == dataSource.collections[j].collectionID) {
+                                {
+
+                                    
+
+                                    if (query.joins[n].sourceParentID == dataSource.collections[j].collectionID)
+                                        var theOther = query.joins[n].targetParentID;
+                                    if (query.joins[n].targetParentID == dataSource.collections[j].collectionID)
+                                        var theOther = query.joins[n].sourceParentID;
+
+                                    if (isTargetInvolved(dataSource.collections,theOther))
+                                    {
+                                        
+                                        if (!dataSource.collections[j]['joins'])
+                                            dataSource.collections[j]['joins'] = [];
+
+                                        dataSource.collections[j]['joins'].push(query.joins[n]);
+
+                                        thereAreJoins = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+
+                processCollections(req,query,dataSource.collections, dts, params,thereAreJoins, function(data) {
+                    result = data;
+                    processDataSources(req,dataSources,layers, params, query, done, result, index+1);
+                });
+
+            } else {
+                result = {result: 0, msg: 'This Datasource does not exists anymore! '+dataSource.datasourceID};
+                processDataSources(req,dataSources,layers, params, query, done, result, index+1);
+            }
+        });
+
+    } else {
+
+    //for compatibility purposes
 
     var Layers = connection.model('Layers');
     Layers.find({ _id: {$in:layers}},{}, function (err, theLayers) {
         //TODO: if layer is stopped
-
         if (theLayers)
         {
 
@@ -101,6 +162,7 @@ function processDataSources(req,dataSources,layers, params,query, done, result, 
                     if (dts.quotedElementNames)
                         DBLquotes = '"';
 
+                
                     for (var l in theLayers)
                     {
 
@@ -121,6 +183,7 @@ function processDataSources(req,dataSources,layers, params,query, done, result, 
                                     dataSource.collections[j]['sqlEntityAlias'] = dataSource.collections[j]['collectionName']
                                 }
 
+                                
                                 for (var c in query.columns)
                                 {
                                     if (query.columns[c].collectionID == dataSource.collections[j].collectionID)
@@ -151,8 +214,13 @@ function processDataSources(req,dataSources,layers, params,query, done, result, 
                         {
 
                             for (var j in dataSource.collections) {
+
+                                
+
                                 if (theLayers[l].model.joins[n].sourceParentID == dataSource.collections[j].collectionID || theLayers[l].model.joins[n].targetParentID == dataSource.collections[j].collectionID) {
                                     {
+
+                                        
 
                                         if (theLayers[l].model.joins[n].sourceParentID == dataSource.collections[j].collectionID)
                                             var theOther = theLayers[l].model.joins[n].targetParentID;
@@ -161,6 +229,7 @@ function processDataSources(req,dataSources,layers, params,query, done, result, 
 
                                         if (isTargetInvolved(dataSource.collections,theOther))
                                         {
+                                            
                                             if (!dataSource.collections[j]['joins'])
                                                 dataSource.collections[j]['joins'] = [];
 
@@ -187,6 +256,7 @@ function processDataSources(req,dataSources,layers, params,query, done, result, 
             });
         }
     });
+    } //end of not query version 2
 }
 
 String.prototype.hashCode = function() {
@@ -200,16 +270,65 @@ String.prototype.hashCode = function() {
   return hash;
 };
 
+function sqlNamingConvention(dataSource,query,DBLquotes)
+{
+    for (var j in dataSource.collections) {
+
+        if (dataSource.collections[j]['collectionSchema']) {
+            dataSource.collections[j]['sqlEntityName'] = DBLquotes+dataSource.collections[j]['collectionSchema']+DBLquotes+'.'+DBLquotes+dataSource.collections[j]['collectionName']+DBLquotes;
+            dataSource.collections[j]['sqlEntityAlias'] = dataSource.collections[j]['collectionSchema']+'_'+dataSource.collections[j]['collectionName'];
+        } else {
+            dataSource.collections[j]['sqlEntityName'] = DBLquotes+dataSource.collections[j]['collectionName']+DBLquotes;
+            dataSource.collections[j]['sqlEntityAlias'] = '';
+        }
+
+        if (dataSource.collections[j].collectionType === 'SQL')
+        {
+            dataSource.collections[j]['sqlEntityName'] = '('+ dataSource.collections[j]['collectionSQL']+') ';
+            //dataSource.collections[j]['sqlEntityAlias'] = 'wst'+ dataSource.collections[j]['collectionID'];
+            dataSource.collections[j]['sqlEntityAlias'] = dataSource.collections[j]['collectionName']
+        }
+
+        
+        for (var c in query.columns)
+        {
+            if (query.columns[c].collectionID == dataSource.collections[j].collectionID)
+            {
+                query.columns[c]['sqlEntityAlias'] = dataSource.collections[j]['sqlEntityAlias'];
+                query.columns[c]['sqlEntityName'] = dataSource.collections[j]['sqlEntityName'];
+            }
+        }
+
+        for (var o in query.order)
+        {
+            if (query.order[o].collectionID == dataSource.collections[j].collectionID)
+            {
+                query.order[o]['sqlEntityAlias'] = dataSource.collections[j]['sqlEntityAlias'];
+                query.order[o]['sqlEntityName'] = dataSource.collections[j]['sqlEntityName'];
+            }
+        }
+
+        for (var cc in dataSource.collections[j].columns)
+        {
+          dataSource.collections[j].columns[cc]['sqlEntityAlias'] = dataSource.collections[j]['sqlEntityAlias'];
+          dataSource.collections[j].columns[cc]['sqlEntityName'] = dataSource.collections[j]['sqlEntityName'];
+        }
+
+    }
+}
+
 function processCollections(req,query,collections, dataSource, params,thereAreJoins, done)
 {
     var dbms = require('../db/connect/'+dataSource.type+'/'+dataSource.type+'.js');
 
         var sql = require('../db/sqlv2.js');
 
-        var querySTR = JSON.stringify(query);
+        var querySTR = JSON.stringify(query)+JSON.stringify(params);
         var qhash = querySTR.hashCode();
 
-        sql.generateSQL(req, dbms, query, collections, dataSource, params, thereAreJoins, function (SQLstring, elements) {
+    sql.generateSQL(req, dbms, query, collections, dataSource, params, thereAreJoins, true, function (cleanSQLstring, elements) {
+
+        sql.generateSQL(req, dbms, query, collections, dataSource, params, thereAreJoins, false, function (SQLstring, elements) {
 
             if (dataSource.params.packetSize && params.page > 0) {
                 if (dataSource.params.packetSize != -1)
@@ -229,6 +348,7 @@ function processCollections(req,query,collections, dataSource, params,thereAreJo
                       if (!cacheResults) {
                         executeQuery(req, dbms, dataSource, collections, thereAreJoins, params, query, SQLstring, elements, function(results)
                             {
+                                results.cleanSQL = cleanSQLstring;
                               if (results.result == 1)
                                   {
                                     global.PROcache.saveToCache(req, qhash, results.sql, datasourceID, results.data, cacheTimeInSecs);
@@ -250,10 +370,13 @@ function processCollections(req,query,collections, dataSource, params,thereAreJo
                } else {
                  executeQuery(req, dbms, dataSource, collections, thereAreJoins, params, query, SQLstring, elements, function(results)
                      {
+                        results.cleanSQL = cleanSQLstring;
                         done(results);
+
                      });
                }
         });
+    });
 };
 
 function executeQuery(req, dbms, dataSource, collections, thereAreJoins, params, query, SQLstring, elements, done)

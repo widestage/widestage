@@ -38,7 +38,7 @@ function connect(data,datasourceID, done)
 
         DB.conn = client;
         DB.datasourceID = datasourceID;
-
+        DB.datasourceName = data.name;
         done(false, DB.client);
     });
 }
@@ -46,6 +46,11 @@ function connect(data,datasourceID, done)
 db.prototype.end = function() {
     end();
 };
+
+db.prototype.getDatasourceName = function()
+{
+    return datasourceName;
+}
 
 exports.end = function() {
     end();

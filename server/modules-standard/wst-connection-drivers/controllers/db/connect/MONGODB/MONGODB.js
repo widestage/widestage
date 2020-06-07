@@ -38,6 +38,7 @@ function connect(data,datasourceID, done)
         DB.conn = db;
         DB.datasourceID = datasourceID;
         DB.database = data.database;
+        DB.datasourceName = data.name;
 
         done(false, DB.conn);
 
@@ -48,6 +49,11 @@ function connect(data,datasourceID, done)
 db.prototype.end = function() {
     end();
 };
+
+db.prototype.getDatasourceName = function()
+{
+    return datasourceName;
+}
 
 exports.end = function() {
     end();

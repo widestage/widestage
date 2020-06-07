@@ -1,10 +1,10 @@
-exports.generateSQL = function(req,dbms,query,collections, dataSource, params,thereAreJoins, done)
+exports.generateSQL = function(req,dbms,query,collections, dataSource, params,thereAreJoins,getLineage, done)
 {
-      generateSQL(req,dbms,query,collections, dataSource, params,thereAreJoins, done);
+      generateSQL(req,dbms,query,collections, dataSource, params,thereAreJoins,getLineage, done);
 };
 
 
-function generateSQL(req, dbms, query, collections, dataSource, params, thereAreJoins, done) {
+function generateSQL(req, dbms, query, collections, dataSource, params, thereAreJoins,getLineage, done) {
     var from = [];
     var fields = [];
     var fieldIDs = [];
@@ -35,6 +35,8 @@ function generateSQL(req, dbms, query, collections, dataSource, params, thereAre
 
     for (var c in collections) {
         var table = collections[c];
+
+
         table.joinsCount = 0;
 
         for (var j in table.joins) {
@@ -49,7 +51,6 @@ function generateSQL(req, dbms, query, collections, dataSource, params, thereAre
                 table.joinsCount = table.joinsCount + 1;
             }
         }
-
         if (table.joinsCount > leadTableJoinsCount)
         {
             leadTable = table;
@@ -60,10 +61,9 @@ function generateSQL(req, dbms, query, collections, dataSource, params, thereAre
 
 
     for (var c in collections) {
+        
         var table = collections[c];
         var strJoin = '';
-
-
 
         for (var j in table.joins) {
 
@@ -85,9 +85,8 @@ function generateSQL(req, dbms, query, collections, dataSource, params, thereAre
         }
 
         if (processedCollections.indexOf(table.collectionID) == -1)
-
-            //from.push(table.collectionName +' '+table.collectionID + strJoin);
-            from.push(table.table_name +' '+table.collectionID + strJoin);
+            from.push(table.collectionName +' '+table.collectionID + strJoin);
+            //from.push(table.table_name +' '+table.collectionID + strJoin);
 
         processedCollections.push(table.collectionID);
 
@@ -95,7 +94,8 @@ function generateSQL(req, dbms, query, collections, dataSource, params, thereAre
         {
             var field = table.columns[e];
             elements.push(field);
-
+            field.sqlEntityAlias = table.sqlEntityAlias;
+            field.sqlEntityName = table.sqlEntityName;
 
             if (field.hidden != true)
             {
@@ -103,7 +103,8 @@ function generateSQL(req, dbms, query, collections, dataSource, params, thereAre
                 var theElementID = elementID.replace(/[^a-zA-Z ]/g,'');
                 fieldIDs.push(theElementID);
 
-                var elementSQL = getFieldSQL(field,DBLquotes,dbms);
+
+                var elementSQL = getFieldSQL(field,DBLquotes,dbms,getLineage);
                 fields.push(elementSQL.sqlWithAlias);
                 if (elementSQL.groupSQL)
                     groupBy.push(elementSQL.groupSQL);
@@ -121,8 +122,6 @@ function generateSQL(req, dbms, query, collections, dataSource, params, thereAre
         else
             SQLstring = SQLstring + fields[f]+', ';
     }
-
-
 
             SQLstring = SQLstring + ' FROM '+ leadTable.sqlEntityName + ' '+ leadTable.sqlEntityAlias + getJoins(leadTable,collections,[],DBLquotes);
 
@@ -171,6 +170,14 @@ function generateSQL(req, dbms, query, collections, dataSource, params, thereAre
                     var theOrderField = query.order[f];
                     var elementID = 'wst'+theOrderField.elementID.toLowerCase();
                     var theElementID = elementID.replace(/[^a-zA-Z ]/g,'');
+                    for (var c in collections)
+                    {
+                        if (collections[c].collectionName == query.order[f].collectionName)
+                            {
+                                query.order[f].sqlEntityAlias = collections[c].sqlEntityAlias;
+                                query.order[f].sqlEntityName = collections[c].sqlEntityName;
+                            }
+                    }
 
                     var sortType = '';
                     if (query.order[f].sortType == 1)
@@ -188,7 +195,7 @@ function generateSQL(req, dbms, query, collections, dataSource, params, thereAre
                     } else {
                         //No index, the field is not in the result set
 
-                            var elementSQL = getFieldSQL(theOrderField,DBLquotes,dbms);
+                            var elementSQL = getFieldSQL(theOrderField,DBLquotes,dbms,getLineage);
 
                             if (theOrderByString == '')
                                 theOrderByString += elementSQL.sqlWithoutAlias+ sortType;
@@ -213,13 +220,17 @@ function generateSQL(req, dbms, query, collections, dataSource, params, thereAre
     });
 }
 
+
+
 function getJoins(collection,collections,processedCollections,DBLquotes)
 {
     var fromSQL = '';
     for (var c in collections) {
+
         if (collections[c].collectionID == collection.collectionID && (processedCollections.indexOf(collection.collectionID) == -1))
         {
             var table = collections[c];
+            
             processedCollections.push(collection.collectionID);
 
 
@@ -288,7 +299,7 @@ function getJoins(collection,collections,processedCollections,DBLquotes)
 
 }
 
-function getFieldSQL(field,DBLquotes,dbms)
+function getFieldSQL(field,DBLquotes,dbms,getLineage)
 {
 
   var sqlWithAlias = '';
@@ -297,6 +308,8 @@ function getFieldSQL(field,DBLquotes,dbms)
 
   var elementID = 'wst'+field.elementID.toLowerCase();
   var theElementID = elementID.replace(/[^a-zA-Z ]/g,'');
+  if (getLineage)
+     theElementID = '"'+field.lineage+'"';
 
   if (field.aggregation) {
       found = true;
@@ -597,6 +610,7 @@ function dateFilter4SQL(dbms,dateFormat,filterElementName,filterValue, filter)
     var month = pad(today.getMonth()+1,2);
     var day = pad(today.getDate(),2);
 
+    
     var found = false;
 
     if (filterValue == '#WST-TODAY#')
@@ -817,6 +831,7 @@ function dateFilter4SQL(dbms,dateFormat,filterElementName,filterValue, filter)
             var theNextDay = new Date(searchDate);
             theNextDay.setDate(searchDate.getDate()+1);
 
+            //console.log('search date', searchDate, formatDate(searchDate));
             //default is direct
             var SQLresult =  filterElementName + " = '" + formatDate(searchDate) + "'";
 

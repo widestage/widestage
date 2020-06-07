@@ -23,8 +23,8 @@ function connect(data,datasourceID, done)
 {
     var DB = this;
 
-    if (this.conn)
-        this.conn.close();
+    //if (this.conn)
+    //    this.conn.close();
         mssql.close();
     var conn = mssql.connect({
         user: data.userName,
@@ -43,6 +43,7 @@ function connect(data,datasourceID, done)
 
         DB.conn = conn;
         DB.datasourceID = datasourceID;
+        DB.datasourceName = data.name;
 
         done(false, DB.conn);
     });
@@ -51,6 +52,11 @@ function connect(data,datasourceID, done)
 db.prototype.end = function() {
     end();
 };
+
+db.prototype.getDatasourceName = function()
+{
+    return datasourceName;
+}
 
 exports.end = function() {
     end();
@@ -71,14 +77,18 @@ function runInternalQuery(query, done)
 {
     var request = new mssql.Request(this.conn);
 
-    request.query(query, function(err, recordset) {
+    request.query(query, function(err, result) {
+
         if (err) {
             saveToLog(undefined, 'error running MSSQL query '+query +' '+ err.message,'','ERROR','MSSQL', 102);
             done(err);
             return;
         }
+        var records = [];
+        if (result.recordset)
+          records = result.recordset;
 
-        done(false, {rows: recordset});
+        done(false, {rows: records});
     });
 }
 
