@@ -114,7 +114,7 @@
                         <tr ng-repeat="execution in mostExecutions">
                             <td >
                                 <a ng-if="execution.type == 'report'" href="/#/reports/{{execution._id}}"><i class="fa fa-chart-line" style="margin-right: 2px;"></i> {{execution.name}}</a>
-                                <a ng-if="execution.type == 'dash'" href="/#/dashboardsv2/{{execution._id}}"><i class="fa fa-tachometer-alt" style="margin-right: 2px;"></i> {{execution.name}}</a>
+                                <a ng-if="execution.type == 'dash'" href="/#/dashboard/{{execution._id}}"><i class="fa fa-tachometer-alt" style="margin-right: 2px;"></i> {{execution.name}}</a>
                             </td>
                             <td class="align-right">
                                 <span>{{execution.count}}</span>
@@ -140,7 +140,7 @@
     </div>
 
     <div data-nodrag class="tree-node tree-node-item" ng-if="node.nodeType == 'dashboard'">
-        <i class="fa fa-tachometer-alt"  style="color:#8dc63f"></i>  <a data-nodrag  href="/#/dashboardsv2/{{node.id}}" style="color: slateblue;font-size: larger;font-style: italic;">{{node.title}}</a>
+        <i class="fa fa-tachometer-alt"  style="color:#8dc63f"></i>  <a data-nodrag  href="/#/dashboard/{{node.id}}" style="color: slateblue;font-size: larger;font-style: italic;">{{node.title}}</a>
     </div>
 
     <div data-nodrag class="tree-node tree-node-item" ng-if="node.nodeType == 'page'">

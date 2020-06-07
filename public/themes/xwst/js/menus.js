@@ -169,7 +169,7 @@ app.service('$menuItems', function($rootScope)
     		        if (items[u].nodeType === 'report')
     		            parentMenu.addItem(items[u].title,'/reports/'+items[u].id,'fa-bar-chart');
     		        if (items[u].nodeType === 'dashboard')
-    		            parentMenu.addItem(items[u].title,'/dashboardsv2/'+items[u].id,'fa fa-dashboard');
+    		            parentMenu.addItem(items[u].title,'/dashboard/'+items[u].id,'fa fa-dashboard');
     		    }
     		    
     		}
