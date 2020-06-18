@@ -1,27 +1,24 @@
-version: '2'
+version: '3'
 services:
   mongo:
     image: mongo:3.3
     container_name: mongo
     hostname: mongo
+    volumes:
+      - db-data:/data/db
     ports:
       - "27017:27017"
-    links:
-      - mysql
   widestage:
     build: .
-    image: widestage/widestage
-    container_name: widestage
+    image: widestage/widestage-pro
+    container_name: WST-PRO
     hostname: widestage
-    volumes:
-      - ./server.js:/srv/app/server.js
-      - ./server/config/config.js:/srv/app/server/config/config.js
     links:
       - mongo
-      - mysql
     environment:
       - IP=0.0.0.0
       - MONGOHOST=mongo
-      #- PORT=8080
     ports:
       - "80:80"
+volumes:
+  db-data:

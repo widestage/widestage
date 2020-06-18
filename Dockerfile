@@ -1,4 +1,4 @@
-FROM node:13.0.1
+FROM node:latest
 
 MAINTAINER Widestage  <widestage.com>
 
@@ -12,6 +12,6 @@ RUN npm install
 
 RUN bower install --allow-root --force-latest
 
-ENTRYPOINT ["node"]
+EXPOSE 80
 
-CMD ["server.js"]
+CMD ["npm" , "start"]
