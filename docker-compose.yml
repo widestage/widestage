@@ -10,8 +10,8 @@ services:
       - "27017:27017"
   widestage:
     build: .
-    image: widestage/widestage-pro
-    container_name: WST-PRO
+    image: widestage/widestage
+    container_name: WST
     hostname: widestage
     links:
       - mongo
