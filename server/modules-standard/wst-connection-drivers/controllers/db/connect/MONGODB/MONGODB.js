@@ -699,43 +699,63 @@ function getSqlEntityName(collection)
 
 exports.processJoinedCollections = function(req,query,collections, dataSource, thereAreJoins,params,sqlString, done) {
     processJoinedCollections(req,query,collections, dataSource,thereAreJoins, 0,params,sqlString, function(){
+
+
         if (collections.length > 1)
         {
-            var sqlMem = require('../../sqlMem.js');
-            sqlMem.generateMemSQL(req, query, collections, dataSource, params, function(theQuery){
+        
+            var igniteJOINS = false;
+            
 
-                      var alasql = require('alasql');
-                      var allElements = [];
-                      var allQueries = '';
-                      for (var c in collections)
-                      {
-                        var tableName = getSqlEntityName(collections[c]);
-                        alasql('DROP TABLE IF EXISTS '+tableName);
-                      }
+                var sqlMem = require('../../sqlMem.js');
+                sqlMem.generateMemSQL(req, query, collections, dataSource, params, function(theQuery){
 
-                      for (var c in collections)
-                      {
-                        var tableName = getSqlEntityName(collections[c]);
-                        alasql('CREATE TABLE '+tableName);
-                        alasql.tables[tableName].data = collections[c].result;
-                        allElements.push(collections[c].elements);
-                        allQueries = allQueries + '   '+collections[c].sql;
-                      }
+                    if (igniteJOINS)
+                    {
+                        //Not implemented execution time is close or superior than alasql
+                        var SqlExample = require('../../inFlightJoins/IGNITE/joinIgnite.js');
+                        var myIgniteConnection = new SqlExample();
+                        myIgniteConnection.exec(collections,theQuery).then(
+                            
+                        );
 
-                      alasql.promise(theQuery).then(function(res){
+                    } else {
+
+                        var alasql = require('alasql');
+                        var allElements = [];
+                        var allQueries = '';
                         for (var c in collections)
                         {
-                          var tableName = getSqlEntityName(collections[c]);
-                          alasql('DROP TABLE IF EXISTS '+tableName);
+                            var tableName = getSqlEntityName(collections[c]);
+                            alasql('DROP TABLE IF EXISTS '+tableName);
                         }
 
-                        done(res,allElements,allQueries);
-                      }).catch(function(err){
-                        console.log(err);
+                        for (var c in collections)
+                        {
+                            var tableName = getSqlEntityName(collections[c]);
+                            alasql('CREATE TABLE '+tableName);
+                            alasql.tables[tableName].data = collections[c].result;
+                            allElements.push(collections[c].elements);
+                            allQueries = allQueries + '   '+collections[c].sql;
 
-                      });
+                        }
 
-            });
+                        alasql.promise(theQuery).then(function(res){
+                            for (var c in collections)
+                            {
+                            var tableName = getSqlEntityName(collections[c]);
+                            alasql('DROP TABLE IF EXISTS '+tableName);
+                            }
+                            done(res,allElements,allQueries);
+                        }).catch(function(err){
+                            console.log(err);
+
+                        });
+
+                    }
+
+                });
+            
 
 
         } else {
@@ -768,7 +788,7 @@ function processJoinedCollections(req,query,collections, dataSource, thereAreJoi
 
     sql.generateSQLForCollection(req,query,collection, dataSource,params, thereAreJoins, function(Querystring,elements){
 
-                connect(dataSource.params.connection, function (err, connect) {
+                connect(dataSource.params.connection, dataSource._id, function (err, connect) {
                     if (err) {
                         saveToLog(req, 'Error on MONGODB connection for data source' + err.message,'','ERROR','MONGODB', 102);
                         done({result: 0, msg: 'Connection Error: ' + err});
@@ -783,7 +803,7 @@ function processJoinedCollections(req,query,collections, dataSource, thereAreJoi
                             end();
                         } else {
                             if (result) {
-                                collection.result = result.rows;
+                                collection.result = checkForIDInResults(result.rows);
                                 collection.elements = elements;
                                 collection.sql = Querystring;
                                 processJoinedCollections(req, query, collections, dataSource, thereAreJoins, index + 1,params,sqlString, done);
@@ -800,3 +820,15 @@ function processJoinedCollections(req,query,collections, dataSource, thereAreJoi
                 });
     });
 };
+
+function checkForIDInResults(results)
+{
+    //The key _id values comes as object not as text so we need to convert tt into text
+    for (var r in results)
+    {
+        if (results[r]._id)
+            results[r]._id = String(results[r]._id);
+    }
+
+    return results;
+}
