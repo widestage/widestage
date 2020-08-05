@@ -179,7 +179,7 @@ app.directive('wstElementsPanel', function($compile, $rootScope,queryModel,userS
                 if (!$scope.layers || $scope.layers.length == 0)
                     {
 
-                        connection.get('/api/v3/layers', {}, function(data) {
+                        connection.get('/api/v3/layers', {page:0}, function(data) {
                             if (data.result == 1)
                                 {
                                     calculateIdForAllElements($scope.elements);
