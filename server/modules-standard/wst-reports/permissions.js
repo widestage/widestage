@@ -45,7 +45,7 @@ global.objectGrants.push(
               },
               {
                   name:'seeSQL',
-                  label: 'see generated SQL',
+                  label: 'view generated SQL',
                   description: 'Allow the user with this permission to see the generated sql for a given query'
               }
 

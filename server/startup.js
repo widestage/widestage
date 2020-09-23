@@ -13,6 +13,8 @@ module.exports = function (app,configStartup) {
         if (global.env == 'test' || global.env == 'dev' || global.env == 'local')
             mongoose.set('debug', true); //output all queries in test and dev mode
 
+        global.serverDir = __dirname;
+
         var fs = require('fs');
 
         //Core modules
@@ -28,6 +30,7 @@ module.exports = function (app,configStartup) {
 
 
 
+        
         //Standard modules
         var routes_dir = __dirname + '/'+'modules-standard';
         fs.readdirSync(routes_dir).forEach(function (file) {

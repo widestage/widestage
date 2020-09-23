@@ -31,8 +31,12 @@
 
 
     <!--Loaded THEME CSSs file-->
-    <%- include(stylesheets) %>
-
+	<%- include(stylesheets) %>
+	
+	<style>
+		<%= customCSS %>
+	</style>
+	
 
 </head>
 
@@ -151,6 +155,8 @@
 	<script type="text/javascript" src="angular-ui-sortable/sortable.min.js"></script>
 	<!-- dragula -->
 	<script src="angularjs-dragula/dist/angularjs-dragula.min.js"></script>
+	<!--UI contextmenu-->
+	<script src="angular-bootstrap-contextmenu/contextMenu.js"></script>
 
 <!--END WALIRIANICE required -->
 
@@ -173,7 +179,8 @@
 
 	<script>
 	    $(document).ready(function(){
-	        $('[data-toggle="tooltip"]').tooltip();
+			$('[data-toggle="tooltip"]').tooltip();
+			$('[data-toggle="popover"]').popover();
 	    });
 	</script>
 

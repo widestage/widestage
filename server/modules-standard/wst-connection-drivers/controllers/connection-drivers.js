@@ -3,7 +3,6 @@ exports.GetConnectionTypes = function(req, res) {
     var types = [];
         //Core modules
         var routes_dir = __dirname + '/db/connect';
-        console.log('this is the routes_dir',routes_dir);
         fs.readdirSync(routes_dir).forEach(function (file) {
             if(file[0] === '.') return;
 
@@ -167,6 +166,7 @@ function executeQuery(req,connectionID,sqlQuery,source,layerID,page,done)
                                   done({result:0,msg:err});
                                   else
                                   done({result:1,items:rows.rows});
+                            dbms.end();
                           });
 
                 });
@@ -194,7 +194,6 @@ function getExcelReportV1(userID,reportName,query,data,live,done)
             var reportURL = __dirname+'/../../../../public/downloads/user_'+userID+'/'+reportName+'.xlsx';
 
             var options = {
-                //filename: './temporary-files/td_'+req.user._id+'_streamed-workbook.xlsx',
                 filename: __dirname+'/../../../../public/downloads/user_'+userID+'/'+reportName+'.xlsx',
                 useStyles: true,
                 useSharedStrings: true
@@ -209,6 +208,9 @@ function getExcelReportV1(userID,reportName,query,data,live,done)
             for (var c in query.columns)
             {
                         var elementName = 'wst'+query.columns[c].elementID.toLowerCase().replace(/[^a-zA-Z ]/g,'');
+
+                        if (query.columns[c].key)
+                            elementName = query.columns[c].key.toLowerCase();
 
                         if (query.columns[c].aggregation)
                             elementName = elementName+query.columns[c].aggregation;

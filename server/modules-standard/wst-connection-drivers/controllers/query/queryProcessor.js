@@ -71,17 +71,35 @@ exports.processQuery = function(req,query,params,done)
     processDataSources(req,query.datasources,query.layers, params,query, done, undefined, undefined);
 }
 
+
+
 function processDataSources(req,dataSources,layers, params,query, done, result, index) {
     var index = (index) ? index : 0;
     if (dataSources)
         var dataSource = (dataSources[index]) ? dataSources[index] : false;
     var result = (result) ? result : [];
     var thereAreJoins = false;
-
+    
     if (!dataSource || dataSource.datasourceID == undefined) {
+
+        if (query.pivot && global.proPivot && result.data && result.data.length > 0)
+        {
+            global.proPivot.generatePivot(query.pivot,result,function(pivotedResults){
+                if (query.analytics && global.proAnalytics)
+                {
+                    global.proAnalytics.applyRowAnalytics(query.analytics,pivotedResults,function(newResults){
+                        done(pivotedResults);
+                    });
+                } else 
+                    done(pivotedResults);
+
+                return;
+            });
+        } else {
         done(result);
         return;
-    }
+        }
+    } else {
 
     if (query.version == 2) //Ver March 2020
     {
@@ -91,7 +109,7 @@ function processDataSources(req,dataSources,layers, params,query, done, result, 
             if (dts) {
                 
                 var DBLquotes = '';
-                if (dts.quotedElementNames)
+                if (dts.params && dts.params.quotedElementNames)
                     DBLquotes = '"';
                     
             
@@ -101,6 +119,8 @@ function processDataSources(req,dataSources,layers, params,query, done, result, 
                     for (var n in query.joins)
                     {
 
+                        if (query.joins[n])
+                        {
                         for (var j in dataSource.collections) {
 
                             
@@ -129,6 +149,7 @@ function processDataSources(req,dataSources,layers, params,query, done, result, 
                             }
                         }
                     }
+                    }
 
 
 
@@ -146,7 +167,6 @@ function processDataSources(req,dataSources,layers, params,query, done, result, 
     } else {
 
     //for compatibility purposes
-
     var Layers = connection.model('Layers');
     Layers.find({ _id: {$in:layers}},{}, function (err, theLayers) {
         //TODO: if layer is stopped
@@ -159,12 +179,13 @@ function processDataSources(req,dataSources,layers, params,query, done, result, 
                 if (dts) {
 
                     var DBLquotes = '';
-                    if (dts.quotedElementNames)
+                    if (dts.params && dts.params.quotedElementNames)
                         DBLquotes = '"';
-
+                        
                 
                     for (var l in theLayers)
                     {
+
 
                         for (var j in dataSource.collections) {
 
@@ -258,6 +279,7 @@ function processDataSources(req,dataSources,layers, params,query, done, result, 
     });
     } //end of not query version 2
 }
+}
 
 String.prototype.hashCode = function() {
   var hash = 0, i, chr;
@@ -274,9 +296,17 @@ function sqlNamingConvention(dataSource,query,DBLquotes)
 {
     for (var j in dataSource.collections) {
 
+        var schemaAlias = '';
+        if (dataSource.collections[j]['collectionSchema'])
+            schemaAlias = dataSource.collections[j]['collectionSchema'].split('-').join('_')+'_';
+
+        var schemaName = DBLquotes+dataSource.collections[j]['collectionSchema']+DBLquotes+'.';
+        if (schemaName.includes("-", 0))
+            schemaName = "";
+
         if (dataSource.collections[j]['collectionSchema']) {
-            dataSource.collections[j]['sqlEntityName'] = DBLquotes+dataSource.collections[j]['collectionSchema']+DBLquotes+'.'+DBLquotes+dataSource.collections[j]['collectionName']+DBLquotes;
-            dataSource.collections[j]['sqlEntityAlias'] = dataSource.collections[j]['collectionSchema']+'_'+dataSource.collections[j]['collectionName'];
+            dataSource.collections[j]['sqlEntityName'] = schemaName+DBLquotes+dataSource.collections[j]['collectionName']+DBLquotes;
+            dataSource.collections[j]['sqlEntityAlias'] = schemaAlias+dataSource.collections[j]['collectionName'];
         } else {
             dataSource.collections[j]['sqlEntityName'] = DBLquotes+dataSource.collections[j]['collectionName']+DBLquotes;
             dataSource.collections[j]['sqlEntityAlias'] = '';
@@ -340,8 +370,7 @@ function processCollections(req,query,collections, dataSource, params,thereAreJo
                 }
 
             }
-
-
+            
             if (global.PROcache && !req.query.forceRefresh)
                {
                    global.PROcache.checkForCache(req, qhash, SQLstring, query, dataSource, function (cacheResults, cacheTimeInSecs, cacheSQL) {
@@ -349,7 +378,9 @@ function processCollections(req,query,collections, dataSource, params,thereAreJo
                         executeQuery(req, dbms, dataSource, collections, thereAreJoins, params, query, SQLstring, elements, function(results)
                             {
                                 results.cleanSQL = cleanSQLstring;
-                              if (results.result == 1)
+
+
+                              if (results.result == 1 && cacheTimeInSecs > 1)
                                   {
                                     global.PROcache.saveToCache(req, qhash, results.sql, datasourceID, results.data, cacheTimeInSecs);
                                     if (global.PROquotas)
@@ -371,6 +402,8 @@ function processCollections(req,query,collections, dataSource, params,thereAreJo
                  executeQuery(req, dbms, dataSource, collections, thereAreJoins, params, query, SQLstring, elements, function(results)
                      {
                         results.cleanSQL = cleanSQLstring;
+                        if (global.PROquotas)
+                            global.PROquotas.saveQueryQuota(req, results.data);
                         done(results);
 
                      });
@@ -381,9 +414,15 @@ function processCollections(req,query,collections, dataSource, params,thereAreJo
 
 function executeQuery(req, dbms, dataSource, collections, thereAreJoins, params, query, SQLstring, elements, done)
 {
-  if (dataSource.type === 'MONGODB')
+  if (dataSource.type === 'MONGODB' || dataSource.type === 'ELASTIC')
   {
-    dbms.processJoinedCollections(req,query,collections, dataSource, thereAreJoins, params, SQLstring, function(mergedResults,mergedElements,query){
+    dbms.processJoinedCollections(req,query,collections, dataSource, thereAreJoins, params, SQLstring, function(error,mergedResults,mergedElements,query){
+        if (error)
+            {
+            done(error);
+            return;
+            }
+        
         if (mergedResults)
             getFormatedResult(mergedElements, mergedResults, function (finalResults) {
                 done({result: 1, data: finalResults, sql: query});
@@ -470,4 +509,7 @@ function getFormatedResult(elementSchema,results,done)
         finalResults.push(newRecord);
     }
     done(finalResults);
+
 }
+
+

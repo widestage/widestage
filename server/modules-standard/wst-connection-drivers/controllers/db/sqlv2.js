@@ -4,7 +4,7 @@ exports.generateSQL = function(req,dbms,query,collections, dataSource, params,th
 };
 
 
-function generateSQL(req, dbms, query, collections, dataSource, params, thereAreJoins,getLineage, done) {
+function generateSQL(req, dbms, query, collections, dataSource, params, thereAreJoins, getLineage, done) {
     var from = [];
     var fields = [];
     var fieldIDs = [];
@@ -15,6 +15,10 @@ function generateSQL(req, dbms, query, collections, dataSource, params, thereAre
     var elements = [];
     var leadTable = {};
     var leadTableJoinsCount = 0;
+    //var queryVersion = query.version;
+
+    //if (query.pivot)
+        queryVersion = 3; 
 
     //connection params...
     var DBLquotes = '';
@@ -28,15 +32,24 @@ function generateSQL(req, dbms, query, collections, dataSource, params, thereAre
               dateFormat = dataSource.params.dateFormat;
       }
 
+    //Remove collections without columns for security purposes 
+    //HR - sept 2020 this does not work if there is filters only or ordebys only -- comenting 
+    /*
+        collections.forEach(function(collection,item){
+
+            if (collection.columns.length === 0)
+                collections.splice(item, 1);
+        })
+    */
+
     if (collections.length == 1)
     {
         leadTable = collections[0];
     }
 
     for (var c in collections) {
+
         var table = collections[c];
-
-
         table.joinsCount = 0;
 
         for (var j in table.joins) {
@@ -59,57 +72,75 @@ function generateSQL(req, dbms, query, collections, dataSource, params, thereAre
 
     }
 
-
-    for (var c in collections) {
-        
-        var table = collections[c];
-        var strJoin = '';
-
-        for (var j in table.joins) {
-
-            var join = table.joins[j];
-
-            if (join.sourceParentID == table.collectionID)
-            {
-
-                if (join.joinType == 'default')
-                    strJoin = ' INNER JOIN ';
-
-                processedCollections.push(join.targetParentID);
-
-                strJoin = strJoin +  join.targetCollectionName  +' '+ join.targetParentID + ' ON (';
-
-                strJoin = strJoin + join.sourceParentID + '.' + DBLquotes+join.sourceElementName+DBLquotes + ' = ' + join.targetParentID + '.' + DBLquotes+join.targetElementName+DBLquotes;
-                strJoin = strJoin + ')';
-            }
+    var schemaAlias = '';
+    var schemaName = '';
+    if (leadTable.collectionSchema)
+        {
+        schemaAlias = leadTable.collectionSchema.split('-').join('_')+'_';
+        schemaName = leadTable.collectionSchema.split('-').join('_')+'.';
         }
 
-        if (processedCollections.indexOf(table.collectionID) == -1)
-            from.push(table.collectionName +' '+table.collectionID + strJoin);
-            //from.push(table.table_name +' '+table.collectionID + strJoin);
+    if (!leadTable.sqlEntityAlias)
+        leadTable.sqlEntityAlias = schemaAlias+leadTable.collectionName;
+    if (!leadTable.sqlEntityName)
+        leadTable.sqlEntityName = schemaName+leadTable.collectionName;
 
-        processedCollections.push(table.collectionID);
-
-        for (var e in table.columns)
+    for (var c in collections) {
+        if (collections[c].columns.length > 0)
         {
-            var field = table.columns[e];
-            elements.push(field);
-            field.sqlEntityAlias = table.sqlEntityAlias;
-            field.sqlEntityName = table.sqlEntityName;
+                var table = collections[c];
+                var strJoin = '';
+                if (!table.sqlEntityAlias)
+                    table.sqlEntityAlias = table.collectionSchema.split('-').join('_')+'_'+table.collectionName;
+                if (!table.sqlEntityName)
+                    table.sqlEntityName = table.collectionSchema.replace(/\s+/g, '_')+'.'+table.collectionName;
+                for (var j in table.joins) {
 
-            if (field.hidden != true)
-            {
-                var elementID = 'wst'+field.elementID.toLowerCase();
-                var theElementID = elementID.replace(/[^a-zA-Z ]/g,'');
-                fieldIDs.push(theElementID);
+                    var join = table.joins[j];
+
+                    if (join.sourceParentID == table.collectionID)
+                    {
+
+                        if (join.joinType == 'default')
+                            strJoin = ' INNER JOIN ';
+
+                        processedCollections.push(join.targetParentID);
+
+                        strJoin = strJoin +  join.targetCollectionName  +' '+ join.targetParentID + ' ON (';
+
+                        strJoin = strJoin + join.sourceParentID + '.' + DBLquotes+join.sourceElementName+DBLquotes + ' = ' + join.targetParentID + '.' + DBLquotes+join.targetElementName+DBLquotes;
+                        strJoin = strJoin + ')';
+                    }
+                }
+
+                if (processedCollections.indexOf(table.collectionID) == -1)
+                    from.push(table.collectionName +' '+table.collectionID + strJoin);
+                    //from.push(table.table_name +' '+table.collectionID + strJoin);
+
+                processedCollections.push(table.collectionID);
+
+                for (var e in table.columns)
+                {
+                    var field = table.columns[e];
+                    elements.push(field);
+                    field.sqlEntityAlias = table.sqlEntityAlias;
+                    field.sqlEntityName = table.sqlEntityName;
 
 
-                var elementSQL = getFieldSQL(field,DBLquotes,dbms,getLineage);
-                fields.push(elementSQL.sqlWithAlias);
-                if (elementSQL.groupSQL)
-                    groupBy.push(elementSQL.groupSQL);
+                    if (field.hidden != true)
+                    {
+                        var elementID = 'wst'+field.elementID.toLowerCase();
+                        var theElementID = elementID.replace(/[^a-zA-Z ]/g,'');
+                        fieldIDs.push(theElementID);
+                        
 
-            }
+                        var elementSQL = getFieldSQL(field,DBLquotes,dbms,getLineage,queryVersion);
+                        fields.push(elementSQL.sqlWithAlias);
+                        if (elementSQL.groupSQL)
+                            groupBy.push(elementSQL.groupSQL);
+
+                    }
+                }
         }
     }
 
@@ -122,14 +153,11 @@ function generateSQL(req, dbms, query, collections, dataSource, params, thereAre
         else
             SQLstring = SQLstring + fields[f]+', ';
     }
-
+        
             SQLstring = SQLstring + ' FROM '+ leadTable.sqlEntityName + ' '+ leadTable.sqlEntityAlias + getJoins(leadTable,collections,[],DBLquotes);
 
-
-
-
     var havings = [];
-    getFilters(dbms,dateFormat,query, function(filtersResult,havingsResult){
+    getFilters(dbms,dateFormat,query, DBLquotes,function(filtersResult,havingsResult){
 
         if (filtersResult.length > 0)
             SQLstring += ' WHERE ';
@@ -195,7 +223,7 @@ function generateSQL(req, dbms, query, collections, dataSource, params, thereAre
                     } else {
                         //No index, the field is not in the result set
 
-                            var elementSQL = getFieldSQL(theOrderField,DBLquotes,dbms,getLineage);
+                            var elementSQL = getFieldSQL(theOrderField,DBLquotes,dbms,getLineage,queryVersion);
 
                             if (theOrderByString == '')
                                 theOrderByString += elementSQL.sqlWithoutAlias+ sortType;
@@ -215,7 +243,6 @@ function generateSQL(req, dbms, query, collections, dataSource, params, thereAre
 
         SQLstring = SQLstring.replace("WHERE  AND", "WHERE");
 
-
         done(SQLstring,elements);
     });
 }
@@ -225,6 +252,7 @@ function generateSQL(req, dbms, query, collections, dataSource, params, thereAre
 function getJoins(collection,collections,processedCollections,DBLquotes)
 {
     var fromSQL = '';
+
     for (var c in collections) {
 
         if (collections[c].collectionID == collection.collectionID && (processedCollections.indexOf(collection.collectionID) == -1))
@@ -234,59 +262,61 @@ function getJoins(collection,collections,processedCollections,DBLquotes)
             processedCollections.push(collection.collectionID);
 
 
+            
+            if (collections.length > 1)
+                for (var j in table.joins) {
+                    var join = table.joins[j];
+                    if (join.sourceParentID == table.collectionID && (processedCollections.indexOf(join.targetParentID) == -1))
+                    {
+                        if (!join.multiplicity)
+                            fromSQL = fromSQL + ' INNER JOIN ';
+                        if (join.multiplicity == 'inner' || join.multiplicity == 'default')
+                            fromSQL = fromSQL + ' INNER JOIN ';
+                        if (join.multiplicity == 'left')
+                            fromSQL = fromSQL + ' LEFT JOIN ';
+                        if (join.multiplicity == 'right')
+                            fromSQL = fromSQL + ' RIGHT JOIN ';
 
+                        var theTargetCollection = getCollectionForThisCollectionID(join.targetParentID,collections);
 
-            for (var j in table.joins) {
-                var join = table.joins[j];
+                        fromSQL = fromSQL + ' ' + theTargetCollection.sqlEntityName + ' '+ theTargetCollection.sqlEntityAlias;
 
-                if (join.sourceParentID == table.collectionID && (processedCollections.indexOf(join.targetParentID) == -1))
-                {
-                    if (!join.multiplicity)
-                        fromSQL = fromSQL + ' INNER JOIN ';
-                    if (join.multiplicity == 'inner' || join.multiplicity == 'default')
-                        fromSQL = fromSQL + ' INNER JOIN ';
-                    if (join.multiplicity == 'left')
-                        fromSQL = fromSQL + ' LEFT JOIN ';
-                    if (join.multiplicity == 'right')
-                        fromSQL = fromSQL + ' RIGHT JOIN ';
+                        if (theTargetCollection.sqlEntityAlias && theTargetCollection.sqlEntityAlias != '')
+                            fromSQL = fromSQL + ' ON ('+table.sqlEntityAlias+'.'+DBLquotes+join.sourceElementName+DBLquotes+' = '+theTargetCollection.sqlEntityAlias+'.'+DBLquotes+join.targetElementName+DBLquotes+')';
+                        else
+                            fromSQL = fromSQL + ' ON ('+table.sqlEntityAlias+'.'+DBLquotes+join.sourceElementName+DBLquotes+' = '+theTargetCollection.sqlEntityName+'.'+DBLquotes+join.targetElementName+DBLquotes+')';
 
-                    var theTargetCollection = getCollectionForThisCollectionID(join.targetParentID,collections);
+                        fromSQL = fromSQL + getJoins(theTargetCollection,collections,processedCollections,DBLquotes);
 
-                    fromSQL = fromSQL + ' ' + theTargetCollection.sqlEntityName + ' '+ theTargetCollection.sqlEntityAlias;
+                    }
 
-                    if (theTargetCollection.sqlEntityAlias && theTargetCollection.sqlEntityAlias != '')
-                        fromSQL = fromSQL + ' ON ('+table.sqlEntityAlias+'.'+DBLquotes+join.sourceElementName+DBLquotes+' = '+theTargetCollection.sqlEntityAlias+'.'+DBLquotes+join.targetElementName+DBLquotes+')';
-                    else
-                        fromSQL = fromSQL + ' ON ('+table.sqlEntityAlias+'.'+DBLquotes+join.sourceElementName+DBLquotes+' = '+theTargetCollection.sqlEntityName+'.'+DBLquotes+join.targetElementName+DBLquotes+')';
+                    if (join.targetParentID == table.collectionID && (processedCollections.indexOf(join.sourceParentID) == -1))
+                    {
+                        if (!join.multiplicity)
+                            fromSQL = fromSQL + ' INNER JOIN ';
+                        if (join.multiplicity == 'inner' || join.multiplicity == 'default')
+                            fromSQL = fromSQL + ' INNER JOIN ';
+                        if (join.multiplicity == 'left')
+                            fromSQL = fromSQL + ' LEFT JOIN ';
+                        if (join.multiplicity == 'right')
+                            fromSQL = fromSQL + ' RIGHT JOIN ';
 
-                    fromSQL = fromSQL + getJoins(theTargetCollection,collections,processedCollections,DBLquotes);
+                        var theSourceCollection = getCollectionForThisCollectionID(join.sourceParentID,collections);
+
+                        if (theSourceCollection)
+                        {
+                            fromSQL = fromSQL + ' ' + theSourceCollection.sqlEntityName + ' '+ theSourceCollection.sqlEntityAlias;
+
+                            if (theSourceCollection.sqlEntityAlias && theSourceCollection.sqlEntityAlias != '')
+                                fromSQL = fromSQL + ' ON ('+table.sqlEntityAlias+'.'+DBLquotes+join.targetElementName+DBLquotes+' = '+theSourceCollection.sqlEntityAlias+'.'+DBLquotes+join.sourceElementName+DBLquotes+')';
+                            else
+                                fromSQL = fromSQL + ' ON ('+table.sqlEntityAlias+'.'+DBLquotes+join.targetElementName+DBLquotes+' = '+theSourceCollection.sqlEntityName+'.'+DBLquotes+join.sourceElementName+DBLquotes+')';
+
+                            fromSQL = fromSQL + getJoins(theSourceCollection,collections,processedCollections,DBLquotes);
+                        }
+                    }
 
                 }
-
-                if (join.targetParentID == table.collectionID && (processedCollections.indexOf(join.sourceParentID) == -1))
-                {
-                    if (!join.multiplicity)
-                        fromSQL = fromSQL + ' INNER JOIN ';
-                    if (join.multiplicity == 'inner' || join.multiplicity == 'default')
-                        fromSQL = fromSQL + ' INNER JOIN ';
-                    if (join.multiplicity == 'left')
-                        fromSQL = fromSQL + ' LEFT JOIN ';
-                    if (join.multiplicity == 'right')
-                        fromSQL = fromSQL + ' RIGHT JOIN ';
-
-                    var theSourceCollection = getCollectionForThisCollectionID(join.sourceParentID,collections);
-
-                    fromSQL = fromSQL + ' ' + theSourceCollection.sqlEntityName + ' '+ theSourceCollection.sqlEntityAlias;
-
-                    if (theSourceCollection.sqlEntityAlias && theSourceCollection.sqlEntityAlias != '')
-                        fromSQL = fromSQL + ' ON ('+table.sqlEntityAlias+'.'+DBLquotes+join.targetElementName+DBLquotes+' = '+theSourceCollection.sqlEntityAlias+'.'+DBLquotes+join.sourceElementName+DBLquotes+')';
-                    else
-                        fromSQL = fromSQL + ' ON ('+table.sqlEntityAlias+'.'+DBLquotes+join.targetElementName+DBLquotes+' = '+theSourceCollection.sqlEntityName+'.'+DBLquotes+join.sourceElementName+DBLquotes+')';
-
-                    fromSQL = fromSQL + getJoins(theSourceCollection,collections,processedCollections,DBLquotes);
-                }
-
-            }
 
 
 
@@ -299,7 +329,7 @@ function getJoins(collection,collections,processedCollections,DBLquotes)
 
 }
 
-function getFieldSQL(field,DBLquotes,dbms,getLineage)
+function getFieldSQL(field,DBLquotes,dbms,getLineage,queryVersion)
 {
 
   var sqlWithAlias = '';
@@ -308,7 +338,11 @@ function getFieldSQL(field,DBLquotes,dbms,getLineage)
 
   var elementID = 'wst'+field.elementID.toLowerCase();
   var theElementID = elementID.replace(/[^a-zA-Z ]/g,'');
-  if (getLineage)
+
+  if (field.key && queryVersion >= 3)
+      theElementID = field.key.toLowerCase();
+
+  if (getLineage && field.lineage)
      theElementID = '"'+field.lineage+'"';
 
   if (field.aggregation) {
@@ -376,7 +410,7 @@ function getCollectionForThisCollectionID(collectionID,collections)
     }
 }
 
-function getFilters(dbms,dateFormat,query,done)
+function getFilters(dbms,dateFormat,query,DBLquotes,done)
 {
     var theFilter = '';
     var filters = [];
@@ -391,7 +425,7 @@ function getFilters(dbms,dateFormat,query,done)
             previousRelational = ' '+query.groupFilters[f].conditionLabel+' ';
         }
 
-        var filterSQL = getFilterSQL(dbms,dateFormat,query.groupFilters[f]);
+        var filterSQL = getFilterSQL(dbms,dateFormat,query.groupFilters[f],DBLquotes);
 
         if (filterSQL != '')
         {
@@ -415,7 +449,7 @@ function getFilters(dbms,dateFormat,query,done)
 }
 
 
-function getFilterSQL(dbms,dateFormat,filter,isHaving)
+function getFilterSQL(dbms,dateFormat,filter,DBLquotes)
 {
     var result = '';
 
@@ -424,11 +458,19 @@ function getFilterSQL(dbms,dateFormat,filter,isHaving)
 
         var thisFilter = {}, filterValue = filter.filterText1;
 
+        var schemaAlias = '';
+        var schemaName = '';
+        if (filter.collectionSchema)
+            {
+            schemaAlias = filter.collectionSchema.split('-').join('_')+'_';
+            schemaName = filter.collectionSchema.replace(/\s+/g, '_')+'_';;
+            }
+
 
         if (filter.collectionSchema)
-            var filterElementName = filter.collectionSchema+'_'+filter.collectionName + '.' + filter.elementName;
+            var filterElementName = schemaAlias+filter.collectionName + '.' + DBLquotes+filter.elementName+DBLquotes;
         else
-            var filterElementName = filter.collectionName + '.' + filter.elementName;
+            var filterElementName = filter.collectionName + '.' + DBLquotes+filter.elementName+DBLquotes;
 
         if (filter.aggregation) {
           if (filter.aggregation == 'count_distinct')
@@ -549,10 +591,11 @@ function getFilterSQL(dbms,dateFormat,filter,isHaving)
                 var filterSTR = '';
                 for (var s in filterValue)
                 {
+                    var theValue = filterValue[s].replace(/\u0200/g,',')
                     if (s == 0)
-                        filterSTR += "'"+filterValue[s]+"'";
+                        filterSTR += "'"+theValue+"'";
                     else
-                        filterSTR += ",'"+filterValue[s]+"'";
+                        filterSTR += ",'"+theValue+"'";
                 }
                 result = (filterElementName +' IN '+'('+filterSTR+')');
             }
@@ -830,9 +873,7 @@ function dateFilter4SQL(dbms,dateFormat,filterElementName,filterValue, filter)
             var searchDate = new Date(filterValue);
             var theNextDay = new Date(searchDate);
             theNextDay.setDate(searchDate.getDate()+1);
-
-            //console.log('search date', searchDate, formatDate(searchDate));
-            //default is direct
+            
             var SQLresult =  filterElementName + " = '" + formatDate(searchDate) + "'";
 
             if (dateSearchMode == 'convert')

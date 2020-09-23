@@ -38,9 +38,9 @@ exports.dashboardsFindOne = function(req,res){
             stat.relationedID = result.item._id;
             stat.relationedName = result.item.dashboardName;
             stat.action = req.query.mode;
-            statistics.save(req, stat, function() {
+            statistics.save(req, stat, function(err, statsResult) {
 
-            });
+            }); 
         }
         serverResponse(req, res, 200, result);
     });
@@ -195,37 +195,43 @@ exports.UnpublishDashboard = function(req,res)
 
 }
 
-/*
 exports.GetDashboard4View = function(req,res){
     req.query.trash = true;
     req.query.companyid = true;
+
+    req.query.id = req.params.dashboardID;
+    req.query._id = req.params.dashboardID;
 
     req.query.find = (req.query.find) ? req.query.find : [];
 
     req.query.find.push({status: 'Active'});
 
+
+
     if (req.user) {
         controller.findOne(req, function(result){
+            //TODO: favourites
+            
+            //TODO: stats
 
-          if (req.query.mode  && result.item)
-          {
-              //Note the execution in statistics
-              var statistics = connection.model('statistics');
-              var stat = {};
-              stat.type = 'dash';
-              stat.relationedID = result.item._id;
-              stat.relationedName = result.item.reportName;
+            if (req.query.mode  && result.item)
+            {
+                //Note the execution in statistics
+                var statistics = connection.model('statistics');
+                var stat = {};
+                stat.type = 'dash';
+                stat.relationedID = result.item._id;
+                stat.relationedName = result.item.dashboardName;
 
-              if (req.query.linked == true)
-                  stat.action = 'execute link';
-              else
-                  stat.action = req.query.mode;
-              statistics.save(req, stat, function() {
+                if (req.query.linked == true)
+                    stat.action = 'execute link';
+                else
+                    stat.action = req.query.mode;
+                statistics.save(req, stat, function(err, statsResult) {
 
-              });
-          }
-
-          serverResponse(req, res, 200, result);
+                });
+            }
+            serverResponse(req, res, 200, result);
         });
     }
     else {
@@ -233,4 +239,13 @@ exports.GetDashboard4View = function(req,res){
     }
 };
 
-*/
+function execute4AnonimousUser(req,res)
+{
+    console.log('the dash',req.query)
+    req.query.companyid = false;
+    controller.findOne(req, function(result){
+        console.log('the dash',result)
+       serverResponse(req, res, 200, result);
+    });
+}
+

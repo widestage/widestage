@@ -33,9 +33,7 @@
 </head>
 
 
-
-
-<body class="page-body login-page" ng-controller="PublicCtrl" style="<%- bodyBackground %>">
+<body class="page-body login-page main-color" ng-controller="PublicCtrl" style="<%- bodyBackground %>">
 
     <data id="host" value="<%= subdomain %>"/>
     <data id="companyID" value="<%= companyID %>"/>
@@ -47,8 +45,8 @@
 
             <div ng-show="currentBox == 'login'" class="row">
 
-                <div class="col-md-6">
-                    <div class="login-logo" id="login-logo-box" style="background-image:url('<%- customLogo %>');min-height: 150px;background-size: contain;background-repeat: no-repeat;background-position: center center;"> <!--This is the company logo--></div>
+                <div class="col-md-6 logo-container">
+                    <div class="logo" id="login-logo-box" style="background-image:url('<%- customLogo %>');min-height: 150px;background-size: contain;background-repeat: no-repeat;background-position: center center;"> <!--This is the company logo--></div>
                 </div>
 
                 <div class="col-sm-6">
@@ -98,38 +96,31 @@
 
                     <form method="post" role="form" id="login" class="login-form fade-in-effect" ng-show="currentpage=='login'">
 
-                        <div class="login-header" ng-init="getCompanyLogo()">
-                            <a class="logo">
-                                <img id="login-logo" ng-src="{{logoPath}}" alt=""  />
-                            </a>
-                        </div>
-
-
-                        <div class="form-group">
+                        <div class="form-group username-form-control">
                             <label class="control-label" for="username">Username</label>
                             <input type="text" class="form-control input-dark" name="username" id="username" ng-model="userName" autocomplete="off">
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group password-form-control">
                             <label class="control-label" for="passwd">Password</label>
                             <input type="password" class="form-control input-dark" name="passwd" id="passwd" ng-model="password" autocomplete="off" />
                         </div>
 
-                        <div class="form-group">
-                                <label class="inline">
+                        <div class="form-group remember-me-form-control">
+                                <label class="inline remember-me">
                                     <input type="checkbox" name="remember_me" ng-model="rememberMe" />
                                     <span style="font-weight: normal;color:#ccc"> Remember Me</span>
                                 </label>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group forgot-form-control">
                             <label class="inline">
-                                    <a class="btn btn-link" style="height:10px;padding:0px" ng-click="showRememberPassword()" > forgot your password ?</a>
+                                    <a class="btn btn-link forgot-your-password" style="height:10px;padding:0px" ng-click="showRememberPassword()" > forgot your password ?</a>
                             </label>
                         </div>
 
-                        <div class="form-group">
-                            <button ng-click="login()" class="btn btn-dark  btn-block text-left" style="background-color: #72A230;">
+                        <div class="form-group login-btn-form-control">
+                            <button id="login-btn" ng-click="login()" class="btn btn-login  btn-block text-left secondary-color" >
                                 <i class="fa-lock"></i>
                                 Log In
                             </button>
@@ -137,7 +128,7 @@
 
                         <!-- External login -->
                       <% if (isgoogleauthenabled) { %>
-                        <div class="external-login" style="padding:0px">
+                        <div class="external-login google-form-control" style="padding:0px">
                             <a href="/auth/google?host=<%= subdomain %>" class="gplus">
                               <i class="fa-google-plus"></i>
                                 Login with Google
@@ -147,36 +138,17 @@
 
                         </div>
 
-<!--
-                        <div class="login-footer" ng-if="host != 'local'">
-                            <a href="#" ng-click="currentBox = 'rememberPassword'">Forgot your password?</a>
-                        </br>
-
-
-                            <div class="info-links">
-                                <a href="">ToS</a> -
-                                <a href="">Privacy Policy</a>
-                            </div>
-                        -->
                         </div>
 
                     </form>
-                    <form method="post" role="form" id="forgot_password" class="login-form fade-in-effect" ng-show="currentpage=='rememberPassword'">
-
-                        <div class="login-header" ng-init="getCompanyLogo()">
-                            <a class="logo">
-                                <img id="login-logo" ng-src="{{logoPath}}" alt=""  />
-                            </a>
-                        </div>
-
-
-                        <div class="form-group">
+                    <form method="post" role="form" id="forgot_password" class="login-form fade-in-effect remember-me-tab" ng-show="currentpage=='rememberPassword'">
+                        <div class="form-group remember-email-form-control">
                             <label class="control-label" for="email">email</label>
                             <input type="text" class="form-control input-dark" name="username" id="username" ng-model="email" autocomplete="off">
                         </div>
 
-                        <div class="form-group">
-                            <button ng-click="rememberPassword()" class="btn btn-dark  btn-block text-left" style="background-color: #72A230;">
+                        <div class="form-group remember-button-form-control">
+                            <button ng-click="rememberPassword()" class="btn remember-me-button  btn-block text-left " >
                                 <i class="fa-lock"></i>
                                 Recover Password
                             </button>
@@ -190,7 +162,7 @@
 
                         </div>
 
-                        <a ng-click="ShowLogin()" style="cursor:pointer"> Back to login</a>
+                        <a class="back-to-login" ng-click="ShowLogin()" style="cursor:pointer"> Back to login</a>
 
                     </form>
                     </div>

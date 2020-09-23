@@ -32,9 +32,11 @@ statisticsSchema.statics.save = function(req, data, done){
 
 
     this.create(statistic, function(err, statistic){
-        if(err) throw err;
-
-        if (typeof done != 'undefined') done({result: 1, msg: "Statistic created", statistic: statistic.toObject()});
+        if(err) {
+            //throw err;
+            done(err);
+            }
+        if (typeof done != 'undefined') done(false,{result: 1, msg: "Statistic created", statistic: statistic.toObject()});
     });
 }
 

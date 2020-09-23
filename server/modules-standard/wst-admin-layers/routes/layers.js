@@ -20,4 +20,6 @@ app.post('/api/v3/admin/layers/:layerID/status', isGranted('Layers','update'), L
 app.get('/api/v3/admin/layers/:layerID/check', isGranted('Layers','see'), Layers.checkforDelete);
 app.post('/api/v3/admin/layers/:layerID/delete', isGranted('Layers','delete'), Layers.deleteLayer);
 
+app.get('/api/v3/layers/view/:layerID', Layers.getLayerForView);
+
 }

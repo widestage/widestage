@@ -60,21 +60,21 @@
 
             <!--<pagination total-items="pager.pages.length" ng-model="pager.currentPage" max-size="5" class="pagination-sm" boundary-links="true"></pagination>-->
 
-             <ul ng-if="pager.pages.length > 1" class="pagination">
+            <ul ng-if="pager.pages.length > 1" class="pagination">
                 <li ng-class="{disabled:pager.currentPage === 1}">
-                    <a ng-click="getRoles(1,'',['name'])" ng-i18next="First"></a>
+                    <a ng-click="getRoles(1,'',['name','_id'])" ng-i18next="First"></a>
                 </li>
                 <li ng-class="{disabled:pager.currentPage === 1}">
-                    <a ng-click="getRoles(pager.currentPage - 1,'',['name'])" ng-i18next="Previous"></a>
+                    <a ng-click="getRoles(pager.currentPage - 1,'',['name','_id'])" ng-i18next="Previous"></a>
                 </li>
                 <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
-                    <a ng-click="getRoles(page,'',['name'])">{{page}}</a>
+                    <a ng-click="getRoles(page,'',['name','_id'])">{{page}}</a>
                 </li>
                 <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
-                    <a ng-click="getRoles(pager.currentPage + 1,'',['name'])" ng-i18next="Next"></a>
+                    <a ng-click="getRoles(pager.currentPage + 1,'',['name','_id'])" ng-i18next="Next"></a>
                 </li>
                 <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
-                    <a ng-click="getRoles(pager.totalPages,'',['name'])" ng-i18next="Last"></a>
+                    <a ng-click="getRoles(pager.totalPages,'',['name','_id'])" ng-i18next="Last"></a>
                 </li>
             </ul>
         </div>

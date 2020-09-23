@@ -191,9 +191,7 @@ exports.UnpublishReport = function(req,res)
 
           serverResponse(req, res, 401, {result: 0, msg: "Not valid report ID or you don´t have permissions to unpublish this report"});
       }
-
   });
-
 }
 
 
@@ -240,7 +238,7 @@ exports.GetReport4View = function(req,res){
                     stat.action = 'execute link';
                 else
                     stat.action = req.query.mode;
-                statistics.save(req, stat, function() {
+                statistics.save(req, stat, function(err, statsResult) {
 
                 });
             }
@@ -253,6 +251,14 @@ exports.GetReport4View = function(req,res){
 };
 
 function execute4AnonimousUser(req,res)
+{
+    req.query.companyid = false;
+    controller.findOne(req, function(result){
+       serverResponse(req, res, 200, result);
+    });
+}
+
+function execute4AnonimousUserV0(req,res)
 {
   //TODO: Review , what happens if is not an multicompany install
   var host = String(req.headers.host).split('.')[0];
@@ -282,7 +288,7 @@ function execute4AnonimousUser(req,res)
                       stat.action = 'execute link';
                   else
                       stat.action = 'execute';
-                  statistics.save(req, stat, function() {
+                  statistics.save(req, stat, function(err, statsResult) {
 
                   });
               }

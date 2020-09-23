@@ -253,6 +253,24 @@ form .container
                                   </div>
                                 </div>
                               </div>
+                              <!-- Text input-->
+                              <div ng-if="config.db_type === 'mongoDB'" class="container">
+                                <div class="form-group row">
+                                  <label class="col-md-4 control-label" for="mongodbDatabase">Mongodb user</label>
+                                  <div class="col-md-4">
+                                  <input id="mongodbDatabase" name="mongodbDatabase" type="text" ng-model="config.mongoUser" placeholder="" class="form-control input-md" >
+                                  </div>
+                                </div>
+                              </div>
+                              <!-- Text input-->
+                              <div ng-if="config.db_type === 'mongoDB'" class="container">
+                                <div class="form-group row">
+                                  <label class="col-md-4 control-label" for="mongodbDatabase">Mongodb password</label>
+                                  <div class="col-md-4">
+                                  <input id="mongodbDatabase" name="mongodbDatabase" type="password" ng-model="config.mongoPassword" placeholder="" class="form-control input-md" >
+                                  </div>
+                                </div>
+                              </div>
                           </form>
                       </div>
                       <div class="card-footer">

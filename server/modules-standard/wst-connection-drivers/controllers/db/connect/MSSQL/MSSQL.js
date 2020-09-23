@@ -1,12 +1,11 @@
 var mssql = require('mssql');
 
-var sql = require('../../sqlv2.js');
+
+var pool1 = undefined;
+var pool1Connect = undefined;
 
 var db = function () {
-    /*this.host = data.host;
-     this.user = data.userName;
-     this.password = data.password;
-     this.database = data.database;*/
+
     this.conn = null;
     this.datasourceID = undefined;
 };
@@ -23,10 +22,9 @@ function connect(data,datasourceID, done)
 {
     var DB = this;
 
-    //if (this.conn)
-    //    this.conn.close();
-        mssql.close();
-    var conn = mssql.connect({
+    var maxConnections = 30;
+ 
+    var config = {
         user: data.userName,
         password: data.password,
         server: data.host,
@@ -34,20 +32,30 @@ function connect(data,datasourceID, done)
         options: {
             encrypt: false //Use true only for Windows Azure
         }
-    }, function(err) {
-        if (err) {
-            saveToLog(undefined, 'MSSQL connection error  '+ err.message,'','ERROR','MSSQL', 102);
-            done(err.stack);
-            return;
-        }
+    }
 
-        DB.conn = conn;
+    if (!pool1)
+       pool1 = new mssql.ConnectionPool(config);
+
+    if (!pool1Connect)
+       pool1Connect = pool1.connect();
+
+    try
+    {
+
         DB.datasourceID = datasourceID;
         DB.datasourceName = data.name;
 
         done(false, DB.conn);
-    });
+
+    } catch(e) {
+        done(e,undefined);
+
+    }
+
 }
+
+
 
 db.prototype.end = function() {
     end();
@@ -64,7 +72,7 @@ exports.end = function() {
 
 function end()
 {
-    this.conn.close();
+    //this.conn.close();
 }
 
 db.prototype.internalQuery = function(query, done) {
@@ -73,10 +81,12 @@ db.prototype.internalQuery = function(query, done) {
 
 
 
-function runInternalQuery(query, done)
+async function runInternalQuery(query, done)
 {
-    var request = new mssql.Request(this.conn);
 
+    await pool1Connect;
+
+    var request = pool1.request();
     request.query(query, function(err, result) {
 
         if (err) {
@@ -105,16 +115,15 @@ db.prototype.getTop100 = function(table_name, req, done) {
     runQuery(theTop100Query,req, undefined, done);
 };
 
-function runQuery(query,req, queryMetaData,done)
+async function runQuery(query,req, queryMetaData,done)
 {
     var startTime = new Date();
 
-    var request = new mssql.Request(this.conn);
-    request.query(query, function(err, result) {
-      var records = [];
-        if (result.recordset)
-          records = result.recordset;
+    await pool1Connect;
 
+    var request = pool1.request();
+    request.query(query, function(err, result) {
+        
         var endTime = new Date();
         var executionTime = Math.abs(endTime - startTime)
         var status = 'success';
@@ -123,18 +132,30 @@ function runQuery(query,req, queryMetaData,done)
             errorMessage = err;
             status = 'error';
             if (req && global.PROqueries) {
-                global.PROqueries.saveQuery(req,query, records, status, errorMessage, queryMetaData,executionTime,'MSSQL');
+                global.PROqueries.saveQuery(req,query, [], status, errorMessage, queryMetaData,executionTime,'MSSQL');
 
             }
+
             done('Query Error: '+err);
             return
 
         } else {
-            if (req && global.PROqueries) {
-                global.PROqueries.saveQuery(req,query, records, status, errorMessage, queryMetaData,executionTime,'MSSQL');
 
+            if (result)
+            {
+                var records = [];
+                    if (result.recordset)
+                    records = result.recordset; 
+
+                if (req && global.PROqueries) {
+                    global.PROqueries.saveQuery(req,query, records, status, errorMessage, queryMetaData,executionTime,'MSSQL');
+
+                }
+
+                done(false, {rows: records});
+            } else {
+                done(false, {rows: []});
             }
-            done(false, {rows: records});
         }
     });
 }
@@ -194,8 +215,6 @@ db.prototype.getTableJoins = function()
         "AND KCU2.CONSTRAINT_SCHEMA = RC.UNIQUE_CONSTRAINT_SCHEMA " +
         "AND KCU2.CONSTRAINT_NAME = RC.UNIQUE_CONSTRAINT_NAME " +
         "AND KCU2.ORDINAL_POSITION = KCU1.ORDINAL_POSITION";
-
-
 }
 
 db.prototype.getPKs = function()
@@ -291,8 +310,8 @@ exports.testConnection = function(req,data, setresult) {
 
 
         var request = new mssql.Request(conn);
-
-        request.query("SELECT table_schema, TABLE_NAME as name FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'", function(err, recordset) {
+    
+    request.query("SELECT table_schema, TABLE_NAME as name FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'", function(err, recordset) {
             if (err) {
                 saveToLog(req, 'error trying to connect to MSSQL data source '+ err.message,'','ERROR','MSSQL', 102);
                 setresult({result: 0, msg: 'Connection Error: '+err});

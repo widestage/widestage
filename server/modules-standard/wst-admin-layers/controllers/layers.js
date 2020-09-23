@@ -21,7 +21,7 @@ exports.LayersFindAll4Users = function(req,res)
 {
     req.query.trash = true;
     req.query.companyid = true;
-    req.query.fields = ['name','status'];
+    req.query.fields = ['name','status','description','cacheTime','cacheActive'];
     req.query.find = [{status:'Active'}];
 //filter by status...
 
@@ -35,7 +35,7 @@ exports.LayersFindAll = function(req,res)
 {
     req.query.trash = true;
     req.query.companyid = true;
-    req.query.fields = ['name','status'];
+    req.query.fields = ['name','status','description','cacheTime','cacheActive'];
 
     controller.findAll(req, function(result){
         serverResponse(req, res, 200, result);
@@ -46,6 +46,16 @@ exports.LayersFindAll = function(req,res)
 exports.LayersFindOne = function(req,res){
 
     req.query.companyid = true;
+    req.query.id = req.params.layerID;
+
+    controller.findOne(req, function(result){
+        serverResponse(req, res, 200, result);
+    });
+};
+
+exports.getLayerForView = function(req,res){
+
+    req.query.companyid = false;
     req.query.id = req.params.layerID;
 
     controller.findOne(req, function(result){

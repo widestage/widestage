@@ -11,5 +11,4 @@ module.exports = function (app) {
     app.post('/api/v3/permissions/users/:module/:permission/:user/:objectID', restrict, permissions.saveObjectPermissionForUser);
     app.post('/api/v3/permissions/roles/:module/:permission/:role', restrict, permissions.savePermissionForRole);
     app.post('/api/v3/permissions/users/:module/:permission/:user', restrict, permissions.savePermissionForUser);
-
-    }
+}

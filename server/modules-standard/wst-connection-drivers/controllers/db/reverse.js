@@ -16,17 +16,21 @@ function processSchema(db,datasourceID,model,schemas,index,done)
             entities: [],
             joins: []
         };
-
+        
         model.schemas.push(schema);
-
             var query = db.getTablesAndViews();
             db.internalQuery(query,  function (err, tables) {
-                processTable(db, datasourceID, schema, tables.rows, 0,0, function () {
-                    generateJoins(db,schema, function(){
-                        processSchema(db, datasourceID, model, schemas, index + 1, done);
-                    });
+                if (err)
+                    saveToLog(undefined, 'REVERSE error getting tables and views '+ err.message,'','ERROR','REVERSE', 102);
+                if (tables)
+                {    
+                    processTable(db, datasourceID, schema, tables.rows, 0,0, function () {
+                        generateJoins(db,schema, function(){
+                            processSchema(db, datasourceID, model, schemas, index + 1, done);
+                        });
 
-                })
+                    })
+                }
             });
 
     }
@@ -155,8 +159,6 @@ exports.getReverseEngineering4Schema = function(datasourceID,schema, data, setre
                 setresult({result: 1, items: model});
                 db.end();
             });
-
-
     });
 };
 
@@ -180,7 +182,7 @@ exports.getSchemas = function(datasourceID, data, setresult) {
             {
                 setresult({result: 0, msg: 'Error getting database schemas : '+err});
             } else {
-                setresult({result: 1, items: result.rows});
+                    setresult({result: 1, items: result.rows});
             }
             db.end();
         });
@@ -213,7 +215,8 @@ exports.getTablesAndViews = function(datasourceID, data, setresult) {
                     result.rows[r].datasourceName = data.name;
                     var key = data.name.replace(/\s+/g, '-').toLowerCase();
                     key = key.replace(/[^a-zA-Z]/g, "");
-                    result.rows[r].entityID = key+'.'+result.rows[r].table_schema+'.'+result.rows[r].table_name;
+                    var schemaLabel = result.rows[r].table_schema.split('-').join('_');
+                    result.rows[r].entityID = key+'_'+schemaLabel+'_'+result.rows[r].table_name;
                     result.rows[r].lineage = key+'.'+result.rows[r].table_schema+'.'+result.rows[r].table_name;
                 }
                 setresult({result: 1, items: result.rows});
@@ -249,8 +252,17 @@ exports.getTablesAndViewsForSchema = function(datasourceID,schemaName, data, set
                     result.rows[r].datasourceName = data.name;
                     var key = data.name.replace(/\s+/g, '-').toLowerCase();
                     key = key.replace(/[^a-zA-Z]/g, "");
-                    result.rows[r].entityID = key+'.'+result.rows[r].table_schema+'.'+result.rows[r].table_name;
-                    result.rows[r].lineage = key+'.'+result.rows[r].table_schema+'.'+result.rows[r].table_name;
+                    if (result.rows[r].table_schema)
+                        {
+                            var schemaLabel = result.rows[r].table_schema.split('-').join('_')+'_';
+                            var lineageSchemaName = result.rows[r].table_schema+'.';
+                        } else {
+                            var schemaLabel = '';
+                            var lineageSchemaName = '';
+                        }
+                    result.rows[r].entityID = key+'_'+schemaLabel+result.rows[r].table_name;
+                    //result.rows[r].entityID = key+'_'+result.rows[r].table_schema+'_'+result.rows[r].table_name;
+                    result.rows[r].lineage = key+'.'+lineageSchemaName+result.rows[r].table_name;
                 }
                 setresult({result: 1, items: result.rows});
             }
@@ -274,9 +286,7 @@ function getEntityFields(db,tableSchema, tableName, done)
         if (err)
         {
             done( {result: 0, msg: 'Error getting entity fields : '+err});
-
         } else {
-
             fields = result.rows;
             //Now we need to identify PKs for this entity
 
@@ -294,9 +304,20 @@ function getEntityFields(db,tableSchema, tableName, done)
 
                         var key = fields[f].datasourceName.replace(/\s+/g, '-').toLowerCase();
                         key = key.replace(/[^a-zA-Z]/g, "");
-                        fields[f].lineage = key+'.'+fields[f].table_schema+'.'+fields[f].table_name+'.'+fields[f].column_name;
-                
+                        
+                        if (fields[f].table_schema)
+                            {
+                            var schemaLabel = fields[f].table_schema.split('-').join('_')+'_';
+                            var lineageSchemaName = fields[f].table_schema+'.';
+                            }    else  {
+                            var schemaLabel = '';
+                            var lineageSchemaName = '';
+                            }
 
+                        fields[f].key = schemaLabel+fields[f].table_name+'_'+fields[f].column_name;
+                        fields[f].lineage = key+'.'+lineageSchemaName+fields[f].table_name+'.'+fields[f].column_name;
+                
+                        
                         if (fields[f].is_nullable == 'YES')
                             fields[f].required = false;
                         else
@@ -330,6 +351,7 @@ function getAttributeType(data_type)
         data_type == 'DECIMAL' ||
         data_type == 'numeric' ||
         data_type == 'real' ||
+        data_type == 'long' ||
         data_type == 'REAL' ||
         data_type == 'double precision' ||
         data_type == 'serial' ||
@@ -342,6 +364,7 @@ function getAttributeType(data_type)
         data_type == 'SMALLINT' ||
         data_type == 'integer' ||
         data_type == 'int' ||
+        data_type == 'tinyint' ||
         data_type == 'BIGINT' ||
         data_type == 'bigint')
         type = 'INTEGER';
@@ -354,6 +377,7 @@ function getAttributeType(data_type)
         data_type == 'timestamp without time zone' ||
         data_type == 'timestamp with time zone' ||
         data_type == 'date' ||
+        data_type == 'datetime' ||
         data_type == 'TIME' ||
         data_type == 'time without time zone' ||
         data_type == 'time with time zone' ||
@@ -388,23 +412,15 @@ exports.getEntityFields = function(datasourceID,tableSchema, tableName, data, se
             setresult({result: 0, msg: 'Connection Error: '+ err});
             return;
         }
-
-
         getEntityFields(db,tableSchema, tableName, function(fields)
             {
                 
                 setresult(fields);
                 db.end();
             });
-
     });
 
-
-
-
 };
-
-
 
 exports.getsqlQuerySchema = function(req,theSqlQuery,data,done)
 {
@@ -483,11 +499,11 @@ function getSQLResultsSchema(collectionName,queryResults,sqlQuery, datasourceID,
                     collectionName: collectionName,
                     collectionType: 'SQL',
                     datasourceID: datasourceID,
-                    elementLabel:name
+                    elementLabel:name,
+                    key: collectionName+'_SQL_'+name,
+                    lineage: collectionName+'_SQL_'+name
 
                 });
-
-
     }
     done(theCollection);
 }

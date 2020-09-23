@@ -23,30 +23,57 @@ exports.connect = function(data,datasourceID, done) {
 function connect(data,datasourceID, done)
 {
     var DB = this;
-
+    var maxConnections = 5;
+/*
     var conn = mysql.createConnection({
         host     : data.host,
         port     : data.port,
         user     : data.userName,
         password : data.password,
         database : data.database
-    });
+    });*/
 
-    //var connectionString = 'mysql://'+data.userName+':'+data.password+'@'+data.host+':'+data.port+'/'+data.database;
-    //var conn = mysql.createConnection(connectionString);
 
+    if (!global.mySPool)
+    {
+        try {
+            var conn  = mysql.createPool({
+                connectionLimit : maxConnections,
+                host            : data.host,
+                port            : data.port,
+                user            : data.userName,
+                password        : data.password,
+                database        : data.database
+            });
+
+            DB.conn = conn;
+            DB.datasourceID = datasourceID;
+            DB.datasourceName = data.name;
+            global.mySPool = conn;
+        } catch (err){
+            done(err);
+            saveToLog(undefined, 'MySQL connection error '+ err.message,'','ERROR','MySQL', 102); 
+            return console.error('Connection Error: '+err);
+        }
+    } else {
+       var conn = global.mySPool;
+       DB.conn = conn;
+    }
+
+
+    
+
+    /*
     conn.connect(function(err) {
         if (err) {
             done(err.stack);
             return console.error('Connection Error: '+err.stack);
         }
-
-        DB.conn = conn;
-        DB.datasourceID = datasourceID;
-        DB.datasourceName = data.name;
+*/
+        
 
         done(false, DB.conn);
-    });
+    //});
 };
 
 
@@ -65,7 +92,13 @@ exports.end = function() {
 
 function end()
 {
-    this.conn.end();
+    try {
+        this.conn.release();// generate this error -> Cannot enqueue Quit after invoking quit.
+    } catch (e) {
+        saveToLog(undefined, 'Error ending MySQL connection '+ e.message,'','ERROR','MySQL', 102);    
+    } finally {
+
+    }
 }
 
 db.prototype.internalQuery = function(query, done) {
@@ -99,6 +132,46 @@ db.prototype.getTop100 = function(table_name, req, done) {
 function runQuery(query,req, queryMetaData,done)
 {
     var startTime = new Date();
+
+    this.conn.getConnection((ex, connection) => {
+        if (ex)
+        {
+            console.log('MySQL - '+ex.message);
+            done('Query Error: '+ex.message);
+        } else {
+     
+                connection.query(query, function(err, result) {
+                    var endTime = new Date();
+                    var executionTime = Math.abs(endTime - startTime)
+                    var status = 'success';
+                    var errorMessage = undefined;
+                    connection.release();
+                    if (err) {
+                        errorMessage = err;
+                        status = 'error';
+                        if (req && global.PROqueries) {
+
+                            global.PROqueries.saveQuery(req,query, result, status, errorMessage, queryMetaData,executionTime,'MySQL');
+
+                        }
+                        done('Query Error: '+err);
+                        return
+
+                    } else {
+                        if (req && global.PROqueries) {
+                            global.PROqueries.saveQuery(req,query, result, status, errorMessage, queryMetaData,executionTime,'MySQL');
+
+                        }
+                        done(false, {rows: result});
+                    }
+                });
+}
+});
+}
+
+function runQueryV0(query,req, queryMetaData,done)
+{
+    var startTime = new Date();
     this.conn.query(query, function(err, result) {
         var endTime = new Date();
         var executionTime = Math.abs(endTime - startTime)
@@ -126,28 +199,28 @@ function runQuery(query,req, queryMetaData,done)
 }
 
 db.prototype.getDatabaseSchemas = function() {
-    return "SELECT distinct table_schema FROM information_schema.TABLES where table_schema not in ('information_schema','performance_schema','sys','mysql') order by table_schema";
+    return "SELECT distinct table_schema  as 'table_schema' FROM information_schema.TABLES where table_schema not in ('information_schema','performance_schema','sys','mysql') order by table_schema";
 };
 
 db.prototype.getSchemaQuery = function(newSchemas, newTables) {
-    return "SELECT table_schema, table_name, column_name, data_type FROM information_schema.columns WHERE table_schema in ("+newSchemas+") AND table_name in ("+newTables+") order by table_name";
+    return "SELECT table_schema  as 'table_schema', table_name  as 'table_name', column_name  as 'column_name', data_type  as 'data_type' FROM information_schema.columns WHERE table_schema in ("+newSchemas+") AND table_name in ("+newTables+") order by table_name";
 };
 
 
 db.prototype.getTables = function() {
-    return "SELECT table_name, table_schema FROM information_schema.tables where table_schema not in ('information_schema','performance_schema','sys','mysql') and table_type='BASE TABLE' order by table_name";
+    return "SELECT table_name  as 'table_name' , table_schema  as 'table_schema' FROM information_schema.tables where table_schema not in ('information_schema','performance_schema','sys','mysql') and table_type='BASE TABLE' order by table_name";
 }
 
 db.prototype.getViews = function() {
-    return "SELECT table_name, table_schema FROM information_schema.views where table_schema not in ('information_schema','performance_schema','sys','mysql') order by table_name";
+    return "SELECT table_name  as 'table_name' , table_schema  as 'table_schema' FROM information_schema.views where table_schema not in ('information_schema','performance_schema','sys','mysql') order by table_name";
 }
 
 
 db.prototype.getTablesAndViews = function() {
     var sql =
-        "SELECT table_schema || '.' || table_name as name ,table_name, table_schema, 'table' as type FROM information_schema.tables where table_schema not in ('information_schema','performance_schema','sys','mysql') and table_type='BASE TABLE'"
+        "SELECT table_schema || '.' || table_name as name ,table_name  as 'table_name' , table_schema  as 'table_schema', 'table' as type FROM information_schema.tables where table_schema not in ('information_schema','performance_schema','sys','mysql') and table_type='BASE TABLE'"
     +" union all "
-    +" SELECT table_schema || '.' || table_name as name ,table_name, table_schema, 'view' as type FROM information_schema.views where table_schema not in ('information_schema','performance_schema','sys','mysql') order by table_name";
+    +" SELECT table_schema || '.' || table_name as name ,table_name  as 'table_name' , table_schema  as 'table_schema', 'view' as type FROM information_schema.views where table_schema not in ('information_schema','performance_schema','sys','mysql') order by table_name";
 
 
     return sql;
@@ -155,20 +228,20 @@ db.prototype.getTablesAndViews = function() {
 
 db.prototype.getTablesAndViewsForSchema = function(schemaName) {
     var sql =
-        "SELECT table_schema || '.' || table_name as name ,table_name, table_schema, 'table' as type FROM information_schema.tables where table_schema not in ('information_schema','performance_schema','sys','mysql') and table_type='BASE TABLE' and table_schema ='"+schemaName+"'"
+        "SELECT table_schema || '.' || table_name as name ,table_name  as 'table_name' , table_schema  as 'table_schema', 'table' as type FROM information_schema.tables where table_schema not in ('information_schema','performance_schema','sys','mysql') and table_type='BASE TABLE' and table_schema ='"+schemaName+"'"
         +" union all "
-        +"SELECT table_schema || '.' || table_name as name ,table_name, table_schema, 'view' as type FROM information_schema.views where table_schema not in ('information_schema','performance_schema','sys','mysql') and table_schema ='"+schemaName+"' order by table_name"
+        +"SELECT table_schema || '.' || table_name as name ,table_name  as 'table_name' , table_schema  as 'table_schema', 'view' as type FROM information_schema.views where table_schema not in ('information_schema','performance_schema','sys','mysql') and table_schema ='"+schemaName+"' order by table_name"
     return sql;
 }
 
 db.prototype.getColumns = function ()
 {
-    return "SELECT table_schema, table_name, column_name, data_type,is_nullable, cols.character_maximum_length as length, cols.numeric_precision as precission, cols.numeric_scale as scale FROM information_schema.columns cols where table_schema not in ('information_schema','performance_schema','sys','mysql') order by table_name, ordinal_position";
+    return "SELECT table_schema  as 'table_schema', table_name  as 'table_name', column_name  as 'column_name', data_type  as 'data_type',is_nullable  as 'is_nullable', cols.character_maximum_length as length, cols.numeric_precision as precission, cols.numeric_scale as scale FROM information_schema.columns cols where table_schema not in ('information_schema','performance_schema','sys','mysql') order by table_name, ordinal_position";
 }
 
 db.prototype.getTableJoins = function()
 {
-    return "SELECT tc.constraint_name, tc.table_schema, tc.table_name, kcu.column_name, kcu.referenced_table_schema as foreign_table_schema, kcu.referenced_table_name AS foreign_table_name, kcu.referenced_column_name AS foreign_column_name "
+    return "SELECT tc.constraint_name   as 'constraint_name', tc.table_schema   as 'table_schema', tc.table_name   as 'table_name', kcu.column_name   as 'column_name', kcu.referenced_table_schema as foreign_table_schema, kcu.referenced_table_name AS foreign_table_name, kcu.referenced_column_name AS foreign_column_name "
     +" FROM  information_schema.table_constraints AS tc"
         +" JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name"
         +" WHERE constraint_type = 'FOREIGN KEY'";
@@ -176,7 +249,7 @@ db.prototype.getTableJoins = function()
 
 db.prototype.getPKs = function()
 {
-    return "select tc.table_schema, tc.table_name, kc.column_name, kc.position_in_unique_constraint from   information_schema.table_constraints tc,  information_schema.key_column_usage kc  where  tc.constraint_type = 'PRIMARY KEY'  and kc.table_name = tc.table_name and kc.table_schema = tc.table_schema and kc.constraint_name = tc.constraint_name order by 1, 2";
+    return "select tc.table_schema as 'table_schema', tc.table_name as 'table_name', kc.column_name as 'column_name', kc.position_in_unique_constraint  as 'position_in_unique_constraint' from   information_schema.table_constraints tc,  information_schema.key_column_usage kc  where  tc.constraint_type = 'PRIMARY KEY'  and kc.table_name = tc.table_name and kc.table_schema = tc.table_schema and kc.constraint_name = tc.constraint_name order by 1, 2";
 }
 
 db.prototype.getEntityFieldsSQL = function(tableSchema,tableName)
@@ -186,7 +259,7 @@ db.prototype.getEntityFieldsSQL = function(tableSchema,tableName)
 
 function getEntityFieldsSQL(tableSchema,tableName)
 {
-    return "SELECT table_schema, table_name, column_name, data_type,is_nullable, cols.character_maximum_length as length, cols.numeric_precision as precission, cols.numeric_scale as scale FROM information_schema.columns cols where table_schema = '"+tableSchema+"' and table_name = '"+tableName+"' order by table_name, ordinal_position";
+    return "SELECT table_schema as 'table_schema', table_name as 'table_name', column_name as 'column_name', data_type as 'data_type',is_nullable as 'is_nullable', cols.character_maximum_length as length, cols.numeric_precision as precission, cols.numeric_scale as scale FROM information_schema.columns cols where table_schema = '"+tableSchema+"' and table_name = '"+tableName+"' order by table_name, ordinal_position";
 }
 
 db.prototype.getEntityPKsSQL = function(tableSchema,tableName) {
@@ -195,7 +268,7 @@ db.prototype.getEntityPKsSQL = function(tableSchema,tableName) {
 
 function getEntityPKsSQL(tableSchema,tableName)
 {
-    return "select tc.table_schema, tc.table_name, kc.column_name, kc.position_in_unique_constraint from   information_schema.table_constraints tc,  information_schema.key_column_usage kc  where  tc.constraint_type = 'PRIMARY KEY'  and kc.table_name = tc.table_name and kc.table_schema = tc.table_schema and kc.constraint_name = tc.constraint_name and tc.table_schema = '"+tableSchema+"' and tc.table_name = '"+tableName+"'  order by 1, 2";
+    return "select tc.table_schema as 'table_schema', tc.table_name as 'table_name', kc.column_name as 'column_name', kc.position_in_unique_constraint  as 'position_in_unique_constraint' from   information_schema.table_constraints tc,  information_schema.key_column_usage kc  where  tc.constraint_type = 'PRIMARY KEY'  and kc.table_name = tc.table_name and kc.table_schema = tc.table_schema and kc.constraint_name = tc.constraint_name and tc.table_schema = '"+tableSchema+"' and tc.table_name = '"+tableName+"'  order by 1, 2";
 }
 
 

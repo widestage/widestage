@@ -4,10 +4,6 @@ var pg = require('pg');
 var sql = require('../../sqlv2.js');
 
 var db = function () {
-    /*this.host = data.host;
-     this.user = data.userName;
-     this.password = data.password;
-     this.database = data.database;*/
     this.conn = null;
     this.datasourceID = undefined;
 };
@@ -26,21 +22,80 @@ exports.connect = function(data,datasourceID, done) {
 function connect(data,datasourceID, done)
 {
     var DB = this;
-    var conString = 'postgres://'+data.userName+':'+data.password+'@'+data.host+':'+data.port+'/'+data.database;
+    var maxConnections = 30;
+ 
+    var config = {
+        user: data.userName,
+        host: data.host,
+        database: data.database,
+        password: data.password,
+        port: data.port,
+        max: maxConnections,
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 2000
+    }
+    
+        
+    if (data.enableSSL)
+    {
+        var fs = require('fs');
+        var sslParams = {};
+        sslParams.rejectUnauthorized = false;
+        
+            if (data.sslRootCertificate && fs.existsSync(global.serverDir+'/uploads/'+datasourceID+'/'+data.sslRootCertificate))
+                {
+                sslParams.ca = fs.readFileSync(global.serverDir+'/uploads/'+datasourceID+'/'+data.sslRootCertificate).toString()
+                } else {
+                    done({result: 0, msg: 'CA file not found'});
+                    return console.error('CA file not found '+global.serverDir+'/uploads/'+datasourceID+'/'+data.sslRootCertificate);
+                }
 
-    var client = new pg.Client(conString);
-
-    client.connect(function(err) {
-        if (err) {
-            done(err);
-            return console.error('Connection Error: '+err);
+        config = {
+            host: data.host,
+            database: data.database,
+            user: data.userName,
+            password: data.password,
+            port: data.port,
+            ssl: sslParams,
+            max: maxConnections,
+            idleTimeoutMillis: 30000,
+            connectionTimeoutMillis: 2000
         }
+    }  
 
+ if (!global.pgPool)
+ {
+     global.pgPool = {};
+     
+        const { Pool } = require('pg')
+        var pool = new Pool(config);
+
+        global.pgPool['WST_'+datasourceID] = pool;
+      
+ } else {
+    if (!global.pgPool['WST_'+datasourceID])
+    {
+        const { Pool } = require('pg')
+        var pool = new Pool(config);
+
+        global.pgPool['WST_'+datasourceID] = pool;
+    } else {
+        var pool = global.pgPool['WST_'+datasourceID];
+    }
+ }
+
+ pool.connect((err, client, release) => {
+   if (err) {
+        done(err);
+        saveToLog(undefined, 'POSTGRES connection error '+ err.message,'','ERROR','POSTGRES', 102); 
+        return console.error('Connection Error: '+err);
+   }
         DB.conn = client;
         DB.datasourceID = datasourceID;
         DB.datasourceName = data.name;
-        done(false, DB.client);
-    });
+        done(false, DB.conn);
+ })
+ 
 }
 
 db.prototype.end = function() {
@@ -59,9 +114,10 @@ exports.end = function() {
 function end()
 {
     try {
-      this.conn.end();
-    } catch (e) {
 
+       this.conn.release();// generate this error -> Error ending POSTGRES connection Release called on client which has already been released to the pool.
+    } catch (e) {
+        saveToLog(undefined, 'Error ending POSTGRES connection '+ e.message,'','ERROR','POSTGRES', 102);    
     } finally {
 
     }
@@ -76,8 +132,10 @@ function runInternalQuery(query, done)
     this.conn.query(query, function(err, result) {
         if (err) {
             done('Query Error: '+err);
+            saveToLog(undefined, 'POSTGRES error running internal query '+ err.message,'','ERROR','POSTGRES', 102);
             return console.error('Query Error: '+err);
         }
+        end();
         done(false, {rows: result.rows});
     });
 }
@@ -110,6 +168,7 @@ function runQuery(query,req, queryMetaData,done)
                 global.PROqueries.saveQuery(req,query, result, status, errorMessage, queryMetaData,executionTime,'POSTGRE');
             }
             done('Query Error: '+err);
+            end();
             return
             //return console.error('Query Error: '+err);
 
@@ -118,10 +177,17 @@ function runQuery(query,req, queryMetaData,done)
                 global.PROqueries.saveQuery(req,query, result, status, errorMessage, queryMetaData,executionTime,'POSTGRE');
 
             }
+           
             done(false, {rows: result.rows});
+            end();
+            
+          
+            
         }
+        
     });
 }
+
 
 db.prototype.getDatabaseSchemas = function() {
     return "SELECT distinct table_schema FROM information_schema.columns where table_schema not in ('pg_catalog','information_schema') order by table_schema"
@@ -172,7 +238,6 @@ db.prototype.getPKs = function()
 
 db.prototype.getEntityFieldsSQL = function(tableSchema,tableName)
 {
-    //return "SELECT table_schema, table_name, column_name, data_type,is_nullable, cols.character_maximum_length as length, cols.numeric_precision as precission, cols.numeric_scale as scale FROM information_schema.columns cols where table_schema = '"+tableSchema+"' and table_name = '"+tableName+"' order by table_name, ordinal_position";
     return getEntityFieldsSQL(tableSchema,tableName);
 }
 
@@ -206,13 +271,42 @@ exports.db = db;
 
 exports.testConnection = function(req,data, setresult) {
 
-    var conString = 'postgres://'+data.userName+':'+data.password+'@'+data.host+':'+data.port+'/'+data.database;
+    var config = {
+        user: data.userName,
+        host: data.host,
+        database: data.database,
+        password: data.password,
+        port: data.port
+    }
+    
+       
+    if (data.enableSSL)
+    {
+        var fs = require('fs');
+        var sslParams = {};
+        sslParams.rejectUnauthorized = false;
+        
+            if (data.sslRootCertificate && fs.existsSync(global.serverDir+'/uploads/'+data.datasourceID+'/'+data.sslRootCertificate))
+                {
+                sslParams.ca = fs.readFileSync(global.serverDir+'/uploads/'+data.datasourceID+'/'+data.sslRootCertificate).toString()
+                } else {
+                    setresult({result: 0, msg: 'CA file not found'});
+                    return console.error('CA file not found');
+                }
 
-    var client = new pg.Client(conString);
+        config = {
+            host: data.host,
+            database: data.database,
+            user: data.userName,
+            password: data.password,
+            port: data.port,
+            ssl: sslParams
+        }
+    }  
 
+  var client = new pg.Client(config);
     client.connect(function(err) {
         if (err) {
-            //done(err);
             setresult({result: 0, msg: 'Connection Error: '+ err});
             return console.error('Connection Error: '+err);
         }
@@ -220,6 +314,7 @@ exports.testConnection = function(req,data, setresult) {
         client.query("SELECT table_schema || '.' || table_name as name , table_schema, table_name from information_schema.tables where table_schema not in ('pg_catalog','information_schema')", function(err, result) {
             setresult({result: 1, items: result.rows});
             client.end();
+            //client.release();
         });
     });
 

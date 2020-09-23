@@ -698,7 +698,9 @@ function getSqlEntityName(collection)
 }
 
 exports.processJoinedCollections = function(req,query,collections, dataSource, thereAreJoins,params,sqlString, done) {
-    processJoinedCollections(req,query,collections, dataSource,thereAreJoins, 0,params,sqlString, function(){
+    processJoinedCollections(req,query,collections, dataSource,thereAreJoins, 0,params,sqlString, function(result){
+        if (result.result == 0)
+            done(result);
 
 
         if (collections.length > 1)
@@ -759,7 +761,7 @@ exports.processJoinedCollections = function(req,query,collections, dataSource, t
 
 
         } else {
-          done(collections[0].result,collections[0].elements,collections[0].sql);
+          done(false,collections[0].result,collections[0].elements,collections[0].sql);
         }
 
     });
