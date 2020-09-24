@@ -70,7 +70,7 @@
     "angular-perfect-scrollbar": "^0.2.1"
   },
   "resolutions": {
-    "angular": "1.7.6",
+    "angular": "^1.7.4",
     "select2": "~3.5.2",
     "jquery": "^3.3.1"
   }
