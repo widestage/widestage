@@ -1,4 +1,10 @@
 bower_components/
 node_modules/
 public/uploads/
+public/downloads/
+server/uploads/
+server/data/local
+server/data/test
+server/data/production
+server/data/dev
 .git
